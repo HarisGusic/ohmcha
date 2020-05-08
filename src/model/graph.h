@@ -12,11 +12,11 @@ namespace Ohmcha
 
 /**
  * Generate a minimum spanning tree of a connected sub-graph
- * starting at the specified branch.
- * @param start - The start branch
+ * starting at the specified node.
+ * @param start - The start node
  * @return Vector of pointers of branches that constitute the generated MST
  * @details TODO
  */
-std::vector<Branch *> generate_MST(Branch *start);
+std::vector<Branch *> generate_MST(Node *start);
 
 }
