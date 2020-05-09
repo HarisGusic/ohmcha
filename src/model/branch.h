@@ -1,9 +1,12 @@
 #pragma once
 
 #include "node.h"
+#include <Eigen/Dense>
 
 namespace Ohmcha
 {
+
+using namespace Eigen;
 
 class Node;
 
@@ -12,6 +15,7 @@ class Node;
  */
 class Branch
 {
+protected:
 	/**
 	 * Current flows through this object from node 1 to node 2.
 	 * Consequently, the reference voltage is positive if
@@ -24,7 +28,7 @@ class Branch
 	 * to represent a linear branch, we require an
 	 * equation A * transpose([ V1 V2 I ]) = B.
 	 */
-	std::vector<float> A;
+	RowVector3f A;
 	float B;
 
 public:
@@ -37,12 +41,16 @@ public:
 	/**
 	 * TODO
 	 */
-	Branch(const std::vector<float> A, float B) : A(A), B(B)
-	{}
+	Branch(RowVector3f A, float B);
+
+	/**
+	 * TODO
+	 */
+	Branch(Node &node1, Node &node2, RowVector3f A, float B);
 
 	// Setters
 
-	void setA(const std::vector<float> &matrix)
+	void setA(const RowVector3f &matrix)
 	{ A = matrix; }
 
 	void setB(float x)
@@ -56,39 +64,51 @@ public:
 
 	// Getters
 
-	std::vector<float> getA()
+	RowVector3f getA() const
 	{ return A; }
 
-	float getB()
+	float getB() const
 	{ return B; }
 
-	Node *getNode1(Node *n)
+	Node *getNode1() const
 	{ return node1; }
 
-	Node *getNode2(Node *n)
+	Node *getNode2() const
 	{ return node2; }
 };
 
+/**
+ * A branch containing a resistor.
+ */
 class BResistor : public Branch
 {
 public:
+
 	BResistor(float resistance);
 
-	void setA(const std::vector<float> &) = delete;
+	BResistor(float resistance, Node &node1, Node &node2);
+
+	void setA(const RowVector3f &) = delete;
 
 	void setB(float) = delete;
 
 };
 
+/**
+ * A branch containing an ideal voltage source.
+ */
 class BEmf : public Branch
 {
 public:
 	BEmf(float emf);
 
-	void setA(const std::vector<float> &) = delete;
+	BEmf(float emf, Node &node1, Node &node2);
+
+	void setA(const RowVector3f &) = delete;
 
 	void setB(float) = delete;
 
 };
 
+// TODO: add current source
 }
