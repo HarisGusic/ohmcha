@@ -1,6 +1,7 @@
 #pragma once
 
 #include "branch.h"
+#include "node.h"
 
 /**
  * All entities of Ohmcha are part of this
@@ -9,6 +10,8 @@
  */
 namespace Ohmcha
 {
+
+typedef std::vector<std::vector<float>> Matrix;
 
 /**
  * Generate a minimum spanning tree of a connected sub-graph
