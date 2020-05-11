@@ -1,7 +1,6 @@
 #pragma once
 
-#include "branch.h"
-#include "node.h"
+#include "component.h"
 
 /**
  * All entities of Ohmcha are part of this

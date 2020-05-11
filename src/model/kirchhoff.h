@@ -1,8 +1,7 @@
 #pragma once
 
 #include <Eigen/Dense>
-#include "branch.h"
-#include "node.h"
+#include "component.h"
 
 namespace Ohmcha
 {

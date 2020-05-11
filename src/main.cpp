@@ -15,9 +15,7 @@
 
 #endif
 
-
-#include "model/branch.h"
-#include "model/node.h"
+#include "model/component.h"
 #include "model/kirchhoff.h"
 
 using namespace Ohmcha;
@@ -123,7 +121,6 @@ int start_gui(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
-
 	arglist args = arglist(argv + 1, argv + argc);
 	auto it_gui = std::find(args.begin(), args.end(), "--gui");
 

@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -17,18 +17,18 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     src/main.cpp \
-    src/model/branch.cpp \
+    src/fileio/xml.cpp \
+    src/model/component.cpp \
     src/model/graph.cpp \
     src/model/kirchhoff.cpp \
-    src/model/node.cpp \
     src/program/program.cpp \
     src/ui/mainwindow.cpp
 
 HEADERS += \
-    src/model/branch.h \
+    src/fileio/xml.h \
+    src/model/component.h \
     src/model/graph.h \
     src/model/kirchhoff.h \
-    src/model/node.h \
     src/program/program.h \
     src/ui/mainwindow.h
 
