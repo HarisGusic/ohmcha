@@ -8,6 +8,11 @@ Component::Component()
 
 }
 
+Branch::Branch()
+{
+
+}
+
 Branch::Branch(const Branch &branch1, const Branch &branch2)
 {
     //TODO implement
@@ -60,6 +65,31 @@ BEmf::BEmf(float emf)
 
 BEmf::BEmf(float emf, Node &node1, Node &node2) : Branch(node1, node2, {1, -1, 0}, emf)
 {}
+
+float Resistor::getResistance()
+{
+    return resistance;
+}
+
+void Resistor::setResistance(float r)
+{
+    resistance = r;
+}
+
+Schematic::Schematic()
+{
+
+}
+
+void Schematic::add(Component *component)
+{
+    components.push_back(component);
+}
+
+std::vector<Component*> Schematic::getComponents()
+{
+    return components;
+}
 
 
 

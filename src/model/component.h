@@ -11,8 +11,27 @@ using namespace Eigen;
 
 class Component
 {
+protected:
+    struct MetaInfo
+    {
+        std::string name;
+    };
+    MetaInfo *metaInfo = nullptr;
 public:
     Component();
+
+    std::string getName();
+};
+
+class Schematic
+{
+    std::vector<Component*> components;
+public:
+    Schematic();
+
+    void add(Component *component);
+
+    std::vector<Component*> getComponents();
 };
 
 /**
@@ -23,7 +42,6 @@ class Node
 {
     float potential;
 };
-
 
 /**
  * An electrical branch.
@@ -47,6 +65,7 @@ protected:
     float B;
 
 public:
+    Branch();
     /**
      * Create a branch by merging two branches that contain a common node.
      * @throw TODO..if they don't have a common node
@@ -119,8 +138,14 @@ public:
 
 // TODO: add current source
 
-class Resistor : public Branch
+class Resistor : public Component
 {
+    float resistance;
+
+public:
+    float getResistance();
+
+    void setResistance(float r);
 
 };
 

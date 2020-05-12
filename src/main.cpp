@@ -17,6 +17,7 @@
 
 #include "model/component.h"
 #include "model/kirchhoff.h"
+#include "fileio/xml.h"
 
 using namespace Ohmcha;
 using namespace Eigen;
@@ -119,10 +120,23 @@ int start_gui(int argc, char *argv[])
 #endif
 }
 
+/**
+  * Use for quick tests. Just put
+  * 	return test();
+  * as the first statement in main, to override the program.
+  */
+int test()
+{
+    Schematic schem = xmlParseSchematic("../../staging/test.xml");
+    auto v = schem.getComponents();
+    auto resistor = *((Resistor*)v[0]);
+}
+
 int main(int argc, char *argv[])
 {
-	arglist args = arglist(argv + 1, argv + argc);
-	auto it_gui = std::find(args.begin(), args.end(), "--gui");
+    return test();
+    arglist args = arglist(argv + 1, argv + argc);
+    auto it_gui = std::find(args.begin(), args.end(), "--gui");
 
     // Non-GUI mode: execute command and exit
 	if (it_gui == args.end())
