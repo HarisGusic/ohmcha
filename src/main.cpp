@@ -6,7 +6,7 @@
 #include "program/program.h"
 
 // Just for debugging purposes
-#define NO_GUI
+// #define NO_GUI
 
 #ifndef NO_GUI
 
@@ -134,9 +134,12 @@ int test()
 
 int main(int argc, char *argv[])
 {
-    return test();
+    // return test();
     arglist args = arglist(argv + 1, argv + argc);
     auto it_gui = std::find(args.begin(), args.end(), "--gui");
+
+    // This is here temporarily
+    return start_gui(0, nullptr);
 
     // Non-GUI mode: execute command and exit
 	if (it_gui == args.end())
