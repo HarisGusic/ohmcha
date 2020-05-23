@@ -22,7 +22,8 @@ SOURCES += \
     src/model/graph.cpp \
     src/model/kirchhoff.cpp \
     src/program/program.cpp \
-    src/ui/mainwindow.cpp
+    src/ui/mainwindow.cpp \
+    src/ui/circuitview.cpp
 
 HEADERS += \
     src/fileio/xml.h \
@@ -30,7 +31,8 @@ HEADERS += \
     src/model/graph.h \
     src/model/kirchhoff.h \
     src/program/program.h \
-    src/ui/mainwindow.h
+    src/ui/mainwindow.h \
+    src/ui/circuitview.h
 
 FORMS += \
     src/ui/mainwindow.ui
@@ -42,3 +44,6 @@ INCLUDEPATH += /usr/include/eigen3
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+    resources.qrc
