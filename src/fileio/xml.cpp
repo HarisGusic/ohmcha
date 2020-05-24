@@ -10,9 +10,9 @@ const std::map<std::string, Component *(*)(const QDomElement &)> functionMap =
     {"resistor", xmlParseResistor}
 };
 
-Schematic xmlParseSchematic(std::string filename)
+Schematic *xmlParseSchematic(std::string filename)
 {
-    Schematic schematic;
+    // File checks...
 
     QDomDocument doc;
     QFile file(QString::fromStdString(filename));
@@ -31,6 +31,8 @@ Schematic xmlParseSchematic(std::string filename)
     if (root.tagName() != "schematic")
         throw std::logic_error("The file is not a schematic");
 
+    Schematic *schematic = new Schematic;
+
     // Document attributes
     bool linear = false;
 
@@ -38,7 +40,7 @@ Schematic xmlParseSchematic(std::string filename)
         linear = true;
 
     for (auto child = root.firstChildElement(); !child.isNull(); child = child.nextSiblingElement())
-        xmlParseComponentRecursively(child, schematic);
+        xmlParseComponentRecursively(child, *schematic);
 
     return schematic;
 }
@@ -68,14 +70,16 @@ Component *xmlParseComponentRecursively(const QDomElement &element, Schematic &s
 
 Component *xmlParseResistor(const QDomElement &element)
 {
-    // If no value is given, the value of the last parsed resistor will be used
     Resistor &r = *new Resistor;
-    // Value attribute
+    // If no value is given, the value of the last parsed resistor will be used
     static float lastValue = 1000;
+
     auto strValue = element.attribute("R", "");
-    if (strValue == "") r.setResistance(lastValue);
+    if (strValue == "")
+        r.setResistance(lastValue);
     else
         r.setResistance(parseValue(strValue.toStdString()));
+
     return &r;
 }
 

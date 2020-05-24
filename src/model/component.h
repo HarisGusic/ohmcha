@@ -15,23 +15,18 @@ protected:
     struct MetaInfo
     {
         std::string name;
+        std::vector<float> positions;
     };
     MetaInfo *metaInfo = nullptr;
 public:
-    Component();
 
-    std::string getName();
-};
+    // Methods
 
-class Schematic
-{
-    std::vector<Component*> components;
-public:
-    Schematic();
+    // Setters
 
-    void add(Component *component);
-
-    std::vector<Component*> getComponents();
+    // Getters
+    virtual std::string getName();
+    virtual int getTerminalCount() const = 0;
 };
 
 /**
@@ -65,6 +60,9 @@ protected:
     float B;
 
 public:
+    /**
+     * A default branch, equivalent to a short circuit.
+     */
     Branch();
     /**
      * Create a branch by merging two branches that contain a common node.
@@ -85,22 +83,18 @@ public:
     // Setters
 
     void setA(const RowVector3f &matrix);
-
     void setB(float x);
-
     void setNode1(Node &n);
-
     void setNode2(Node &n);
+    void addComponent(Component *component);
 
     // Getters
 
     RowVector3f getA() const;
-
     float getB() const;
-
     Node *getNode1() const;
-
     Node *getNode2() const;
+    int getTerminalCount() const;
 };
 
 /**
@@ -136,17 +130,64 @@ public:
 
 };
 
-// TODO: add current source
+// TODO: add current source branch
 
 class Resistor : public Component
 {
     float resistance;
 
 public:
-    float getResistance();
+
+    Resistor();
+    Resistor(float resistance);
 
     void setResistance(float r);
 
+    int getTerminalCount() const;
+    float getResistance() const;
+};
+
+class Emf : public Component
+{
+    float emf;
+public:
+
+    Emf();
+    Emf(float emf);
+
+    void setEmf(float emf);
+
+    float getEmf() const;
+    int getTerminalCount() const override;
+
+};
+
+class CurrentSource : public Component
+{
+    float current;
+public:
+
+    CurrentSource();
+    CurrentSource(float current);
+
+    void setCurrent(float current);
+
+    float getCurrent() const;
+};
+
+class Schematic
+{
+    std::vector<Component*> components;
+    std::vector<Branch*> branches;
+    std::vector<Node*> nodes;
+public:
+    // Constructors
+    Schematic();
+
+    // Methods
+    void add(Component *component);
+
+    std::vector<Component*> getComponents();
 };
 
 }
