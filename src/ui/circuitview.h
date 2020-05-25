@@ -12,10 +12,19 @@ class CircuitView : public QGraphicsView
     Q_OBJECT
 
     float zoomLevel = 1;
+    // Horizontal and vertical guides attached to the cursor.
+    QGraphicsLineItem *hGuide{}, *vGuide{};
 public:
     enum Mode {Idle, InsertDragDrop, InsertPoints};
+protected:
     Mode mode = Idle;
     void *editBuffer = nullptr;
+    float gridSpacingX = 20, gridSpacingY = 20;
+    bool snapOn = true, showGrid;
+    // The cursor position in scene coordinates, before applying snap to grid
+    QPointF rawCursorPos;
+    // The cursor position in scene coordinates, affected by snap
+    QPointF cursorPos;
 
 public:
     // Constructors
@@ -28,6 +37,18 @@ public:
     void zoomIn(float scale = 1.2);
     void resetZoom();
 
+    void setGridVisibility(bool visibility);
+    /**
+     * Enable/disable snap to grid.
+     */
+    void setSnap(bool state);
+
+    QPointF getCursorPosition();
+
+private:
+    void updateCursorGuides();
+    void snapToGrid();
+
 protected:
 
     void  (*mouseCallback)(QMouseEvent *event, CircuitView *owner);
@@ -36,6 +57,9 @@ protected:
     void wheelEvent(QWheelEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+
+    void resizeEvent(QResizeEvent *event) override;
 
 };
 
