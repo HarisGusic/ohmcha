@@ -2,9 +2,9 @@
 
 #include <iostream>
 #include <Eigen/Dense>
-#include "../model/component.h"
-#include "../model/kirchhoff.h"
-#include "../fileio/xml.h"
+#include "src/model/component.h"
+#include "src/model/kirchhoff.h"
+#include "src/fileio/xml.h"
 
 using namespace Ohmcha;
 using namespace Eigen;

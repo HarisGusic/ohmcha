@@ -4,7 +4,10 @@
 #include <QScrollBar>
 #include <cmath>
 #include <QGraphicsItem>
+#include "graphic_component.h"
 
+namespace Ohmcha
+{
 // Helper function: get the extents of the scene
 QRectF getViewRect(QGraphicsView *view)
 {
@@ -40,8 +43,8 @@ void CircuitView::insertComponent(Component *component, CircuitView::Mode insert
             return;
         state++;
         QPointF cursorPos = owner->getCursorPosition();
-        auto ellipse = owner->scene()->addEllipse(0, 0, 3, 3);
-        ellipse->setTransform(QTransform::fromTranslate(cursorPos.x(), cursorPos.y()));
+        GraphicResistor *r = new GraphicResistor(cursorPos, cursorPos);
+        owner->scene()->addItem(r);
     };
     if (state == 2) // Replace with component.nodeCount
     {
@@ -57,25 +60,39 @@ void CircuitView::wheelEvent(QWheelEvent *event)
 
 void CircuitView::mousePressEvent(QMouseEvent *event)
 {
+    if (event->button() == Qt::MiddleButton)
+    {
+        _dragPos = event->pos();
+        _dragging = true;
+        setCursor(Qt::ClosedHandCursor);
+        hGuide->setVisible(false);
+        vGuide->setVisible(false);
+    }
     if (mode != Idle)
     {
         if (mouseCallback)
             mouseCallback(event, this);
         return;
     }
-    setDragMode(QGraphicsView::ScrollHandDrag);
     QGraphicsView::mousePressEvent(event);
 }
 
 void CircuitView::mouseReleaseEvent(QMouseEvent *event)
 {
+    if (event->button() == Qt::MiddleButton)
+    {
+        _dragging = false;
+        setCursor(Qt::BlankCursor);
+        updateCursorGuides();
+        hGuide->setVisible(true);
+        vGuide->setVisible(true);
+    }
     if (mode != Idle)
     {
         if (mouseCallback)
             mouseCallback(event, this);
         return;
     }
-    setDragMode(QGraphicsView::NoDrag);
     QGraphicsView::mouseReleaseEvent(event);
 }
 
@@ -86,7 +103,17 @@ void CircuitView::mouseMoveEvent(QMouseEvent *event)
     if (snapOn) snapToGrid();
     else cursorPos = rawCursorPos;
 
-    updateCursorGuides();
+
+    // Perform drag
+    if (_dragging)
+    {
+        QRectF sRect = sceneRect();
+        sRect.translate(event->pos() - _dragPos);
+        setSceneRect(sRect);
+        _dragPos = event->pos();
+    }
+    else
+        updateCursorGuides();
 }
 
 void CircuitView::resizeEvent(QResizeEvent *event)
@@ -157,4 +184,6 @@ void CircuitView::snapToGrid()
     int nDeltaX = _cursorPos.x() / gridSpacingX,
             nDeltaY = _cursorPos.y() / gridSpacingY;
     cursorPos = scene()->sceneRect().center() + QPointF(nDeltaX * gridSpacingX, nDeltaY * gridSpacingY);
+}
+
 }

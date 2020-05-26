@@ -23,6 +23,7 @@ SOURCES += \
     src/model/kirchhoff.cpp \
     src/program/program.cpp \
     src/test/test.cpp \
+    src/ui/graphic_component.cpp \
     src/ui/mainwindow.cpp \
     src/ui/circuitview.cpp
 
@@ -33,6 +34,7 @@ HEADERS += \
     src/model/kirchhoff.h \
     src/program/program.h \
     src/test/test.h \
+    src/ui/graphic_component.h \
     src/ui/mainwindow.h \
     src/ui/circuitview.h
 

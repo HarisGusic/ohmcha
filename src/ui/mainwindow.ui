@@ -20,7 +20,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <widget class="CircuitView" name="circuitView"/>
+     <widget class="Ohmcha::CircuitView" name="circuitView"/>
     </item>
    </layout>
   </widget>
@@ -74,7 +74,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>CircuitView</class>
+   <class>Ohmcha::CircuitView</class>
    <extends>QGraphicsView</extends>
    <header>src/ui/circuitview.h</header>
   </customwidget>

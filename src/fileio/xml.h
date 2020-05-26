@@ -1,7 +1,7 @@
 #include <QtXml>
 #include <QFile>
 #include <string>
-#include "../model/component.h"
+#include "src/model/component.h"
 
 namespace Ohmcha
 {
