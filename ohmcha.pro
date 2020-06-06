@@ -23,6 +23,7 @@ SOURCES += \
     src/model/kirchhoff.cpp \
     src/program/program.cpp \
     src/test/test.cpp \
+    src/ui/component_preview.cpp \
     src/ui/graphic_component.cpp \
     src/ui/mainwindow.cpp \
     src/ui/circuitview.cpp
@@ -34,11 +35,13 @@ HEADERS += \
     src/model/kirchhoff.h \
     src/program/program.h \
     src/test/test.h \
+    src/ui/component_preview.h \
     src/ui/graphic_component.h \
     src/ui/mainwindow.h \
     src/ui/circuitview.h
 
 FORMS += \
+    src/ui/component_preview.ui \
     src/ui/mainwindow.ui
 
 include(qmake-specific.pri)

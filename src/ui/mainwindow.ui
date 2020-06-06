@@ -66,6 +66,59 @@
    </attribute>
    <addaction name="actionInsertComponent"/>
   </widget>
+  <widget class="QDockWidget" name="dockComponents">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>100</width>
+     <height>107</height>
+    </size>
+   </property>
+   <property name="windowTitle">
+    <string>Components</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockComponentsContent">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QListWidget" name="listComponents"/>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="dockInsert">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>286</width>
+     <height>321</height>
+    </size>
+   </property>
+   <property name="windowTitle">
+    <string>Insert component</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="Ohmcha::ComponentPreview" name="componentPreview">
+    <layout class="QVBoxLayout" name="verticalLayout_2"/>
+   </widget>
+  </widget>
   <action name="actionInsertComponent">
    <property name="text">
     <string>Insert Component...</string>
@@ -77,6 +130,11 @@
    <class>Ohmcha::CircuitView</class>
    <extends>QGraphicsView</extends>
    <header>src/ui/circuitview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>Ohmcha::ComponentPreview</class>
+   <extends>QWidget</extends>
+   <header>src/ui/component_preview.h</header>
   </customwidget>
  </customwidgets>
  <resources>
