@@ -27,6 +27,13 @@ public:
     // Getters
     virtual std::string getName();
     virtual int getTerminalCount() const = 0;
+
+    /**
+     * Dynamically allocate a Component based on the
+     * specified class name.
+     * @return Pointer to the dynamically allocated object.
+     */
+    static Component* newByName(std::string name);
 };
 
 /**

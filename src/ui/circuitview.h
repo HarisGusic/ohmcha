@@ -60,6 +60,9 @@ private:
     void updateCursorGuides();
     void snapToGrid();
 
+signals:
+    void componentInserted();
+
 protected:
 
     void  (*mouseCallback)(QMouseEvent *event, CircuitView *owner);

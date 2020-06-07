@@ -45,6 +45,8 @@ void CircuitView::insertComponent(Component *component, CircuitView::Mode insert
         QPointF cursorPos = owner->getCursorPosition();
         GraphicResistor *r = new GraphicResistor(cursorPos, cursorPos);
         owner->scene()->addItem(r);
+        emit owner->componentInserted();
+        owner->mode = CircuitView::Idle;
     };
     if (state == 2) // Replace with component.nodeCount
     {

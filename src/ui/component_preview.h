@@ -5,6 +5,7 @@
 #include <QWidget>
 
 #include "src/model/component.h"
+#include "circuitview.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class ComponentPreview; }
@@ -20,10 +21,20 @@ class ComponentPreview : public QWidget
 public:
     explicit ComponentPreview(QWidget *parent = nullptr);
     ~ComponentPreview();
+    void setComponent(Component *component);
+    void setVisible(bool visible) override;
+    void setCircuitView(CircuitView *cv);
+
+private slots:
+    void on_btnAdd_clicked();
+    void componentInserted();
 
 private:
     Ui::ComponentPreview *ui;
-    Ohmcha::Component *component;
+    Component *component = nullptr;
+    CircuitView *circuitView = nullptr;
+    // Are we creating a new component or editing an existing one?
+    bool newComponent = true;
     QRadioButton anchors[3][3];
 };
 

@@ -1,6 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "circuitview.h"
+
 #include <QMainWindow>
 #include <QListWidgetItem>
 
@@ -18,6 +20,8 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+    CircuitView *getCircuitView();
 
 private slots:
     void on_actionInsertComponent_triggered();

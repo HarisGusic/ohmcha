@@ -205,5 +205,13 @@ std::string Component::getName()
     return metaInfo->name;
 }
 
+Component *Component::newByName(std::string name)
+{
+    if (name == "Resistor")
+        return new Resistor;
+    else;
+        //TODO custom component type
+}
+
 
 }

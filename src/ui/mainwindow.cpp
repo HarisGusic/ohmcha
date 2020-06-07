@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "circuitview.h"
 
 namespace Ohmcha
 {
@@ -11,6 +10,8 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     initializeComponentList();
+    ui->componentPreview->setCircuitView(ui->circuitView);
+    ui->componentPreview->setVisible(false);
 }
 
 MainWindow::~MainWindow()
@@ -18,6 +19,10 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+CircuitView *MainWindow::getCircuitView()
+{
+    return ui->circuitView;
+}
 
 void MainWindow::on_actionInsertComponent_triggered()
 {
@@ -33,8 +38,7 @@ void MainWindow::initializeComponentList()
 void MainWindow::on_listComponents_itemDoubleClicked(QListWidgetItem *item)
 {
     ui->dockInsert->setVisible(true);
-    //ui->dockInsert->setFloating(!ui->dockInsert->isFloating());
-    //ui->dockInsert->setEnabled(true);
+    ui->componentPreview->setVisible(true);
 }
 
 }
