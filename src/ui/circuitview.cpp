@@ -103,12 +103,11 @@ void CircuitView::mouseMoveEvent(QMouseEvent *event)
     if (snapOn) snapToGrid();
     else cursorPos = rawCursorPos;
 
-
     // Perform drag
     if (_dragging)
     {
         QRectF sRect = sceneRect();
-        sRect.translate(event->pos() - _dragPos);
+        sRect.translate((_dragPos - event->pos()) / zoomLevel);
         setSceneRect(sRect);
         _dragPos = event->pos();
     }
