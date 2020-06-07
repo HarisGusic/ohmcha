@@ -22,19 +22,22 @@ public:
     GraphicComponent();
 
     virtual float getTerminalSpan() = 0;
+
+    static GraphicComponent *newFromComponent(Component *component);
 };
 
 class GraphicResistor : public GraphicComponent
 {
 private:
 
-    QSizeF size = {8, 30};
-    float terminalSize = 5;
+    QSizeF size = {14, 50};
+    float terminalSize = 8;
     QPen pen;
 
 public:
 
     GraphicResistor(QPointF node1, QPointF node2);
+    GraphicResistor();
 
     // Getters
     Resistor *getComponent();

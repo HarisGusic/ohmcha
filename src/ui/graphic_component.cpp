@@ -10,9 +10,22 @@ GraphicComponent::GraphicComponent()
 
 }
 
+GraphicComponent *GraphicComponent::newFromComponent(Component *component)
+{
+    if (dynamic_cast<Resistor*>(component))
+        return new GraphicResistor();
+    //TODO add others
+}
+
 GraphicResistor::GraphicResistor(QPointF node1, QPointF node2)
 {
     setPos((node1 + node2) / 2);
+}
+
+GraphicResistor::GraphicResistor()
+    : GraphicComponent()
+{
+
 }
 
 Resistor *GraphicResistor::getComponent()

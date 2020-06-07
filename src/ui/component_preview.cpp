@@ -1,4 +1,5 @@
 #include "component_preview.h"
+#include "graphic_component.h"
 #include "ui_component_preview.h"
 #include "src/ui/mainwindow.h"
 
@@ -11,6 +12,7 @@ ComponentPreview::ComponentPreview(QWidget *parent)
     : QWidget(parent), ui(new Ui::ComponentPreview)
 {
     ui->setupUi(this);
+    ui->preview->setScene(new QGraphicsScene);
     for (int i = 0; i < 3; ++i)
         for (int j = 0; j < 3; ++j)
         {
@@ -37,6 +39,8 @@ void ComponentPreview::setVisible(bool visible)
     QWidget::setVisible(visible);
     if (component == nullptr)
         component = Component::newByName("Resistor"); //TODO generalize
+    ui->preview->scene()->clear();
+    ui->preview->scene()->addItem(new GraphicResistor({},{})); //TODO generalize
 }
 
 void ComponentPreview::setCircuitView(CircuitView *cv)
