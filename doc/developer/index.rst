@@ -7,5 +7,8 @@ Developer Documentation
    :caption: Contents
 
    getting_started
+   model
+   algorithms
    cli
+   gui
    class_documentation

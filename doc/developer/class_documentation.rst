@@ -7,4 +7,3 @@ Documentation of all program constructs
    :caption: Contents
 
 .. doxygenindex::
-   :outline:

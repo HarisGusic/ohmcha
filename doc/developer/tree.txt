@@ -1,0 +1,58 @@
+ohmcha
+├── doc                              -- Project documentation
+│   ├── conf.py
+│   ├── contribute.rst
+│   ├── developer                    -- Developer documentation
+│   │   ├── algorithms.rst
+│   │   ├── circuit_view.rst
+│   │   ├── class_documentation.rst
+│   │   ├── cli.rst
+│   │   ├── component.rst
+│   │   ├── getting_started.rst
+│   │   ├── index.rst
+│   │   ├── mainwindow.rst
+│   │   ├── model.rst
+│   │   └── tree.rst
+│   ├── Doxyfile
+│   ├── examples
+│   │   └── example_1
+│   │       ├── example_1.svg
+│   │       ├── example_1.tex
+│   │       └── filter.conf
+│   ├── getting_started.rst
+│   ├── index.rst
+│   ├── installation.rst
+│   ├── Makefile
+├── icons
+│   └── logo.svg
+├── ohmcha.pro                      -- Qt project file
+├── resources.qrc                   -- Qt resource file
+└── src
+    ├── fileio                      -- File IO
+    │   ├── xml.cpp
+    │   └── xml.h
+    ├── main.cpp
+    ├── model                       -- Low-level mathematical model
+    │   ├── component.cpp
+    │   ├── component.h
+    │   ├── graph.cpp
+    │   ├── graph.h
+    │   ├── kirchhoff.cpp
+    │   └── kirchhoff.h
+    ├── program                     -- CLI module
+    │   ├── program.cpp
+    │   └── program.h
+    ├── test
+    │   ├── test.cpp
+    │   └── test.h
+    └── ui                          -- GUI
+        ├── circuitview.cpp
+        ├── circuitview.h
+        ├── component_preview.cpp
+        ├── component_preview.h
+        ├── component_preview.ui
+        ├── graphic_component.cpp
+        ├── graphic_component.h
+        ├── mainwindow.cpp
+        ├── mainwindow.h
+        └── mainwindow.ui

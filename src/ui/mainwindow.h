@@ -21,6 +21,9 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    /**
+     * @return The currently displayed Circuit View.
+     */
     CircuitView *getCircuitView();
 
 private slots:
@@ -31,6 +34,9 @@ private slots:
 private:
     Ui::MainWindow *ui;
 
+    /**
+     * Refers to the component list in the docked widget.
+     */
     void initializeComponentList();
 };
 

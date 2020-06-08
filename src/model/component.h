@@ -12,6 +12,9 @@ using namespace Eigen;
 class Component
 {
 protected:
+    /**
+     * Additional information that is not relevant for algorithms.
+     */
     struct MetaInfo
     {
         std::string name;
@@ -25,6 +28,9 @@ public:
     // Setters
 
     // Getters
+    /**
+     * @return Name given by the user.
+     */
     virtual std::string getName();
     virtual int getTerminalCount() const = 0;
 

@@ -6,7 +6,7 @@
 #include <sstream>
 
 typedef std::vector<std::string> arglist;
-typedef decltype(arglist().begin()) arglist_iter;
+typedef std::vector<std::string>::iterator arglist_iter;
 
 #define is_opt(s, o1, o2) ((s) == (o1) || (s) == (o2))
 /**

@@ -1,0 +1,32 @@
+\documentclass{standalone}
+\usepackage[european]{circuitikz}
+
+\begin{document}
+
+	\begin{circuitikz}[scale=1.5,american currents]
+		\node[label=above:1] (n1) {};
+		\node[label=left:2] (n2) at (2,-2) {};
+		\node[label=below:3] (n3) at (0,-4) {};
+		%############################################################	
+		\draw (n1) to[short,*-] ++(-2,0)
+		to[battery1,l_=$E_1$,i>=$I_1$] ++(0,-2)
+		to[R, l=$R_1$] ++(0,-2)
+		;
+		%############################################################	
+		\draw (n3)
+		to[R,l=$R_2$,i_<=$I_2$] (n1)
+		;
+		%############################################################	
+		\draw (n2)
+		to[R,l=$R_3$,i_<=$I_3$] ++(0,2) 
+		(n2) to[short,*-] ++(2,0)
+		to[I,i=$I_4$] ++(0,2)
+		to[short,-*] ++(-2,0)
+		to[short,-*] (n1)
+		;
+		\draw (n2) to[battery1,l=$E_5$,i>=$I_5$] (n3-|n2)
+		to[short,-*] (n3) to[short] ++(-2,0);
+	\end{circuitikz}
+
+		
+\end{document}
