@@ -27,14 +27,13 @@ The corresponding system of equations should be written as:
         &\\ % empty row
         \begin{array}{c|c}
             \hline \\
-            \hspace{0.7cm} \mathbf{0}_{(n-1) \times (n-1)} \hspace{0.7cm} &
-            \hspace{0.7cm} \text{KCL}_{(n-1) \times b} \hspace{0.7cm} \\
+            \hspace{0.5cm} \mathbf{0}_{(n-1) \times (n-1)} \hspace{0.5cm} &
+            \hspace{0.5cm} \text{KCL}_{(n-1) \times b} \hspace{0.5cm} \\
             \\ % empty row
         \end{array}
     \end{array}
    \right]
-   %############################################################
-   \cdot
+   %############################################################ \cdot
    %############################################################
    \left[
     \begin{array}{c}
@@ -62,6 +61,9 @@ Example
 .. image:: ../examples/example_1/example_1.svg
    :align: center
 
+Each row of the upper part of the system matrix corresponds to a branch and its
+constitutive equation (see :ref:`Modelling a branch`).
+
 Suppose that the first row of the system matrix is
 
 .. math::
@@ -69,8 +71,8 @@ Suppose that the first row of the system matrix is
 
 Since the first branch is only connected to nodes 1 and 3, and :math:`I_1` is
 the current that flows through it, :math:`a_1=1,\ b_1=-R_1`, and all
-other elements are zero. The lower part of the matrix is easy to populate based
-on the KCL.
+other elements are zero. Do the same for all other branches. The lower part of
+the matrix is easy to populate based on KCL.
 
 Finally, the system of equations for this circuit is:
 
