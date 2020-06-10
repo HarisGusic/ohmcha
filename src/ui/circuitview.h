@@ -20,7 +20,7 @@ private:
     // Horizontal and vertical guides attached to the cursor.
     QGraphicsLineItem *hGuide{}, *vGuide{};
     QPointF _dragPos;
-    bool _dragging;
+    bool _dragging = false;
 
 public:
 
