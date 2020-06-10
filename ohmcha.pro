@@ -21,6 +21,7 @@ SOURCES += \
     src/model/component.cpp \
     src/model/graph.cpp \
     src/model/kirchhoff.cpp \
+    src/model/schematic.cpp \
     src/program/program.cpp \
     src/test/test.cpp \
     src/ui/component_preview.cpp \
@@ -33,6 +34,7 @@ HEADERS += \
     src/model/component.h \
     src/model/graph.h \
     src/model/kirchhoff.h \
+    src/model/schematic.h \
     src/program/program.h \
     src/test/test.h \
     src/ui/component_preview.h \

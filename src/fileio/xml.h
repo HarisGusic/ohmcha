@@ -2,6 +2,7 @@
 #include <QFile>
 #include <string>
 #include "src/model/component.h"
+#include "src/model/schematic.h"
 
 namespace Ohmcha
 {

@@ -16,8 +16,8 @@ void simple_RE_example()
     Node &n1 = nodes[0], &n2 = nodes[1];
 
     // Declare elements
-    BResistor R(10, n1, n2);
-    BEmf E(20, n1, n2);
+    Branch R(new Resistor(10), &n1, &n2);
+    Branch E(new Emf(20), &n1, &n2);
 
     std::cout << khoffSolve({R, E}, nodes);
     // Expected result: [ 20, 2, -2 ]
@@ -30,9 +30,9 @@ void E_2parallelR_example()
     Node &n1 = nodes[0], &n2 = nodes[1];
 
     // Declare elements
-    BResistor R1(10, n1, n2);
-    BResistor R2(20, n2, n1);
-    BEmf E(10, n1, n2);
+    Branch R1(new Resistor(10), &n1, &n2);
+    Branch R2(new Resistor(20), &n2, &n1);
+    Branch E(new Emf(10), &n1, &n2);
 
     std::cout << khoffSolve({R1, R2, E}, nodes);
     // Expected: [ 10, 1, -0.5, -1.5 ]
@@ -45,8 +45,8 @@ void E_NparallelR_example()
     Node &n1 = nodes[0], &n2 = nodes[1];
 
     // Declare elements
-    std::vector<Branch> branches(1001, BResistor(10, n1, n2));
-    branches[0] = BEmf(10, n1, n2);
+    std::vector<Branch> branches(1001, Branch(new Resistor(10), &n1, &n2));
+    branches[0] = Branch(new Emf(10), &n1, &n2);
 
     std::cout << khoffSolve(branches, nodes);
     // Expected: [ 10, -1000, 1, 1,..., 1 ]
@@ -58,8 +58,8 @@ void daisy_chain_example()
     std::vector<Node> nodes(1001);
 
     // Declare elements
-    std::vector<Branch> branches(1001, BResistor(1, nodes[0], nodes[1000]));
-    branches[0] = BEmf(1);
+    std::vector<Branch> branches(1001, Branch(new Resistor(1), &nodes[0], &nodes[1000]));
+    branches[0] = new Emf(1);
     for (int i = 0; i < 1001; ++i)
     {
         branches[i].setNode1(nodes[i]);
@@ -68,13 +68,15 @@ void daisy_chain_example()
 
     auto result = khoffSolve(branches, nodes);
     std::cout << "Voltages: \n" << result.head(1001) << "Currents: \n" << result.tail(1001);
-    // Expected: [ 0.001, -0.999, -0.998, ..., -0.001, -0.001, ..., -0.001 ]
+    // Expected: Voltages = [ 0.001, -0.999, -0.998, ..., -0.001 ] Currents = [ -0.001, ..., -0.001 ]
     // The results may not be exact
 }
 
 
 int test()
 {
+    daisy_chain_example();
+    return 0;
     //Schematic *schem = xmlParseSchematic("../../staging/test.xml");
     //auto v = schem->getComponents();
     //auto resistor = *((Resistor*)v[0]);

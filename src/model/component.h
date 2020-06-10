@@ -93,6 +93,8 @@ public:
      */
     Branch(Node &node1, Node &node2, RowVector3f A, float B);
 
+    Branch(Component *component, Node *node1 = nullptr, Node *node2 = nullptr);
+
     // Setters
 
     void setA(const RowVector3f &matrix);
@@ -109,41 +111,6 @@ public:
     Node *getNode2() const;
     int getTerminalCount() const;
 };
-
-/**
- * A branch containing a resistor.
- */
-class BResistor : public Branch
-{
-public:
-
-    BResistor(float resistance);
-
-    BResistor(float resistance, Node &node1, Node &node2);
-
-    void setA(const RowVector3f &) = delete;
-
-    void setB(float) = delete;
-
-};
-
-/**
- * A branch containing an ideal voltage source.
- */
-class BEmf : public Branch
-{
-public:
-    BEmf(float emf);
-
-    BEmf(float emf, Node &node1, Node &node2);
-
-    void setA(const RowVector3f &) = delete;
-
-    void setB(float) = delete;
-
-};
-
-// TODO: add current source branch
 
 class Resistor : public Component
 {
@@ -186,21 +153,6 @@ public:
     void setCurrent(float current);
 
     float getCurrent() const;
-};
-
-class Schematic
-{
-    std::vector<Component*> components;
-    std::vector<Branch*> branches;
-    std::vector<Node*> nodes;
-public:
-    // Constructors
-    Schematic();
-
-    // Methods
-    void add(Component *component);
-
-    std::vector<Component*> getComponents();
 };
 
 }

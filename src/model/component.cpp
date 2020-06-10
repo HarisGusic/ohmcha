@@ -22,8 +22,16 @@ Branch::Branch(RowVector3f A, float B) : A(std::move(A)), B(B)
 {}
 
 Branch::Branch(Node &node1, Node &node2, RowVector3f A, float B)
-        : node1(&node1), node2(&node2), A(std::move(A)), B(B)
+    : node1(&node1), node2(&node2), A(std::move(A)), B(B)
 {}
+
+Branch::Branch(Component *component, Node *node1, Node *node2)
+    : Branch()
+{
+    addComponent(component);
+    node1 = node1;
+    node2 = node2;
+}
 
 void Branch::setA(const RowVector3f &matrix)
 { A = matrix; }
@@ -82,24 +90,6 @@ int Branch::getTerminalCount() const
 {
     return 2;
 }
-
-BResistor::BResistor(float resistance)
-    : Branch({1, -1, -resistance}, 0)
-{
-
-}
-
-BResistor::BResistor(float resistance, Node &node1, Node &node2)
-        : Branch(node1, node2, {1, -1, -resistance}, 0)
-{}
-
-BEmf::BEmf(float emf)
-        : Branch({1, -1, 0}, emf)
-{}
-
-BEmf::BEmf(float emf, Node &node1, Node &node2) : Branch(node1, node2, {1, -1, 0}, emf)
-{}
-
 
 /************
  * Resistor *
@@ -176,29 +166,6 @@ float CurrentSource::getCurrent() const
     return current;
 }
 
-/*************
- * Schematic *
- *************/
-
-Schematic::Schematic()
-{
-
-}
-
-void Schematic::add(Component *component)
-{
-    if (dynamic_cast<Branch*>(component) != nullptr)
-        branches.push_back(dynamic_cast<Branch*>(component));
-    else if (dynamic_cast<Node*>(component))
-        nodes.push_back(dynamic_cast<Node*>(component));
-    else
-        components.push_back(component);
-}
-
-std::vector<Component*> Schematic::getComponents()
-{
-    return components;
-}
 
 std::string Component::getName()
 {
@@ -212,6 +179,5 @@ Component *Component::newByName(std::string name)
     else;
         //TODO custom component type
 }
-
 
 }
