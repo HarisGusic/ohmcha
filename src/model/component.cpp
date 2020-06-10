@@ -60,7 +60,7 @@ void Branch::addComponent(Component *component)
     }
     if (dynamic_cast<Resistor*>(component))
     {
-        A2 = {1, -1, dynamic_cast<Resistor*>(component)->getResistance()};
+        A2 = {1, -1, - dynamic_cast<Resistor*>(component)->getResistance()};
         B2 = 0;
     }
     if (dynamic_cast<Emf*>(component))
