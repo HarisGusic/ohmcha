@@ -125,13 +125,26 @@ void CircuitView::resizeEvent(QResizeEvent *event)
 
 void CircuitView::zoomIn(float scale)
 {
-    this->zoomLevel = scale;
+    this->zoomLevel *= scale;
     this->scale(scale, scale);
+
+    // Keep the guides scale-independent
+    auto pen = hGuide->pen();
+    pen.setWidthF(0.5 / zoomLevel);
+    hGuide->setPen(pen);
+    vGuide->setPen(pen);
 }
 
 void CircuitView::resetZoom()
 {
     this->resetTransform();
+    zoomLevel = 1;
+
+    // Keep the guides scale-independent
+    auto pen = hGuide->pen();
+    pen.setWidthF(0.5 / zoomLevel);
+    hGuide->setPen(pen);
+    vGuide->setPen(pen);
 }
 
 void CircuitView::setGridVisibility(bool visibility)
@@ -160,10 +173,10 @@ QPointF CircuitView::getCursorPosition()
 void CircuitView::updateCursorGuides()
 {
     QRectF rect = getViewRect(this);
-    QPen guidePen(QBrush(), 0.5);
-    guidePen.setColor({0, 0, 0, 200});
     if (!hGuide)
     { // If one guide is nullptr, the other one must be as well
+        QPen guidePen(QBrush(), 0.5 / zoomLevel);
+        guidePen.setColor({0, 0, 0, 200});
         hGuide = scene()->addLine(rect.left(), cursorPos.y(), rect.right(), cursorPos.y(), guidePen);
         vGuide = scene()->addLine(cursorPos.x(), rect.top(), cursorPos.x(), rect.bottom(), guidePen);
     }
