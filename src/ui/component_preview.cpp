@@ -63,6 +63,7 @@ void ComponentPreview::on_btnAdd_clicked()
 void ComponentPreview::textAnchorPicked(int id)
 {
     component->setTextAnchor(GraphicComponent::Anchor(id));
+    // TODO find a better way to update the component
     ui->preview->scene()->removeItem(component);
     ui->preview->scene()->addItem(component);
 }
@@ -72,6 +73,14 @@ void ComponentPreview::componentInserted()
     component = new GraphicResistor(); //TODO: generalize
     ui->preview->scene()->addItem(component);
     disconnect(circuitView, &CircuitView::componentInserted, this, &ComponentPreview::componentInserted);
+}
+
+void ComponentPreview::on_editText_textEdited(const QString &arg1)
+{
+    component->setName(ui->editText->text());
+    // TODO find a better way to update the component
+    ui->preview->scene()->removeItem(component);
+    ui->preview->scene()->addItem(component);
 }
 
 }

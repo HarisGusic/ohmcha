@@ -30,6 +30,11 @@ void GraphicComponent::setCenter(QPointF center)
     this->setPos(center - QPointF(size.width(), size.height()));
 }
 
+void GraphicComponent::setName(QString name)
+{
+    component->setName(name.toStdString());
+}
+
 GraphicComponent *GraphicComponent::newFromComponent(Component *component)
 {
     if (dynamic_cast<Resistor*>(component))
@@ -38,6 +43,7 @@ GraphicComponent *GraphicComponent::newFromComponent(Component *component)
 }
 
 GraphicResistor::GraphicResistor(QPointF node1, QPointF node2)
+    : GraphicResistor()
 {
     setPos((node1 + node2) / 2);
 }
@@ -45,6 +51,7 @@ GraphicResistor::GraphicResistor(QPointF node1, QPointF node2)
 GraphicResistor::GraphicResistor()
     : GraphicComponent()
 {
+    component = new Resistor;
 }
 
 Resistor *GraphicResistor::getComponent()
@@ -64,6 +71,7 @@ QRectF GraphicResistor::boundingRect() const
 
 void GraphicResistor::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    if (!component) return;
     // Draw terminals
     painter->drawLine(0, -size.height()/2, 0, -size.height()/2 + terminalSize);
     painter->drawLine(0, size.height()/2 - terminalSize, 0, size.height()/2);
@@ -74,11 +82,11 @@ void GraphicResistor::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
 
     // Draw text
     QFontMetricsF fm(painter->fontMetrics());
-    float width=fm.width("R"), height = fm.height();
+    float width=fm.width(QString::fromStdString(component->getName())), height = fm.height();
     // TODO right now I have to divide height by 2 for the text to display correctly.
     // Find a fix. It is probably because I have to make a coordinate transformation somewhere.
     QPointF _textPos = textPos - QPointF((textAnchor % 3) * width / 2, (textAnchor / 3 - 2) * height / 2 / 2);
-    painter->drawText(_textPos, "R");
+    painter->drawText(_textPos, QString::fromStdString(component->getName()));
 }
 
 }

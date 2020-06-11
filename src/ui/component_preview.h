@@ -30,6 +30,8 @@ private slots:
     void textAnchorPicked(int id);
     void componentInserted();
 
+    void on_editText_textEdited(const QString &arg1);
+
 private:
     Ui::ComponentPreview *ui;
     GraphicComponent *component = nullptr;

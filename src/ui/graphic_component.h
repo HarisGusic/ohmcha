@@ -18,7 +18,7 @@ protected:
     // List of terminals in scene coordinates
     QList<QPointF> terminals;
     QSizeF size;
-    Component *component;
+    Component *component = nullptr;
     Anchor textAnchor = W;
     QPointF textPos;
 
@@ -31,6 +31,7 @@ public:
 
     void setTextAnchor(Anchor anchor);
     void setCenter(QPointF center);
+    void setName(QString name);
 
     static GraphicComponent *newFromComponent(Component *component);
 };

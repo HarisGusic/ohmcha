@@ -21,17 +21,19 @@ protected:
         std::vector<float> positions;
     };
     MetaInfo *metaInfo = nullptr;
+
 public:
 
     // Methods
 
     // Setters
+    void setName(const std::string &name);
 
     // Getters
     /**
      * @return Name given by the user.
      */
-    virtual std::string getName();
+    std::string getName() const;
     virtual int getTerminalCount() const = 0;
 
     /**

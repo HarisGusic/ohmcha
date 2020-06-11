@@ -167,9 +167,16 @@ float CurrentSource::getCurrent() const
 }
 
 
-std::string Component::getName()
+void Component::setName(const std::string &name)
 {
-    return metaInfo->name;
+    if (metaInfo == nullptr)
+        metaInfo = new MetaInfo;
+    metaInfo->name = name;
+}
+
+std::string Component::getName() const
+{
+    return metaInfo ? metaInfo->name : "";
 }
 
 Component *Component::newByName(std::string name)
