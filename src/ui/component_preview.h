@@ -28,12 +28,20 @@ public:
 private slots:
     void on_btnAdd_clicked();
     void textAnchorPicked(int id);
+    void textIndependencePicked(int id);
     void componentInserted();
 
-    void on_editText_textEdited(const QString &arg1);
+    void on_editAngle_textEdited(const QString &s);
+    void on_editText_textEdited(const QString &s);
+    void on_editTextAngle_textEdited(const QString &s);
 
 private:
+
+    void initializeNewComponent();
+    void updatePreview();
+
     Ui::ComponentPreview *ui;
+    // Component is guaranteed to be non-null whenever this widget is visible
     GraphicComponent *component = nullptr;
     CircuitView *circuitView = nullptr;
     // Are we creating a new component or editing an existing one?

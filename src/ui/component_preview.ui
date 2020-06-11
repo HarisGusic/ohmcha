@@ -125,9 +125,9 @@
         </widget>
        </item>
        <item row="12" column="0">
-        <widget class="QRadioButton" name="btnFixed">
+        <widget class="QRadioButton" name="btnDepend">
          <property name="text">
-          <string>Fixed</string>
+          <string>Depend</string>
          </property>
         </widget>
        </item>
@@ -238,9 +238,9 @@
         </spacer>
        </item>
        <item row="12" column="1">
-        <widget class="QRadioButton" name="btnInherit">
+        <widget class="QRadioButton" name="btnIndependent">
          <property name="text">
-          <string>Inherit</string>
+          <string>Independent</string>
          </property>
         </widget>
        </item>

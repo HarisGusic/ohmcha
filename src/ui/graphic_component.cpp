@@ -10,6 +10,11 @@ GraphicComponent::GraphicComponent()
 
 }
 
+QString GraphicComponent::getName() const
+{
+    return QString::fromStdString(component->getName());
+}
+
 GraphicComponent::Anchor GraphicComponent::getTextAnchor() const
 {
     return textAnchor;
@@ -25,6 +30,16 @@ QPointF GraphicComponent::getTextPosition() const
     return textPos;
 }
 
+float GraphicComponent::getTextRotation() const
+{
+    return textAngle;
+}
+
+bool GraphicComponent::isTextRotationIndependent() const
+{
+    return textRotationIndependent;
+}
+
 void GraphicComponent::setTextAnchor(GraphicComponent::Anchor anchor)
 {
     textAnchor = anchor;
@@ -33,6 +48,16 @@ void GraphicComponent::setTextAnchor(GraphicComponent::Anchor anchor)
 void GraphicComponent::setTextPosition(QPointF pos)
 {
     textPos = pos;
+}
+
+void GraphicComponent::setTextRotation(float angle)
+{
+    textAngle = angle;
+}
+
+void GraphicComponent::setTextRotationIndependent(bool independent)
+{
+    textRotationIndependent = independent;
 }
 
 void GraphicComponent::setCenter(QPointF center)
@@ -69,7 +94,7 @@ Resistor *GraphicResistor::getComponent()
     return dynamic_cast<Resistor*>(component);
 }
 
-float GraphicResistor::getTerminalSpan()
+float GraphicResistor::getTerminalSpan() const
 {
     return size.width();
 }
@@ -89,6 +114,12 @@ void GraphicResistor::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
     // Draw main rect
     QRectF rect = {-size.width()/2, -size.height()/2 + terminalSize, size.width(), size.height() - 2*terminalSize};
     painter->drawRect(rect);
+
+    // Counter-rotate text to make it independent from the component's rotation.
+    if (textRotationIndependent)
+        painter->rotate(-rotation());
+
+    painter->rotate(textAngle);
 
     // Draw text
     QFontMetricsF fm(painter->fontMetrics());

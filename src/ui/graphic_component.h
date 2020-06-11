@@ -21,6 +21,8 @@ protected:
     Component *component = nullptr;
     Anchor textAnchor = W;
     QPointF textPos;
+    float textAngle = 0;
+    bool textRotationIndependent = false;
 
 public:
     GraphicComponent();
@@ -28,15 +30,20 @@ public:
     /**
      * Return the maximum distance between terminals
      */
-    virtual float getTerminalSpan() = 0;
+    virtual float getTerminalSpan() const = 0;
+    QString getName() const;
     QPointF getCenter() const;
     Anchor getTextAnchor() const;
     QPointF getTextPosition() const;
+    float getTextRotation() const;
+    bool isTextRotationIndependent() const;
 
     void setName(QString name);
     void setCenter(QPointF center);
     void setTextAnchor(Anchor anchor);
     void setTextPosition(QPointF pos);
+    void setTextRotation(float angle);
+    void setTextRotationIndependent(bool independent);
 
     /**
      * Dynamically allocate a GraphicComponent wrapper around
@@ -60,7 +67,7 @@ public:
 
     // Getters
     Resistor *getComponent();
-    float getTerminalSpan() override;
+    float getTerminalSpan() const override;
 
     // Setters
 
