@@ -4,8 +4,8 @@
 #include <QRadioButton>
 #include <QWidget>
 
-#include "src/model/component.h"
 #include "circuitview.h"
+#include "graphic_component.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class ComponentPreview; }
@@ -21,17 +21,18 @@ class ComponentPreview : public QWidget
 public:
     explicit ComponentPreview(QWidget *parent = nullptr);
     ~ComponentPreview();
-    void setComponent(Component *component);
+    void setComponent(GraphicComponent *component);
     void setVisible(bool visible) override;
     void setCircuitView(CircuitView *cv);
 
 private slots:
     void on_btnAdd_clicked();
+    void textAnchorPicked(int id);
     void componentInserted();
 
 private:
     Ui::ComponentPreview *ui;
-    Component *component = nullptr;
+    GraphicComponent *component = nullptr;
     CircuitView *circuitView = nullptr;
     // Are we creating a new component or editing an existing one?
     bool newComponent = true;

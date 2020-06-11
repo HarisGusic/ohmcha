@@ -1,6 +1,8 @@
 #ifndef CIRCUITVIEW_H
 #define CIRCUITVIEW_H
 
+#include "graphic_component.h"
+
 #include <QWidget>
 #include <QGraphicsView>
 #include <QGraphicsItem>
@@ -19,6 +21,7 @@ private:
     float zoomLevel = 1;
     // Horizontal and vertical guides attached to the cursor.
     QGraphicsLineItem *hGuide{}, *vGuide{};
+    GraphicComponent *pendingInsert{};
     QPointF _dragPos;
     bool _dragging = false;
 
@@ -43,7 +46,7 @@ public:
 
     // Methods
     void drawLine(float x1, float y1, float x2, float y2);
-    void insertComponent(Component *component, Mode insertMode);
+    void insertComponent(GraphicComponent *component, Mode insertMode);
 
     void zoomIn(float scale = 1.2);
     void resetZoom();

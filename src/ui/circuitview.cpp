@@ -30,7 +30,7 @@ void CircuitView::drawLine(float x1, float y1, float x2, float y2)
     scene()->addLine(x1, y1, x2, y2);
 }
 
-void CircuitView::insertComponent(Component *component, CircuitView::Mode insertMode)
+void CircuitView::insertComponent(GraphicComponent *component, CircuitView::Mode insertMode)
 {
     mode = insertMode;
     if (insertMode != Mode::InsertPoints)
@@ -38,13 +38,15 @@ void CircuitView::insertComponent(Component *component, CircuitView::Mode insert
     //TODO Calculate node count
     static int state = 0;
     int *state_ptr = &state;
+    pendingInsert = component;
     mouseCallback = [](QMouseEvent *event, CircuitView *owner) {
         if (event->button() != Qt::LeftButton || event->type() != QEvent::MouseButtonRelease)
             return;
         state++;
         QPointF cursorPos = owner->getCursorPosition();
-        GraphicResistor *r = new GraphicResistor(cursorPos, cursorPos);
-        owner->scene()->addItem(r);
+        owner->pendingInsert->setCenter(cursorPos);
+        owner->scene()->addItem(owner->pendingInsert);
+        owner->pendingInsert = nullptr;
         emit owner->componentInserted();
         owner->mode = CircuitView::Idle;
     };
@@ -188,7 +190,6 @@ void CircuitView::updateCursorGuides()
     // Update instantly to reduce input lag
     hGuide->update();
     vGuide->update();
-    viewport()->repaint();
 }
 
 void CircuitView::snapToGrid()
