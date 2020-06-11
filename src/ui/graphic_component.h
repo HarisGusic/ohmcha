@@ -25,14 +25,25 @@ protected:
 public:
     GraphicComponent();
 
+    /**
+     * Return the maximum distance between terminals
+     */
     virtual float getTerminalSpan() = 0;
-    Anchor getTextAnchor() const;
     QPointF getCenter() const;
+    Anchor getTextAnchor() const;
+    QPointF getTextPosition() const;
 
-    void setTextAnchor(Anchor anchor);
-    void setCenter(QPointF center);
     void setName(QString name);
+    void setCenter(QPointF center);
+    void setTextAnchor(Anchor anchor);
+    void setTextPosition(QPointF pos);
 
+    /**
+     * Dynamically allocate a GraphicComponent wrapper around
+     * the specified Component. The type of the resulting object
+     * is determined based on the type of Component.
+     * TODO: implement.
+     */
     static GraphicComponent *newFromComponent(Component *component);
 };
 

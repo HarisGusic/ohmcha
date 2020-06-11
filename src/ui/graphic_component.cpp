@@ -20,9 +20,19 @@ QPointF GraphicComponent::getCenter() const
     return pos() + QPointF(size.width()/2, size.height()/2);
 }
 
+QPointF GraphicComponent::getTextPosition() const
+{
+    return textPos;
+}
+
 void GraphicComponent::setTextAnchor(GraphicComponent::Anchor anchor)
 {
     textAnchor = anchor;
+}
+
+void GraphicComponent::setTextPosition(QPointF pos)
+{
+    textPos = pos;
 }
 
 void GraphicComponent::setCenter(QPointF center)

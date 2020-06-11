@@ -25,11 +25,6 @@ CircuitView::CircuitView(QWidget *parent)
     setGridVisibility(true);
 }
 
-void CircuitView::drawLine(float x1, float y1, float x2, float y2)
-{
-    scene()->addLine(x1, y1, x2, y2);
-}
-
 void CircuitView::insertComponent(GraphicComponent *component, CircuitView::Mode insertMode)
 {
     mode = insertMode;

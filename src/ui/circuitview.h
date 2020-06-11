@@ -37,7 +37,7 @@ protected:
     bool snapOn = false, showGrid = true;
     // The cursor position in scene coordinates, before applying snap to grid
     QPointF rawCursorPos;
-    // The cursor position in scene coordinates, affected by snap
+    // The internally tracked cursor position in scene coordinates, affected by snap
     QPointF cursorPos;
 
 public:
@@ -45,12 +45,14 @@ public:
     CircuitView(QWidget *parent = nullptr);
 
     // Methods
-    void drawLine(float x1, float y1, float x2, float y2);
     void insertComponent(GraphicComponent *component, Mode insertMode);
 
     void zoomIn(float scale = 1.2);
     void resetZoom();
 
+    /**
+     * Show/hide the grid.
+     */
     void setGridVisibility(bool visibility);
     /**
      * Enable/disable snap to grid.
@@ -60,10 +62,19 @@ public:
     QPointF getCursorPosition();
 
 private:
+    /**
+     * Update cursor guides' position based on the current cursor position.
+     */
     void updateCursorGuides();
+    /**
+     * Change the internally tracked cursor position to make it snap to grid.
+     */
     void snapToGrid();
 
 signals:
+    /**
+     * Called when a component is successfully inserted into a view.
+     */
     void componentInserted();
 
 protected:
