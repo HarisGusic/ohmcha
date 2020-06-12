@@ -27,7 +27,6 @@ public:
     CircuitView *getCircuitView();
 
 private slots:
-    void on_actionInsertComponent_triggered();
 
     void on_listComponents_itemDoubleClicked(QListWidgetItem *item);
 

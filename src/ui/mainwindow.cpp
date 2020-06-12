@@ -24,12 +24,6 @@ CircuitView *MainWindow::getCircuitView()
     return ui->circuitView;
 }
 
-void MainWindow::on_actionInsertComponent_triggered()
-{
-    //TODO change
-    ui->circuitView->initiateInsertComponent(nullptr, Ohmcha::CircuitView::InsertPoints);
-}
-
 void MainWindow::initializeComponentList()
 {
     new QListWidgetItem("Resistor", ui->listComponents);

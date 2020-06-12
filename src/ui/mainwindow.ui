@@ -42,7 +42,6 @@
     <property name="title">
      <string>Edit</string>
     </property>
-    <addaction name="actionInsertComponent"/>
    </widget>
    <widget class="QMenu" name="menuAbout">
     <property name="title">
@@ -64,7 +63,6 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionInsertComponent"/>
   </widget>
   <widget class="QDockWidget" name="dockComponents">
    <property name="enabled">
@@ -119,11 +117,6 @@
     <layout class="QVBoxLayout" name="verticalLayout_2"/>
    </widget>
   </widget>
-  <action name="actionInsertComponent">
-   <property name="text">
-    <string>Insert Component...</string>
-   </property>
-  </action>
  </widget>
  <customwidgets>
   <customwidget>
