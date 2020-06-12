@@ -97,6 +97,8 @@ void CircuitView::mouseReleaseEvent(QMouseEvent *event)
 
 void CircuitView::mouseMoveEvent(QMouseEvent *event)
 {
+    QGraphicsView::mouseMoveEvent(event);
+
     rawCursorPos = mapToScene(event->pos());
 
     if (snapOn) snapToGrid();

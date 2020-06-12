@@ -52,11 +52,15 @@ public:
      * TODO: implement.
      */
     static GraphicComponent *newFromComponent(Component *component);
+
+protected:
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
 };
 
 class GraphicResistor : public GraphicComponent
 {
-    QSizeF size = {14, 50};
+    QSizeF size = {20, 70};
     float terminalSize = 8;
     QPen pen;
 
@@ -73,6 +77,8 @@ public:
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
+
+private:
 };
 
 }

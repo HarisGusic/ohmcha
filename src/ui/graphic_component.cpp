@@ -1,13 +1,18 @@
 #include "graphic_component.h"
 
 #include <QPainter>
+#include <QGraphicsScene>
+#include <QStyleOptionGraphicsItem>
+#include <QStyle>
 
 namespace Ohmcha
 {
 
 GraphicComponent::GraphicComponent()
 {
-
+    setAcceptHoverEvents(true);
+    setFlag(ItemIsSelectable);
+    setFlag(ItemIsMovable);
 }
 
 QString GraphicComponent::getName() const
@@ -77,16 +82,16 @@ GraphicComponent *GraphicComponent::newFromComponent(Component *component)
     //TODO add others
 }
 
-GraphicResistor::GraphicResistor(QPointF node1, QPointF node2)
-    : GraphicResistor()
-{
-    setPos((node1 + node2) / 2);
-}
-
 GraphicResistor::GraphicResistor()
     : GraphicComponent()
 {
     component = new Resistor;
+}
+
+GraphicResistor::GraphicResistor(QPointF node1, QPointF node2)
+    : GraphicResistor()
+{
+    setPos((node1 + node2) / 2);
 }
 
 Resistor *GraphicResistor::getComponent()
@@ -101,12 +106,29 @@ float GraphicResistor::getTerminalSpan() const
 
 QRectF GraphicResistor::boundingRect() const
 {
-    return {-size.width()/2 - pen.width()/2, -size.height()/2 - pen.width()/2, size.width() - pen.width(), size.height() - pen.width()};
+    return {-size.width()/2 - pen.width()/2, -size.height()/2 - pen.width()/2, size.width() + pen.width(), size.height() + pen.width()};
 }
 
 void GraphicResistor::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     if (!component) return;
+
+    // Change color if item is hovered over
+    if (option->state & QStyle::State_MouseOver)
+    {
+        auto pen = painter->pen();
+        pen.setColor(QColor(0x8c,0x9e,0xff));
+        painter->setPen(pen);
+    }
+
+    // Change color if item is selected
+    if (option->state & QStyle::State_Selected)
+    {
+        auto pen = painter->pen();
+        pen.setColor(QColor(0xff,0x8c,0x8c));
+        painter->setPen(pen);
+    }
+
     // Draw terminals
     painter->drawLine(0, -size.height()/2, 0, -size.height()/2 + terminalSize);
     painter->drawLine(0, size.height()/2 - terminalSize, 0, size.height()/2);
@@ -128,6 +150,27 @@ void GraphicResistor::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
     // Find a fix. It is probably because I have to make a coordinate transformation somewhere.
     QPointF _textPos = textPos - QPointF((textAnchor % 3) * width / 2, (textAnchor / 3 - 2) * height / 2 / 2);
     painter->drawText(_textPos, QString::fromStdString(component->getName()));
+
+}
+
+/**
+ * Redraw the item in the scene.
+ */
+void TODO_update(QGraphicsItem *x)
+{
+    x->scene()->update();
+}
+
+void GraphicComponent::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+{
+    QGraphicsItem::hoverEnterEvent(event);
+    TODO_update(this);
+}
+
+void GraphicComponent::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+{
+    QGraphicsItem::hoverLeaveEvent(event);
+    TODO_update(this);
 }
 
 }
