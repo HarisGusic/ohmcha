@@ -123,9 +123,7 @@ void ComponentPreview::initializeNewComponent()
 
 void ComponentPreview::updatePreview()
 {
-    // TODO find a better way to update the component
-    ui->preview->scene()->removeItem(component);
-    ui->preview->scene()->addItem(component);
+    ui->preview->scene()->update();
 }
 
 }
