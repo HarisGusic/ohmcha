@@ -4,6 +4,7 @@
 #include <QScrollBar>
 #include <cmath>
 #include <QGraphicsItem>
+#include <QDebug>
 #include "graphic_component.h"
 
 namespace Ohmcha
@@ -21,6 +22,7 @@ CircuitView::CircuitView(QWidget *parent)
 {
     setSceneRect(getViewRect(this));
     setCursor(Qt::BlankCursor);
+    setDragMode(QGraphicsView::RubberBandDrag);
     setMouseTracking(true);
     setGridVisibility(true);
 }
@@ -59,9 +61,10 @@ void CircuitView::wheelEvent(QWheelEvent *event)
 
 void CircuitView::mousePressEvent(QMouseEvent *event)
 {
+    // _dragPos is used both when dragging the scene and when making a rubber band selection.
+    _dragPos = event->pos();
     if (event->button() == Qt::MiddleButton)
     {
-        _dragPos = event->pos();
         _dragging = true;
         setCursor(Qt::ClosedHandCursor);
         hGuide->setVisible(false);
@@ -92,19 +95,22 @@ void CircuitView::mouseReleaseEvent(QMouseEvent *event)
             mouseCallback(event, this);
         return;
     }
+
+    _selectionModeDetermined = false;
+
     QGraphicsView::mouseReleaseEvent(event);
 }
 
 void CircuitView::mouseMoveEvent(QMouseEvent *event)
 {
-    QGraphicsView::mouseMoveEvent(event);
 
+    // Store the raw cursor position, useful for snapping to grid
     rawCursorPos = mapToScene(event->pos());
 
     if (snapOn) snapToGrid();
     else cursorPos = rawCursorPos;
 
-    // Perform drag
+    // Perform scene drag
     if (_dragging)
     {
         QRectF sRect = sceneRect();
@@ -114,11 +120,33 @@ void CircuitView::mouseMoveEvent(QMouseEvent *event)
     }
     else
         updateCursorGuides();
+
+    // AutoCAD-like selection behavior
+    if (event->buttons() == Qt::LeftButton && !_selectionModeDetermined)
+    {
+        auto xDiff = event->pos().x() - _dragPos.x();
+        _selectionModeDetermined = xDiff != 0;
+        if (xDiff > 0)
+        { // Dragged to the right: items will be selected if they are wholly contained in the rubber band.
+            setRubberBandSelectionMode(Qt::ContainsItemShape);
+            setStyleSheet("selection-background-color: normal");
+        }
+        else
+        { // Dragged to the left: items will be selected if they intersect the rubber band.
+            setRubberBandSelectionMode(Qt::IntersectsItemShape);
+            setStyleSheet("selection-background-color: green");
+        }
+
+    }
+    qDebug() << rubberBandSelectionMode();
+
+    QGraphicsView::mouseMoveEvent(event);
 }
 
 void CircuitView::resizeEvent(QResizeEvent *event)
 {
-    setSceneRect(getViewRect(this));
+    //TODO: disabled this, because it caused the window to freeze. Find a fix.
+    //setSceneRect(getViewRect(this));
     updateCursorGuides();
 }
 

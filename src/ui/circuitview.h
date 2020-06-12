@@ -19,9 +19,10 @@ class CircuitView : public QGraphicsView
 private:
 
     float zoomLevel = 1;
-    // Horizontal and vertical guides attached to the cursor.
+    // Horizontal and vertical guides attached to the cursor
     QGraphicsLineItem *hGuide{}, *vGuide{};
     GraphicComponent *pendingInsert{};
+    // Position where a drag has started, in original coordinates (provided by event)
     QPointF _dragPos;
     bool _dragging = false;
 
@@ -39,6 +40,7 @@ protected:
     QPointF rawCursorPos;
     // The internally tracked cursor position in scene coordinates, affected by snap
     QPointF cursorPos;
+    bool _selectionModeDetermined = false;
 
 public:
     // Constructors
