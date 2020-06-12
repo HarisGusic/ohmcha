@@ -30,27 +30,18 @@ CircuitView::CircuitView(QWidget *parent)
 void CircuitView::insertComponent(GraphicComponent *component, CircuitView::Mode insertMode)
 {
     mode = insertMode;
-    if (insertMode != Mode::InsertPoints)
+    if (insertMode != InsertPoints)
         return; // This will be implemented later
-    //TODO Calculate node count
-    static int state = 0;
-    int *state_ptr = &state;
     pendingInsert = component;
-    mouseCallback = [](QMouseEvent *event, CircuitView *owner) {
-        if (event->button() != Qt::LeftButton || event->type() != QEvent::MouseButtonRelease)
-            return;
-        state++;
-        QPointF cursorPos = owner->getCursorPosition();
-        owner->pendingInsert->setCenter(cursorPos);
-        owner->scene()->addItem(owner->pendingInsert);
-        owner->pendingInsert = nullptr;
-        emit owner->componentInserted();
-        owner->mode = CircuitView::Idle;
-    };
-    if (state == 2) // Replace with component.nodeCount
-    {
+}
 
-    }
+void CircuitView::initiateInsertComponent(GraphicComponent *component, CircuitView::Mode insertMode)
+{
+    // TODO insertMode is not currently used.
+    mode = insertMode;
+    pendingInsert = component;
+    component->setVisible(false);
+    scene()->addItem(component);
 }
 
 void CircuitView::wheelEvent(QWheelEvent *event)
@@ -70,12 +61,14 @@ void CircuitView::mousePressEvent(QMouseEvent *event)
         hGuide->setVisible(false);
         vGuide->setVisible(false);
     }
+
     if (mode != Idle)
     {
-        if (mouseCallback)
-            mouseCallback(event, this);
-        return;
+        emit componentInserted();
+        mode = Idle;
+        pendingInsert = nullptr;
     }
+
     QGraphicsView::mousePressEvent(event);
 }
 
@@ -88,12 +81,6 @@ void CircuitView::mouseReleaseEvent(QMouseEvent *event)
         updateCursorGuides();
         hGuide->setVisible(true);
         vGuide->setVisible(true);
-    }
-    if (mode != Idle)
-    {
-        if (mouseCallback)
-            mouseCallback(event, this);
-        return;
     }
 
     _selectionModeDetermined = false;
@@ -138,7 +125,13 @@ void CircuitView::mouseMoveEvent(QMouseEvent *event)
         }
 
     }
-    qDebug() << rubberBandSelectionMode();
+
+    // Update component preview position while inserting component.
+    if (mode != Idle)
+    {
+        pendingInsert->setCenter(cursorPos);
+        pendingInsert->setVisible(true);
+    }
 
     QGraphicsView::mouseMoveEvent(event);
 }

@@ -27,7 +27,7 @@ CircuitView *MainWindow::getCircuitView()
 void MainWindow::on_actionInsertComponent_triggered()
 {
     //TODO change
-    ui->circuitView->insertComponent(nullptr, Ohmcha::CircuitView::InsertPoints);
+    ui->circuitView->initiateInsertComponent(nullptr, Ohmcha::CircuitView::InsertPoints);
 }
 
 void MainWindow::initializeComponentList()

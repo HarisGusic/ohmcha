@@ -5,6 +5,7 @@
 
 #include <QButtonGroup>
 #include <QGridLayout>
+#include <QScrollBar>
 
 namespace Ohmcha
 {
@@ -13,7 +14,13 @@ ComponentPreview::ComponentPreview(QWidget *parent)
     : QWidget(parent), ui(new Ui::ComponentPreview)
 {
     ui->setupUi(this);
+
+    // Preview setup
     ui->preview->setScene(new QGraphicsScene);
+    ui->preview->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->preview->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->preview->verticalScrollBar()->blockSignals(true);
+    ui->preview->horizontalScrollBar()->blockSignals(true);
 
     // Draw and enable anchor picker
     QButtonGroup *anchorGroup = new QButtonGroup;
@@ -69,7 +76,7 @@ void ComponentPreview::setCircuitView(CircuitView *cv)
 
 void ComponentPreview::on_btnAdd_clicked()
 {
-    circuitView->insertComponent(component, CircuitView::InsertPoints);
+    circuitView->initiateInsertComponent(component, CircuitView::InsertPoints);
     connect(circuitView, &CircuitView::componentInserted, this, &ComponentPreview::componentInserted);
 }
 

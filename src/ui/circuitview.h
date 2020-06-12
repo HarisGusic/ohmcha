@@ -48,6 +48,7 @@ public:
 
     // Methods
     void insertComponent(GraphicComponent *component, Mode insertMode);
+    void initiateInsertComponent(GraphicComponent *component, Mode insertMode);
 
     void zoomIn(float scale = 1.2);
     void resetZoom();
@@ -80,8 +81,6 @@ signals:
     void componentInserted();
 
 protected:
-
-    void  (*mouseCallback)(QMouseEvent *event, CircuitView *owner);
 
     // Event handling
     void wheelEvent(QWheelEvent *event) override;
