@@ -91,6 +91,11 @@ int Branch::getTerminalCount() const
     return 2;
 }
 
+Component *Branch::copy() const
+{
+    return new Branch(A, B);
+}
+
 /************
  * Resistor *
  ************/
@@ -107,6 +112,11 @@ Resistor::Resistor()
 Resistor::Resistor(float resistance)
     : resistance(resistance)
 {
+}
+
+Component *Resistor::copy() const
+{
+    return new Resistor(resistance);
 }
 
 void Resistor::setResistance(float r)
@@ -128,6 +138,11 @@ Emf::Emf(float emf)
     : emf(emf)
 {
 
+}
+
+Component *Emf::copy() const
+{
+    return new Emf(emf);
 }
 
 void Emf::setEmf(float emf)
@@ -156,6 +171,11 @@ CurrentSource::CurrentSource(float current)
 
 }
 
+Component *CurrentSource::copy() const
+{
+    return new CurrentSource(current);
+}
+
 void CurrentSource::setCurrent(float current)
 {
     this->current = current;
@@ -164,6 +184,11 @@ void CurrentSource::setCurrent(float current)
 float CurrentSource::getCurrent() const
 {
     return current;
+}
+
+int CurrentSource::getTerminalCount() const
+{
+    return 2;
 }
 
 

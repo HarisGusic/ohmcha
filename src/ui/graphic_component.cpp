@@ -15,6 +15,21 @@ GraphicComponent::GraphicComponent()
     setFlag(ItemIsMovable);
 }
 
+GraphicComponent::GraphicComponent(const GraphicComponent &original)
+    : GraphicComponent()
+{
+    terminals = original.terminals;
+    size = original.size;
+    component = original.component->copy();
+    textAnchor = original.textAnchor;
+    textPos = original.textPos;
+    textAngle = original.textAngle;
+    textRotationIndependent = original.textRotationIndependent;
+    setTransform(original.transform());
+    setRotation(original.rotation());
+    setName(original.getName());
+}
+
 QString GraphicComponent::getName() const
 {
     return QString::fromStdString(component->getName());
@@ -88,6 +103,12 @@ GraphicResistor::GraphicResistor()
     component = new Resistor;
 }
 
+GraphicResistor::GraphicResistor(const GraphicResistor &original)
+    : GraphicComponent(original)
+{
+
+}
+
 GraphicResistor::GraphicResistor(QPointF node1, QPointF node2)
     : GraphicResistor()
 {
@@ -153,24 +174,16 @@ void GraphicResistor::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
 
 }
 
-/**
- * Redraw the item in the scene.
- */
-void TODO_update(QGraphicsItem *x)
-{
-    x->scene()->update();
-}
-
 void GraphicComponent::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
     QGraphicsItem::hoverEnterEvent(event);
-    TODO_update(this);
+    scene()->update();
 }
 
 void GraphicComponent::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
     QGraphicsItem::hoverLeaveEvent(event);
-    TODO_update(this);
+    scene()->update();
 }
 
 }

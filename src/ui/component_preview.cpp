@@ -66,7 +66,6 @@ void ComponentPreview::setVisible(bool visible)
 
     if (component == nullptr)
         initializeNewComponent();
-    ui->preview->scene()->addItem(component);
 }
 
 void ComponentPreview::setCircuitView(CircuitView *cv)
@@ -77,6 +76,7 @@ void ComponentPreview::setCircuitView(CircuitView *cv)
 void ComponentPreview::on_btnAdd_clicked()
 {
     circuitView->initiateInsertComponent(component, CircuitView::InsertPoints);
+    initializeNewComponent();
     connect(circuitView, &CircuitView::componentInserted, this, &ComponentPreview::componentInserted);
 }
 
@@ -94,8 +94,6 @@ void ComponentPreview::textIndependencePicked(int id)
 
 void ComponentPreview::componentInserted()
 {
-    initializeNewComponent();
-    ui->preview->scene()->addItem(component);
     disconnect(circuitView, &CircuitView::componentInserted, this, &ComponentPreview::componentInserted);
 }
 
@@ -120,12 +118,21 @@ void ComponentPreview::on_editTextAngle_textEdited(const QString &s)
 
 void ComponentPreview::initializeNewComponent()
 {
-    component = new GraphicResistor(); //TODO generalize
+    if (component == nullptr)
+        component = new GraphicResistor(); //TODO generalize
+    else
+        component = new GraphicResistor(*(GraphicResistor*)component);
+
+    component->setFlag(QGraphicsItem::ItemIsMovable, false);
+    component->setFlag(QGraphicsItem::ItemIsSelectable, false);
+
     ui->editAngle->setText(QString::number(component->rotation()));
     ui->editText->setText(component->getName());
     ui->editTextAngle->setText(QString::number(component->getTextRotation()));
     ui->btnDepend->setChecked(!component->isTextRotationIndependent());
     ui->btnIndependent->setChecked(component->isTextRotationIndependent());
+
+    ui->preview->scene()->addItem(component);
 }
 
 void ComponentPreview::updatePreview()

@@ -25,6 +25,7 @@ protected:
 public:
 
     // Methods
+    virtual Component *copy() const = 0;
 
     // Setters
     void setName(const std::string &name);
@@ -112,6 +113,8 @@ public:
     Node *getNode1() const;
     Node *getNode2() const;
     int getTerminalCount() const;
+
+    Component *copy() const override;
 };
 
 class Resistor : public Component
@@ -122,6 +125,8 @@ public:
 
     Resistor();
     Resistor(float resistance);
+
+    Component *copy() const override;
 
     void setResistance(float r);
 
@@ -136,6 +141,8 @@ public:
 
     Emf();
     Emf(float emf);
+
+    Component *copy() const override;
 
     void setEmf(float emf);
 
@@ -152,9 +159,12 @@ public:
     CurrentSource();
     CurrentSource(float current);
 
+    Component *copy() const override;
+
     void setCurrent(float current);
 
     float getCurrent() const;
+    int getTerminalCount() const override;
 };
 
 }

@@ -26,6 +26,7 @@ protected:
 
 public:
     GraphicComponent();
+    GraphicComponent(const GraphicComponent &original);
 
     /**
      * Return the maximum distance between terminals
@@ -68,6 +69,7 @@ public:
 
     GraphicResistor(QPointF node1, QPointF node2);
     GraphicResistor();
+    GraphicResistor(const GraphicResistor &original);
 
     // Getters
     Resistor *getComponent();

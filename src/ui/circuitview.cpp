@@ -52,6 +52,9 @@ void CircuitView::wheelEvent(QWheelEvent *event)
 
 void CircuitView::mousePressEvent(QMouseEvent *event)
 {
+    // Parent method call should be first to prevent selection upon dropping the item in the view.
+    QGraphicsView::mousePressEvent(event);
+
     // _dragPos is used both when dragging the scene and when making a rubber band selection.
     _dragPos = event->pos();
     if (event->button() == Qt::MiddleButton)
@@ -64,12 +67,13 @@ void CircuitView::mousePressEvent(QMouseEvent *event)
 
     if (mode != Idle)
     {
+        pendingInsert->setFlag(QGraphicsItem::ItemIsMovable);
+        pendingInsert->setFlag(QGraphicsItem::ItemIsSelectable);
         emit componentInserted();
         mode = Idle;
         pendingInsert = nullptr;
     }
 
-    QGraphicsView::mousePressEvent(event);
 }
 
 void CircuitView::mouseReleaseEvent(QMouseEvent *event)
