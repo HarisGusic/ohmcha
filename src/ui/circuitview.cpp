@@ -108,9 +108,6 @@ void CircuitView::mouseMoveEvent(QMouseEvent *event)
     // Store the raw cursor position, useful for snapping to grid
     rawCursorPos = mapToScene(event->pos());
 
-    if (snapOn) snapToGrid();
-    else cursorPos = rawCursorPos;
-
     // Perform scene drag
     if (_dragging)
     {
@@ -146,6 +143,14 @@ void CircuitView::mouseMoveEvent(QMouseEvent *event)
         pendingInsert->setCenter(cursorPos);
         pendingInsert->setVisible(true);
     }
+
+    // Snap works only if an item is being placed or moved
+    if (snapOn && (mode != Idle || scene()->mouseGrabberItem() != nullptr))
+    {
+        snapToGrid();
+        event->setLocalPos(mapFromScene(cursorPos));
+    }
+    else cursorPos = rawCursorPos;
 
     QGraphicsView::mouseMoveEvent(event);
 }
