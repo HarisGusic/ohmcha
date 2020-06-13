@@ -1,0 +1,33 @@
+#ifndef GRAPHIC_RESISTOR_H
+#define GRAPHIC_RESISTOR_H
+
+#include "graphic_component.h"
+
+namespace Ohmcha
+{
+
+class GraphicResistor : public GraphicComponent
+{
+    QSizeF size = {20, 70};
+    float terminalSize = 8;
+    QPen pen;
+
+public:
+
+    GraphicResistor(QPointF node1, QPointF node2);
+    GraphicResistor();
+    GraphicResistor(const GraphicResistor &original);
+
+    // Getters
+    Resistor *getComponent();
+    float getTerminalSpan() const override;
+
+    // Setters
+
+    QRectF boundingRect() const override;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
+};
+
+}
+
+#endif // GRAPHIC_RESISTOR_H

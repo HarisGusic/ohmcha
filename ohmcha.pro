@@ -25,7 +25,9 @@ SOURCES += \
     src/program/program.cpp \
     src/test/test.cpp \
     src/ui/component_preview.cpp \
+    src/ui/graphic_branch.cpp \
     src/ui/graphic_component.cpp \
+    src/ui/graphic_resistor.cpp \
     src/ui/mainwindow.cpp \
     src/ui/circuitview.cpp
 
@@ -38,7 +40,9 @@ HEADERS += \
     src/program/program.h \
     src/test/test.h \
     src/ui/component_preview.h \
+    src/ui/graphic_branch.h \
     src/ui/graphic_component.h \
+    src/ui/graphic_resistor.h \
     src/ui/mainwindow.h \
     src/ui/circuitview.h
 

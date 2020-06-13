@@ -57,31 +57,6 @@ public:
 protected:
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
-    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
-};
-
-class GraphicResistor : public GraphicComponent
-{
-    QSizeF size = {20, 70};
-    float terminalSize = 8;
-    QPen pen;
-
-public:
-
-    GraphicResistor(QPointF node1, QPointF node2);
-    GraphicResistor();
-    GraphicResistor(const GraphicResistor &original);
-
-    // Getters
-    Resistor *getComponent();
-    float getTerminalSpan() const override;
-
-    // Setters
-
-    QRectF boundingRect() const override;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
-
-private:
 };
 
 }

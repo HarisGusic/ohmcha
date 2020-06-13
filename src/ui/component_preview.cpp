@@ -1,7 +1,8 @@
 #include "component_preview.h"
-#include "graphic_component.h"
+
+#include "graphic_resistor.h"
 #include "ui_component_preview.h"
-#include "src/ui/mainwindow.h"
+#include "mainwindow.h"
 
 #include <QButtonGroup>
 #include <QGridLayout>
