@@ -32,11 +32,6 @@ Resistor *GraphicResistor::getComponent()
     return dynamic_cast<Resistor*>(component);
 }
 
-float GraphicResistor::getTerminalSpan() const
-{
-    return size.width();
-}
-
 void GraphicResistor::setCenter(QPointF center)
 {
     GraphicComponent::setCenter(center);

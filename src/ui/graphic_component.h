@@ -29,10 +29,6 @@ public:
     GraphicComponent();
     GraphicComponent(const GraphicComponent &original);
 
-    /**
-     * Return the maximum distance between terminals
-     */
-    virtual float getTerminalSpan() const = 0;
     QString getName() const;
     QPointF getCenter() const;
     Anchor getTextAnchor() const;
@@ -67,6 +63,8 @@ protected:
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
     void hoverMoveEvent(QGraphicsSceneHoverEvent *event) override;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
+
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
 };
 
 }

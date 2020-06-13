@@ -1,6 +1,7 @@
 #include "graphic_component.h"
 
 #include "graphic_resistor.h"
+#include "graphic_branch.h"
 
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
@@ -115,11 +116,14 @@ void GraphicComponent::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 
 void GraphicComponent::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
 {
-    auto nearestTerminal = findNearestTerminal(event->pos());
-    if (nearestTerminal != _selectedTerminal)
+    if (!scene()->selectedItems().empty() && *scene()->selectedItems().begin() == this)
     {
-        _selectedTerminal = nearestTerminal;
-        scene()->update();
+        auto nearestTerminal = findNearestTerminal(event->pos());
+        if (nearestTerminal != _selectedTerminal)
+        {
+            _selectedTerminal = nearestTerminal;
+            scene()->update();
+        }
     }
 }
 
@@ -129,6 +133,16 @@ void GraphicComponent::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
     _selectedTerminal = nullptr;
 
     scene()->update();
+}
+
+void GraphicComponent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
+{
+    if (_selectedTerminal)
+    { // Create a new branch starting from the selected terminal
+        GraphicBranch *branch = new GraphicBranch();
+        // TODO
+    }
+        ;
 }
 
 }

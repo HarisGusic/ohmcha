@@ -9,7 +9,7 @@ namespace Ohmcha
 class GraphicResistor : public GraphicComponent
 {
     QSizeF size = {20, 70};
-    float terminalSize = 8;
+    float terminalSize = 10;
     QPen pen;
 
 public:
@@ -20,7 +20,6 @@ public:
 
     // Getters
     Resistor *getComponent();
-    float getTerminalSpan() const override;
 
     // Setters
     void setCenter(QPointF center) override;

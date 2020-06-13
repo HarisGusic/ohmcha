@@ -11,7 +11,7 @@ namespace Ohmcha
 GraphicBranch::GraphicBranch()
     : GraphicComponent()
 {
-
+    component = new Branch;
 }
 
 void GraphicBranch::setFirstAnchor(GraphicComponent *item, const QPointF &point)
@@ -49,6 +49,7 @@ GraphicComponent *GraphicBranch::getSecondAnchor() const
 void GraphicBranch::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
 
+    // Mouse is hovering over the item
     if (option->state & QStyle::State_MouseOver)
     {
         auto pen = painter->pen();
