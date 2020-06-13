@@ -21,9 +21,16 @@ class ComponentPreview : public QWidget
 public:
     explicit ComponentPreview(QWidget *parent = nullptr);
     ~ComponentPreview();
-    void setComponent(GraphicComponent *component);
-    void setVisible(bool visible) override;
     void setCircuitView(CircuitView *cv);
+    void initialize();
+    /**
+     * Synchronize the contents of the text boxes and buttons
+     * with the actual properties of component.
+     */
+    void synchronize();
+
+public slots:
+    void setComponent(GraphicComponent *component);
 
 private slots:
     void on_btnAdd_clicked();

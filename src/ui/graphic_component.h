@@ -5,7 +5,7 @@
 #include <QGraphicsItem>
 #include <QPen>
 
-#include <src/model/component.h>
+#include "src/model/component.h"
 
 namespace Ohmcha
 {
@@ -57,6 +57,7 @@ public:
 protected:
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
+    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 };
 
 class GraphicResistor : public GraphicComponent

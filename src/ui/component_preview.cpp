@@ -44,6 +44,7 @@ ComponentPreview::ComponentPreview(QWidget *parent)
     connect(textIndependenceGroup, static_cast<void (QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked),
             this, &ComponentPreview::textIndependencePicked);
 
+
 }
 
 ComponentPreview::~ComponentPreview()
@@ -51,26 +52,39 @@ ComponentPreview::~ComponentPreview()
     delete ui;
 }
 
-void ComponentPreview::setComponent(GraphicComponent *component)
-{
-    this->component = component;
-    newComponent = false;
-    ui->btnAdd->setVisible(false);
-}
-
-void ComponentPreview::setVisible(bool visible)
-{
-    QWidget::setVisible(visible);
-
-    if (!visible) return;
-
-    if (component == nullptr)
-        initializeNewComponent();
-}
-
 void ComponentPreview::setCircuitView(CircuitView *cv)
 {
     circuitView = cv;
+}
+
+void ComponentPreview::initialize()
+{
+    // Set callback for double clicking a component TODO: maybe move this somewhere else
+    connect(circuitView, &CircuitView::componentSelected,
+        this, &ComponentPreview::setComponent);
+    initializeNewComponent();
+}
+
+void ComponentPreview::synchronize()
+{
+    ui->editAngle->setText(QString::number(component->rotation()));
+    ui->editText->setText(component->getName());
+    ui->editTextAngle->setText(QString::number(component->getTextRotation()));
+    ui->btnDepend->setChecked(!component->isTextRotationIndependent());
+    ui->btnIndependent->setChecked(component->isTextRotationIndependent());
+
+    ui->preview->scene()->update();
+}
+
+void ComponentPreview::setComponent(GraphicComponent *component)
+{
+    ui->preview->scene()->removeItem(this->component);
+    ui->preview->scene()->addItem(component);
+
+    this->component = component;
+    synchronize();
+    newComponent = false;
+    ui->btnAdd->setVisible(false);
 }
 
 void ComponentPreview::on_btnAdd_clicked()
@@ -126,13 +140,10 @@ void ComponentPreview::initializeNewComponent()
     component->setFlag(QGraphicsItem::ItemIsMovable, false);
     component->setFlag(QGraphicsItem::ItemIsSelectable, false);
 
-    ui->editAngle->setText(QString::number(component->rotation()));
-    ui->editText->setText(component->getName());
-    ui->editTextAngle->setText(QString::number(component->getTextRotation()));
-    ui->btnDepend->setChecked(!component->isTextRotationIndependent());
-    ui->btnIndependent->setChecked(component->isTextRotationIndependent());
+    synchronize();
 
     ui->preview->scene()->addItem(component);
+    ui->btnAdd->setVisible(true);
 }
 
 void ComponentPreview::updatePreview()
@@ -141,4 +152,3 @@ void ComponentPreview::updatePreview()
 }
 
 }
-

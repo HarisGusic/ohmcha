@@ -4,6 +4,7 @@
 #include <QGraphicsScene>
 #include <QStyleOptionGraphicsItem>
 #include <QStyle>
+#include <QGraphicsSceneMouseEvent>
 
 namespace Ohmcha
 {
@@ -184,6 +185,10 @@ void GraphicComponent::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
     QGraphicsItem::hoverLeaveEvent(event);
     scene()->update();
+}
+
+void GraphicComponent::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
 }
 
 }

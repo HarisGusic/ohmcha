@@ -15,7 +15,6 @@ class Component;
 class CircuitView : public QGraphicsView
 {
     Q_OBJECT
-
 private:
 
     float zoomLevel = 1;
@@ -79,6 +78,10 @@ signals:
      * Called when a component is successfully inserted into a view.
      */
     void componentInserted();
+    /**
+     * Emitted when a component is selected individually.
+     */
+    void componentSelected(GraphicComponent *);
 
 protected:
 

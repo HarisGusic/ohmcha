@@ -32,6 +32,7 @@ void MainWindow::initializeComponentList()
 void MainWindow::on_listComponents_itemDoubleClicked(QListWidgetItem *item)
 {
     ui->dockInsert->setVisible(true);
+    ui->componentPreview->initialize();
     ui->componentPreview->setVisible(true);
 }
 

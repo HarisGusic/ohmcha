@@ -65,6 +65,21 @@ void CircuitView::mousePressEvent(QMouseEvent *event)
         vGuide->setVisible(false);
     }
 
+}
+
+void CircuitView::mouseReleaseEvent(QMouseEvent *event)
+{
+    QGraphicsView::mouseReleaseEvent(event);
+
+    // If a single item is selected, the user wants to edit it in the component preview.
+    if (mode == Idle && scene()->selectedItems().size() == 1)
+    {
+        // NOTE: In a future implementation where items can be annotations (other than components), we must
+        // check the actual type of the selected item.
+        emit componentSelected((GraphicComponent*) *scene()->selectedItems().begin());
+    }
+
+    // A component is being inserted into the CircuitView.
     if (mode != Idle)
     {
         pendingInsert->setFlag(QGraphicsItem::ItemIsMovable);
@@ -74,10 +89,7 @@ void CircuitView::mousePressEvent(QMouseEvent *event)
         pendingInsert = nullptr;
     }
 
-}
-
-void CircuitView::mouseReleaseEvent(QMouseEvent *event)
-{
+    // Return from scene drag mode to normal mode
     if (event->button() == Qt::MiddleButton)
     {
         _dragging = false;
@@ -88,8 +100,6 @@ void CircuitView::mouseReleaseEvent(QMouseEvent *event)
     }
 
     _selectionModeDetermined = false;
-
-    QGraphicsView::mouseReleaseEvent(event);
 }
 
 void CircuitView::mouseMoveEvent(QMouseEvent *event)
