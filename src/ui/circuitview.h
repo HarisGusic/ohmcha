@@ -2,6 +2,7 @@
 #define CIRCUITVIEW_H
 
 #include "graphic_component.h"
+#include "component_preview.h"
 
 #include <QWidget>
 #include <QGraphicsView>
@@ -11,47 +12,26 @@ namespace Ohmcha
 {
 
 class Component;
+class ComponentPreview;
 
 class CircuitView : public QGraphicsView
 {
     Q_OBJECT
-private:
-
-    float zoomLevel = 1;
-    // Horizontal and vertical guides attached to the cursor
-    QGraphicsLineItem *hGuide{}, *vGuide{};
-    GraphicComponent *pendingInsert{};
-    // Position where a drag has started, in original coordinates (provided by event)
-    QPointF _dragPos;
-    bool _dragging = false;
 
 public:
 
     enum Mode {Idle, InsertDragDrop, InsertPoints};
 
-protected:
-
-    Mode mode = Idle;
-    void *editBuffer = nullptr;
-    float gridSpacingX = 20, gridSpacingY = 20;
-    bool snapOn = false, showGrid = true;
-    // The cursor position in scene coordinates, before applying snap to grid
-    QPointF rawCursorPos;
-    // The internally tracked cursor position in scene coordinates, affected by snap
-    QPointF cursorPos;
-    bool _selectionModeDetermined = false;
-
-public:
     // Constructors
     CircuitView(QWidget *parent = nullptr);
 
     // Methods
-    void insertComponent(GraphicComponent *component, Mode insertMode);
     void initiateInsertComponent(GraphicComponent *component, Mode insertMode);
 
     void zoomIn(float scale = 1.2);
     void resetZoom();
 
+    // Setters
     /**
      * Show/hide the grid.
      */
@@ -60,10 +40,33 @@ public:
      * Enable/disable snap to grid.
      */
     void setSnap(bool state);
+    void setComponentPreview(ComponentPreview *componentPreview);
 
+    // Getters
+    /**
+     * Return the cursor position with any snap-to-grid applied.
+     */
     QPointF getCursorPosition();
+    ComponentPreview *getComponentPreview();
+
+
+signals:
+    /**
+     * Emitted when a component is selected individually.
+     */
+    void componentSelected(GraphicComponent *);
 
 private:
+
+    // Event handling
+    void wheelEvent(QWheelEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+
+    void resizeEvent(QResizeEvent *event) override;
+
+    // Private methods
     /**
      * Update cursor guides' position based on the current cursor position.
      */
@@ -73,25 +76,27 @@ private:
      */
     void snapToGrid();
 
-signals:
-    /**
-     * Called when a component is successfully inserted into a view.
-     */
-    void componentInserted();
-    /**
-     * Emitted when a component is selected individually.
-     */
-    void componentSelected(GraphicComponent *);
+    // Attributes
 
-protected:
+    float zoomLevel = 1;
+    // Horizontal and vertical guides attached to the cursor
+    QGraphicsLineItem *hGuide{}, *vGuide{};
+    GraphicComponent *pendingInsert{};
+    ComponentPreview *componentPreview{};
 
-    // Event handling
-    void wheelEvent(QWheelEvent *event) override;
-    void mousePressEvent(QMouseEvent *event) override;
-    void mouseReleaseEvent(QMouseEvent *event) override;
-    void mouseMoveEvent(QMouseEvent *event) override;
+    Mode mode = Idle;
 
-    void resizeEvent(QResizeEvent *event) override;
+    // The cursor position in scene coordinates, before applying snap to grid
+    QPointF rawCursorPos;
+    // The internally tracked cursor position in scene coordinates, affected by snap
+    QPointF cursorPos;
+    float gridSpacingX = 20, gridSpacingY = 20;
+    bool snapOn = false, showGrid = true;
+
+    bool _selectionModeDetermined = false;
+    // Position where a drag has started, in original coordinates (provided by event)
+    QPointF _dragPos;
+    bool _dragging = false;
 
 };
 

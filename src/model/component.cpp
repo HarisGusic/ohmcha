@@ -3,6 +3,26 @@
 namespace Ohmcha
 {
 
+Component *Component::newByName(std::string name)
+{
+    if (name == "Resistor")
+        return new Resistor;
+    else;
+        //TODO custom component type
+}
+
+void Component::setName(const std::string &name)
+{
+    if (metaInfo == nullptr)
+        metaInfo = new MetaInfo;
+    metaInfo->name = name;
+}
+
+std::string Component::getName() const
+{
+    return metaInfo ? metaInfo->name : "";
+}
+
 /**********
  * Branch *
  **********/
@@ -33,17 +53,10 @@ Branch::Branch(Component *component, Node *node1, Node *node2)
     node2 = node2;
 }
 
-void Branch::setA(const RowVector3f &matrix)
-{ A = matrix; }
-
-void Branch::setB(float x)
-{ B = x; }
-
-void Branch::setNode1(Node &n)
-{ node1 = &n; }
-
-void Branch::setNode2(Node &n)
-{ node2 = &n; }
+Component *Branch::copy() const
+{
+    return new Branch(A, B);
+}
 
 void Branch::addComponent(Component *component)
 {
@@ -74,6 +87,18 @@ void Branch::addComponent(Component *component)
     B = B2 - A2(0) / A1(0) * B1;
 }
 
+void Branch::setA(const RowVector3f &matrix)
+{ A = matrix; }
+
+void Branch::setB(float x)
+{ B = x; }
+
+void Branch::setNode1(Node &n)
+{ node1 = &n; }
+
+void Branch::setNode2(Node &n)
+{ node2 = &n; }
+
 RowVector3f Branch::getA() const
 { return A; }
 
@@ -91,19 +116,9 @@ int Branch::getTerminalCount() const
     return 2;
 }
 
-Component *Branch::copy() const
-{
-    return new Branch(A, B);
-}
-
 /************
  * Resistor *
  ************/
-
-float Resistor::getResistance() const
-{
-    return resistance;
-}
 
 Resistor::Resistor()
 {
@@ -129,6 +144,11 @@ int Resistor::getTerminalCount() const
     return 2;
 }
 
+float Resistor::getResistance() const
+{
+    return resistance;
+}
+
 Emf::Emf()
 {
 
@@ -150,14 +170,14 @@ void Emf::setEmf(float emf)
     this->emf = emf;
 }
 
-float Emf::getEmf() const
-{
-    return emf;
-}
-
 int Emf::getTerminalCount() const
 {
     return 2;
+}
+
+float Emf::getEmf() const
+{
+    return emf;
 }
 
 CurrentSource::CurrentSource()
@@ -181,35 +201,14 @@ void CurrentSource::setCurrent(float current)
     this->current = current;
 }
 
-float CurrentSource::getCurrent() const
-{
-    return current;
-}
-
 int CurrentSource::getTerminalCount() const
 {
     return 2;
 }
 
-
-void Component::setName(const std::string &name)
+float CurrentSource::getCurrent() const
 {
-    if (metaInfo == nullptr)
-        metaInfo = new MetaInfo;
-    metaInfo->name = name;
-}
-
-std::string Component::getName() const
-{
-    return metaInfo ? metaInfo->name : "";
-}
-
-Component *Component::newByName(std::string name)
-{
-    if (name == "Resistor")
-        return new Resistor;
-    else;
-        //TODO custom component type
+    return current;
 }
 
 }

@@ -15,26 +15,16 @@ GraphicResistor::GraphicResistor()
     terminals = { {0, -size.height() / 2}, {0, size.height() / 2} };
 }
 
-GraphicResistor::GraphicResistor(const GraphicResistor &original)
-    : GraphicComponent(original)
-{
-
-}
-
 GraphicResistor::GraphicResistor(QPointF node1, QPointF node2)
     : GraphicResistor()
 {
     setPos((node1 + node2) / 2);
 }
 
-Resistor *GraphicResistor::getComponent()
+GraphicResistor::GraphicResistor(const GraphicResistor &original)
+    : GraphicComponent(original)
 {
-    return dynamic_cast<Resistor*>(component);
-}
 
-void GraphicResistor::setCenter(QPointF center)
-{
-    GraphicComponent::setCenter(center);
 }
 
 QRectF GraphicResistor::boundingRect() const
@@ -98,6 +88,16 @@ void GraphicResistor::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
     QPointF _textPos = textPos - QPointF((textAnchor % 3) * width / 2, (textAnchor / 3 - 2) * height / 2 / 2);
     painter->drawText(_textPos, QString::fromStdString(component->getName()));
 
+}
+
+void GraphicResistor::setCenter(QPointF center)
+{
+    GraphicComponent::setCenter(center);
+}
+
+Resistor *GraphicResistor::getComponent()
+{
+    return dynamic_cast<Resistor*>(component);
 }
 
 }

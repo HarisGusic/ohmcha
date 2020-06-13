@@ -32,36 +32,6 @@ GraphicComponent::GraphicComponent(const GraphicComponent &original)
     setName(original.getName());
 }
 
-QString GraphicComponent::getName() const
-{
-    return QString::fromStdString(component->getName());
-}
-
-GraphicComponent::Anchor GraphicComponent::getTextAnchor() const
-{
-    return textAnchor;
-}
-
-QPointF GraphicComponent::getCenter() const
-{
-    return pos() + QPointF(size.width()/2, size.height()/2);
-}
-
-QPointF GraphicComponent::getTextPosition() const
-{
-    return textPos;
-}
-
-float GraphicComponent::getTextRotation() const
-{
-    return textAngle;
-}
-
-bool GraphicComponent::isTextRotationIndependent() const
-{
-    return textRotationIndependent;
-}
-
 const QPointF *GraphicComponent::findNearestTerminal(QPointF point) const
 {
     for (const QPointF &terminal : terminals)
@@ -69,6 +39,13 @@ const QPointF *GraphicComponent::findNearestTerminal(QPointF point) const
         if (QPointF::dotProduct(point - terminal, point - terminal) <= 25)
             return &terminal;
     return nullptr;
+}
+
+GraphicComponent *GraphicComponent::newFromComponent(Component *component)
+{
+    if (dynamic_cast<Resistor*>(component))
+        return new GraphicResistor();
+    //TODO add others
 }
 
 void GraphicComponent::setTextAnchor(GraphicComponent::Anchor anchor)
@@ -101,11 +78,34 @@ void GraphicComponent::setName(QString name)
     component->setName(name.toStdString());
 }
 
-GraphicComponent *GraphicComponent::newFromComponent(Component *component)
+QString GraphicComponent::getName() const
 {
-    if (dynamic_cast<Resistor*>(component))
-        return new GraphicResistor();
-    //TODO add others
+    return QString::fromStdString(component->getName());
+}
+
+QPointF GraphicComponent::getCenter() const
+{
+    return pos() + QPointF(size.width()/2, size.height()/2);
+}
+
+GraphicComponent::Anchor GraphicComponent::getTextAnchor() const
+{
+    return textAnchor;
+}
+
+QPointF GraphicComponent::getTextPosition() const
+{
+    return textPos;
+}
+
+float GraphicComponent::getTextRotation() const
+{
+    return textAngle;
+}
+
+bool GraphicComponent::isTextRotationIndependent() const
+{
+    return textRotationIndependent;
 }
 
 void GraphicComponent::hoverEnterEvent(QGraphicsSceneHoverEvent *event)

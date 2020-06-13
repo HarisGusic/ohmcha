@@ -7,17 +7,26 @@ namespace Ohmcha {
 
 class Schematic
 {
-    std::vector<Component*> components;
-    std::vector<Branch*> branches;
-    std::vector<Node*> nodes;
 public:
+
     // Constructors
     Schematic();
 
     // Methods
     void add(Component *component);
 
+    // Setters
+
+    // Getters
     std::vector<Component*> getComponents();
+
+private:
+
+    // Attributes
+
+    std::vector<Component*> components;
+    std::vector<Branch*> branches;
+    std::vector<Node*> nodes;
 };
 
 }

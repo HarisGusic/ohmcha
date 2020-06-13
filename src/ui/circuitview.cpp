@@ -27,14 +27,6 @@ CircuitView::CircuitView(QWidget *parent)
     setGridVisibility(true);
 }
 
-void CircuitView::insertComponent(GraphicComponent *component, CircuitView::Mode insertMode)
-{
-    mode = insertMode;
-    if (insertMode != InsertPoints)
-        return; // This will be implemented later
-    pendingInsert = component;
-}
-
 void CircuitView::initiateInsertComponent(GraphicComponent *component, CircuitView::Mode insertMode)
 {
     // TODO insertMode is not currently used.
@@ -42,6 +34,63 @@ void CircuitView::initiateInsertComponent(GraphicComponent *component, CircuitVi
     pendingInsert = component;
     component->setVisible(false);
     scene()->addItem(component);
+}
+
+void CircuitView::zoomIn(float scale)
+{
+    this->zoomLevel *= scale;
+    this->scale(scale, scale);
+
+    // Keep the guides scale-independent
+    auto pen = hGuide->pen();
+    pen.setWidthF(0.5 / zoomLevel);
+    hGuide->setPen(pen);
+    vGuide->setPen(pen);
+}
+
+void CircuitView::resetZoom()
+{
+    this->resetTransform();
+    zoomLevel = 1;
+
+    // Keep the guides scale-independent
+    auto pen = hGuide->pen();
+    pen.setWidthF(0.5 / zoomLevel);
+    hGuide->setPen(pen);
+    vGuide->setPen(pen);
+}
+
+void CircuitView::setGridVisibility(bool visibility)
+{
+    showGrid = visibility;
+    if (showGrid)
+    {
+        //TODO change the scaling behavior
+        //scene()->setBackgroundBrush(Qt::CrossPattern);
+    }
+    else
+        scene()->setBackgroundBrush(Qt::NoBrush);
+}
+
+void CircuitView::setSnap(bool state)
+{
+    snapOn = state;
+    snapToGrid();
+}
+
+void CircuitView::setComponentPreview(ComponentPreview *componentPreview)
+{
+    this->componentPreview = componentPreview;
+}
+
+QPointF CircuitView::getCursorPosition()
+{
+    return cursorPos;
+}
+
+ComponentPreview *CircuitView::getComponentPreview()
+{
+    return componentPreview;
 }
 
 void CircuitView::wheelEvent(QWheelEvent *event)
@@ -84,7 +133,6 @@ void CircuitView::mouseReleaseEvent(QMouseEvent *event)
     {
         pendingInsert->setFlag(QGraphicsItem::ItemIsMovable);
         pendingInsert->setFlag(QGraphicsItem::ItemIsSelectable);
-        emit componentInserted();
         mode = Idle;
         pendingInsert = nullptr;
     }
@@ -160,53 +208,6 @@ void CircuitView::resizeEvent(QResizeEvent *event)
     //TODO: disabled this, because it caused the window to freeze. Find a fix.
     //setSceneRect(getViewRect(this));
     updateCursorGuides();
-}
-
-void CircuitView::zoomIn(float scale)
-{
-    this->zoomLevel *= scale;
-    this->scale(scale, scale);
-
-    // Keep the guides scale-independent
-    auto pen = hGuide->pen();
-    pen.setWidthF(0.5 / zoomLevel);
-    hGuide->setPen(pen);
-    vGuide->setPen(pen);
-}
-
-void CircuitView::resetZoom()
-{
-    this->resetTransform();
-    zoomLevel = 1;
-
-    // Keep the guides scale-independent
-    auto pen = hGuide->pen();
-    pen.setWidthF(0.5 / zoomLevel);
-    hGuide->setPen(pen);
-    vGuide->setPen(pen);
-}
-
-void CircuitView::setGridVisibility(bool visibility)
-{
-    showGrid = visibility;
-    if (showGrid)
-    {
-        //TODO change the scaling behavior
-        //scene()->setBackgroundBrush(Qt::CrossPattern);
-    }
-    else
-        scene()->setBackgroundBrush(Qt::NoBrush);
-}
-
-void CircuitView::setSnap(bool state)
-{
-    snapOn = state;
-    snapToGrid();
-}
-
-QPointF CircuitView::getCursorPosition()
-{
-    return cursorPos;
 }
 
 void CircuitView::updateCursorGuides()

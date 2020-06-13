@@ -86,7 +86,5 @@ int test()
     Branch b;
     b.addComponent(&r);
     b.addComponent(&emf);
-    auto A = b.getA();
-    auto B = b.getB();
     return 0;
 }

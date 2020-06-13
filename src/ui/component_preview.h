@@ -14,45 +14,67 @@ QT_END_NAMESPACE
 namespace Ohmcha
 {
 
+class CircuitView;
+
 class ComponentPreview : public QWidget
 {
     Q_OBJECT
 
 public:
+
+    // Constructors
     explicit ComponentPreview(QWidget *parent = nullptr);
     ~ComponentPreview();
-    void setCircuitView(CircuitView *cv);
+
+    // Methods
+    /**
+     * Connect this preview to the active circuit view.
+     * Call this when first showing this widget or when
+     * the active circuit view changes.
+     */
     void initialize();
+    /**
+     * Create a new GraphicComponent, with the same properties as the previous component.
+     */
+    void initializeNewComponent();
     /**
      * Synchronize the contents of the text boxes and buttons
      * with the actual properties of component.
      */
     void synchronize();
 
+    // Setters
+    void setCircuitView(CircuitView *cv);
+
 public slots:
     void setEditExisting(GraphicComponent *component);
 
 private slots:
-    void on_btnAdd_clicked();
-    void textAnchorPicked(int id);
-    void textIndependencePicked(int id);
-    void componentInserted();
 
+    void on_textAnchorPicked(int id);
+    void on_textIndependencePicked(int id);
+
+    void on_btnAdd_clicked();
     void on_editAngle_textEdited(const QString &s);
     void on_editText_textEdited(const QString &s);
     void on_editTextAngle_textEdited(const QString &s);
 
 private:
 
-    void initializeNewComponent();
+    // Private methods
+    /**
+     * Call this when component is modified.
+     */
     void updatePreview();
 
+    // Attributes
+
     Ui::ComponentPreview *ui;
-    // Component is guaranteed to be non-null whenever this widget is visible
+    /** component is guaranteed to be non-null whenever this widget is visible. */
     GraphicComponent *component = nullptr;
+    /** The circuit view that is currently active in the window */
     CircuitView *circuitView = nullptr;
-    // Are we creating a new component or editing an existing one?
-    bool newComponent = true;
+    /** A 3x3 grid of buttons used to choose the text anchor */
     QRadioButton anchors[3][3];
 };
 

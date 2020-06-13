@@ -10,6 +10,10 @@ GUI
 
 The GUI is started by calling ``start_gui``.
 
+src/main.cpp
+    ..
+
     .. doxygenfunction:: start_gui
 
-This creates an instance of ``MainWindow``.
+This creates an instance of :ref:`MainWindow`.
+

@@ -12,6 +12,7 @@ using namespace Eigen;
 class Component
 {
 protected:
+
     /**
      * Additional information that is not relevant for algorithms.
      */
@@ -20,12 +21,17 @@ protected:
         std::string name;
         std::vector<float> positions;
     };
-    MetaInfo *metaInfo = nullptr;
 
 public:
 
     // Methods
     virtual Component *copy() const = 0;
+    /**
+     * Dynamically allocate a Component based on the
+     * specified class name.
+     * @return Pointer to the dynamically allocated object.
+     */
+    static Component* newByName(std::string name);
 
     // Setters
     void setName(const std::string &name);
@@ -37,12 +43,11 @@ public:
     std::string getName() const;
     virtual int getTerminalCount() const = 0;
 
-    /**
-     * Dynamically allocate a Component based on the
-     * specified class name.
-     * @return Pointer to the dynamically allocated object.
-     */
-    static Component* newByName(std::string name);
+protected:
+
+    // Attributes
+
+    MetaInfo *metaInfo = nullptr;
 };
 
 /**
@@ -59,7 +64,43 @@ class Node
  */
 class Branch : public Component
 {
+public:
+
+    // Constructors
+    /**
+     * A default branch, equivalent to a short circuit.
+     */
+    Branch();
+    /**
+     * Create a branch by merging two branches that contain a common node.
+     * @throw TODO..if they don't have a common node
+     */
+    Branch(const Branch &branch1, const Branch &branch2);
+    Branch(RowVector3f A, float B);
+    Branch(Node &node1, Node &node2, RowVector3f A, float B);
+    Branch(Component *component, Node *node1 = nullptr, Node *node2 = nullptr);
+
+    // Methods
+    Component *copy() const override;
+    void addComponent(Component *component);
+
+    // Setters
+    void setA(const RowVector3f &matrix);
+    void setB(float x);
+    void setNode1(Node &n);
+    void setNode2(Node &n);
+
+    // Getters
+    RowVector3f getA() const;
+    float getB() const;
+    Node *getNode1() const;
+    Node *getNode2() const;
+    int getTerminalCount() const override;
+
 protected:
+
+    // Attributes
+
     /**
      * Current flows through this object from node 1 to node 2.
      * Consequently, the reference voltage is positive if
@@ -74,97 +115,82 @@ protected:
      */
     RowVector3f A;
     float B;
-
-public:
-    /**
-     * A default branch, equivalent to a short circuit.
-     */
-    Branch();
-    /**
-     * Create a branch by merging two branches that contain a common node.
-     * @throw TODO..if they don't have a common node
-     */
-    Branch(const Branch &branch1, const Branch &branch2);
-
-    /**
-     * TODO
-     */
-    Branch(RowVector3f A, float B);
-
-    /**
-     * TODO
-     */
-    Branch(Node &node1, Node &node2, RowVector3f A, float B);
-
-    Branch(Component *component, Node *node1 = nullptr, Node *node2 = nullptr);
-
-    // Setters
-
-    void setA(const RowVector3f &matrix);
-    void setB(float x);
-    void setNode1(Node &n);
-    void setNode2(Node &n);
-    void addComponent(Component *component);
-
-    // Getters
-
-    RowVector3f getA() const;
-    float getB() const;
-    Node *getNode1() const;
-    Node *getNode2() const;
-    int getTerminalCount() const;
-
-    Component *copy() const override;
 };
 
 class Resistor : public Component
 {
-    float resistance;
 
 public:
 
+    // Constructors
     Resistor();
     Resistor(float resistance);
 
+    // Methods
     Component *copy() const override;
 
+    // Setters
     void setResistance(float r);
 
+    // Getters
     int getTerminalCount() const;
     float getResistance() const;
+
+private:
+
+    // Attributes
+
+    float resistance;
 };
 
 class Emf : public Component
 {
-    float emf;
 public:
 
+    // Constructors
     Emf();
     Emf(float emf);
 
+    // Methods
     Component *copy() const override;
 
+    // Setters
     void setEmf(float emf);
 
-    float getEmf() const;
+    // Getters
     int getTerminalCount() const override;
+    float getEmf() const;
 
+private:
+
+    // Attributes
+
+    float emf;
 };
 
 class CurrentSource : public Component
 {
-    float current;
 public:
 
+    // Constructors
     CurrentSource();
     CurrentSource(float current);
 
+    // Methods
     Component *copy() const override;
 
+    // Setters
     void setCurrent(float current);
 
-    float getCurrent() const;
+    // Getters
     int getTerminalCount() const override;
+    float getCurrent() const;
+
+private:
+
+    // Attributes
+
+    float current;
 };
 
 }

@@ -16,6 +16,9 @@ This class can be thought of as a graphical front-end to :ref:`Component`.
 GraphicResistor
 ---------------
 
+src/ui/graphic_resistor.h
+    ..
+
 .. doxygenclass:: Ohmcha::GraphicResistor
    :members:
    :private-members:

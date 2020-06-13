@@ -14,6 +14,25 @@ GraphicBranch::GraphicBranch()
     component = new Branch;
 }
 
+void GraphicBranch::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+
+    // Mouse is hovering over the item
+    if (option->state & QStyle::State_MouseOver)
+    {
+        auto pen = painter->pen();
+        pen.setColor({0x8c, 0x9e, 0xff});
+        painter->setPen(pen);
+    }
+    painter->drawLine(first->mapToItem(this, pFirst), first->mapToItem(this, pSecond));
+}
+
+QRectF GraphicBranch::boundingRect() const
+{
+    return QRectF(std::min(pFirst.x(), pSecond.x()) - pen.width() / 2, std::min(pFirst.y(), pSecond.x()) - pen.width() / 2,
+                  std::max(pFirst.x(), pSecond.x()) - pen.width() / 2, std::max(pFirst.y(), pSecond.x()) - pen.width() / 2);
+}
+
 void GraphicBranch::setFirstAnchor(GraphicComponent *item, const QPointF &point)
 {
     first = item;
@@ -46,23 +65,4 @@ GraphicComponent *GraphicBranch::getSecondAnchor() const
     return second;
 }
 
-void GraphicBranch::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
-{
-
-    // Mouse is hovering over the item
-    if (option->state & QStyle::State_MouseOver)
-    {
-        auto pen = painter->pen();
-        pen.setColor({0x8c, 0x9e, 0xff});
-        painter->setPen(pen);
-    }
-    painter->drawLine(first->mapToItem(this, pFirst), first->mapToItem(this, pSecond));
 }
-
-QRectF GraphicBranch::boundingRect() const
-{
-    return QRectF(std::min(pFirst.x(), pSecond.x()) - pen.width() / 2, std::min(pFirst.y(), pSecond.x()) - pen.width() / 2,
-                  std::max(pFirst.x(), pSecond.x()) - pen.width() / 2, std::max(pFirst.y(), pSecond.x()) - pen.width() / 2);
-}
-
-} // namespace Ohmcha

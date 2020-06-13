@@ -8,24 +8,31 @@ namespace Ohmcha
 
 class GraphicResistor : public GraphicComponent
 {
-    QSizeF size = {20, 70};
-    float terminalSize = 10;
-    QPen pen;
 
 public:
 
-    GraphicResistor(QPointF node1, QPointF node2);
+    // Constructors
     GraphicResistor();
+    GraphicResistor(QPointF node1, QPointF node2);
     GraphicResistor(const GraphicResistor &original);
 
-    // Getters
-    Resistor *getComponent();
+    // Methods
+    QRectF boundingRect() const override;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
 
     // Setters
     void setCenter(QPointF center) override;
 
-    QRectF boundingRect() const override;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
+    // Getters
+    Resistor *getComponent();
+
+private:
+
+    // Attributes
+
+    QSizeF size = {20, 70};
+    float terminalSize = 10;
+    QPen pen;
 };
 
 }

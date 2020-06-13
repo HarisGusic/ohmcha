@@ -18,25 +18,30 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+
+    // Constructors
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    // Getters
     /**
      * @return The currently displayed Circuit View.
      */
     CircuitView *getCircuitView();
 
 private slots:
-
     void on_listComponents_itemDoubleClicked(QListWidgetItem *item);
 
 private:
+
+    // Private methods
+    /** Refers to the component list in the docked widget. */
+    void initializeComponentList();
+
+    // Attributes
+
     Ui::MainWindow *ui;
 
-    /**
-     * Refers to the component list in the docked widget.
-     */
-    void initializeComponentList();
 };
 
 }
