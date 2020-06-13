@@ -23,6 +23,7 @@ protected:
     QPointF textPos;
     float textAngle = 0;
     bool textRotationIndependent = false;
+    const QPointF *_selectedTerminal = nullptr;
 
 public:
     GraphicComponent();
@@ -38,13 +39,21 @@ public:
     QPointF getTextPosition() const;
     float getTextRotation() const;
     bool isTextRotationIndependent() const;
+    /**
+     * Return the terminal that is within a certain distance
+     * to the specified point. If there is no such terminal, return null.
+     * The point is specified in this item's coordinate system.
+     */
+    const QPointF *findNearestTerminal(QPointF point) const;
 
     void setName(QString name);
-    void setCenter(QPointF center);
+    virtual void setCenter(QPointF center);
     void setTextAnchor(Anchor anchor);
     void setTextPosition(QPointF pos);
     void setTextRotation(float angle);
     void setTextRotationIndependent(bool independent);
+
+    void onTerminalClicked(QPointF position);
 
     /**
      * Dynamically allocate a GraphicComponent wrapper around
@@ -56,6 +65,7 @@ public:
 
 protected:
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
+    void hoverMoveEvent(QGraphicsSceneHoverEvent *event) override;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
 };
 

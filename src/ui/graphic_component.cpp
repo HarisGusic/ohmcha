@@ -4,6 +4,7 @@
 
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
+#include <QDebug>
 
 namespace Ohmcha
 {
@@ -60,6 +61,15 @@ bool GraphicComponent::isTextRotationIndependent() const
     return textRotationIndependent;
 }
 
+const QPointF *GraphicComponent::findNearestTerminal(QPointF point) const
+{
+    for (const QPointF &terminal : terminals)
+        // TODO make it possible to set this value somewhere.
+        if (QPointF::dotProduct(point - terminal, point - terminal) <= 25)
+            return &terminal;
+    return nullptr;
+}
+
 void GraphicComponent::setTextAnchor(GraphicComponent::Anchor anchor)
 {
     textAnchor = anchor;
@@ -103,9 +113,21 @@ void GraphicComponent::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
     scene()->update();
 }
 
+void GraphicComponent::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
+{
+    auto nearestTerminal = findNearestTerminal(event->pos());
+    if (nearestTerminal != _selectedTerminal)
+    {
+        _selectedTerminal = nearestTerminal;
+        scene()->update();
+    }
+}
+
 void GraphicComponent::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
     QGraphicsItem::hoverLeaveEvent(event);
+    _selectedTerminal = nullptr;
+
     scene()->update();
 }
 

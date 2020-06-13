@@ -23,6 +23,7 @@ public:
     float getTerminalSpan() const override;
 
     // Setters
+    void setCenter(QPointF center) override;
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
