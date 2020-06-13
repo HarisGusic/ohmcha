@@ -44,7 +44,6 @@ ComponentPreview::ComponentPreview(QWidget *parent)
     connect(textIndependenceGroup, static_cast<void (QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked),
             this, &ComponentPreview::textIndependencePicked);
 
-
 }
 
 ComponentPreview::~ComponentPreview()
@@ -61,7 +60,7 @@ void ComponentPreview::initialize()
 {
     // Set callback for double clicking a component TODO: maybe move this somewhere else
     connect(circuitView, &CircuitView::componentSelected,
-        this, &ComponentPreview::setComponent);
+        this, &ComponentPreview::setEditExisting);
     initializeNewComponent();
 }
 
@@ -73,18 +72,21 @@ void ComponentPreview::synchronize()
     ui->btnDepend->setChecked(!component->isTextRotationIndependent());
     ui->btnIndependent->setChecked(component->isTextRotationIndependent());
 
-    ui->preview->scene()->update();
+    updatePreview();
 }
 
-void ComponentPreview::setComponent(GraphicComponent *component)
+void ComponentPreview::setEditExisting(GraphicComponent *component)
 {
-    ui->preview->scene()->removeItem(this->component);
-    ui->preview->scene()->addItem(component);
+    if (this->component->scene() == ui->preview->scene())
+        ui->preview->scene()->removeItem(this->component);
 
-    this->component = component;
-    synchronize();
     newComponent = false;
+    this->component = component;
+
+    // Update the window
+    synchronize();
     ui->btnAdd->setVisible(false);
+    ui->preview->setVisible(false);
 }
 
 void ComponentPreview::on_btnAdd_clicked()
@@ -132,23 +134,29 @@ void ComponentPreview::on_editTextAngle_textEdited(const QString &s)
 
 void ComponentPreview::initializeNewComponent()
 {
+    if (component != nullptr && component->scene() == ui->preview->scene())
+        ui->preview->scene()->removeItem(component);
     if (component == nullptr)
         component = new GraphicResistor(); //TODO generalize
     else
         component = new GraphicResistor(*(GraphicResistor*)component);
+    newComponent = true;
 
+    // The component is not selectable nor movable inside the preview
     component->setFlag(QGraphicsItem::ItemIsMovable, false);
     component->setFlag(QGraphicsItem::ItemIsSelectable, false);
 
+    // Update the contents of the window
     synchronize();
-
     ui->preview->scene()->addItem(component);
     ui->btnAdd->setVisible(true);
+    ui->preview->setVisible(true);
 }
 
 void ComponentPreview::updatePreview()
 {
-    ui->preview->scene()->update();
+    if (!component || !component->scene()) return;
+    component->scene()->update();
 }
 
 }

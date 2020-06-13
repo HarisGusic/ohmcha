@@ -30,7 +30,7 @@ public:
     void synchronize();
 
 public slots:
-    void setComponent(GraphicComponent *component);
+    void setEditExisting(GraphicComponent *component);
 
 private slots:
     void on_btnAdd_clicked();
