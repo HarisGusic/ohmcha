@@ -54,9 +54,14 @@ protected:
  * An electrical node, i.e. a point
  * at which two or more branches meet.
  */
-class Node
+class Node : public Component
 {
-    float potential;
+public:
+    Node();
+
+    Component *copy() const override;
+
+    virtual int getTerminalCount() const override;
 };
 
 /**

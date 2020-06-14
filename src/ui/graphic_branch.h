@@ -15,10 +15,14 @@ public:
 
     // Constructors
     GraphicBranch();
+    GraphicBranch(Branch *branch);
 
     // Methods
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
     QRectF boundingRect() const override;
+    QPainterPath shape() const override;
+
+    void split(const QPointF &point);
 
     // Setters
     /**
@@ -36,6 +40,8 @@ public:
     QPointF getSecondAnchorPoint() const;
     GraphicComponent *getSecondAnchor() const;
 
+    // Event handling
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
 

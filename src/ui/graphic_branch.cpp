@@ -1,10 +1,14 @@
 #include "graphic_branch.h"
+#include "graphic_node.h"
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
+#include <QGraphicsSceneMouseEvent>
+#include <QGraphicsScene>
 #include <QStyle>
 #include <cmath>
 #include <QDebug>
+#include <QtMath>
 
 namespace Ohmcha
 {
@@ -13,6 +17,12 @@ GraphicBranch::GraphicBranch()
     : GraphicComponent()
 {
     component = new Branch;
+    setZValue(50);
+}
+
+GraphicBranch::GraphicBranch(Branch *branch)
+{
+    component = branch;
 }
 
 void GraphicBranch::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -46,6 +56,40 @@ QRectF GraphicBranch::boundingRect() const
                 );
 }
 
+QPainterPath GraphicBranch::shape() const
+{
+    QPointF a = mapFromItem(first, pFirst),
+            b = mapFromItem(second, pSecond);
+
+    QPointF vec = a - b;
+
+    vec = vec * (3.0 / qSqrt(QPointF::dotProduct(vec, vec)));
+    QPointF orthogonal(vec.y(), -vec.x());
+
+    QPainterPath result(a + orthogonal);
+    result.lineTo(a - orthogonal);
+    result.lineTo(b - orthogonal);
+    result.lineTo(b + orthogonal);
+    result.closeSubpath();
+
+    return result;
+}
+
+void GraphicBranch::split(const QPointF &point)
+{
+    GraphicNode *node = new GraphicNode;
+    node->setPos(mapToScene(point));
+    GraphicBranch *newBranch = new GraphicBranch((Branch*) component);
+
+    newBranch->setFirstAnchor(node, {});
+    newBranch->setSecondAnchor(getSecondAnchor(), getSecondAnchorPoint());
+
+    setSecondAnchor(node, {});
+
+    scene()->addItem(node);
+    scene()->addItem(newBranch);
+}
+
 void GraphicBranch::setFirstAnchor(GraphicComponent *item, const QPointF &point)
 {
     first = item;
@@ -76,6 +120,11 @@ QPointF GraphicBranch::getSecondAnchorPoint() const
 GraphicComponent *GraphicBranch::getSecondAnchor() const
 {
     return second;
+}
+
+void GraphicBranch::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
+{
+    split(event->pos());
 }
 
 }

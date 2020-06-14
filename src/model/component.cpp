@@ -1,5 +1,7 @@
 #include "component.h"
 
+#include <QDebug>
+
 namespace Ohmcha
 {
 
@@ -209,6 +211,24 @@ int CurrentSource::getTerminalCount() const
 float CurrentSource::getCurrent() const
 {
     return current;
+}
+
+Node::Node()
+{
+
+}
+
+Component *Node::copy() const
+{
+    Node *node = new Node;
+    if (metaInfo != nullptr)
+        node->metaInfo = new MetaInfo(*metaInfo);
+    return new Node();
+}
+
+int Node::getTerminalCount() const
+{
+    return 2;
 }
 
 }
