@@ -52,6 +52,9 @@ public slots:
 
 private slots:
 
+    /** Called when the selection in the circuit view changes */
+    void on_selectionChanged();
+
     void on_textAnchorPicked(int id);
     void on_textIndependencePicked(int id);
 
@@ -77,6 +80,7 @@ private:
     CircuitView *circuitView = nullptr;
     /** A 3x3 grid of buttons used to choose the text anchor */
     QRadioButton anchors[3][3];
+    QButtonGroup *anchorGroup{};
 };
 
 }

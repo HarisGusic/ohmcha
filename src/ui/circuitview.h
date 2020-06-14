@@ -50,10 +50,13 @@ public:
     CircuitView(QWidget *parent = nullptr);
 
     // Methods
+    void initialize();
     void initiateInsertComponent(GraphicComponent *component, Mode insertMode);
 
     void zoomIn(float scale = 1.2);
     void resetZoom();
+
+    CircuitViewScene *scene();
 
     // Setters
     /**

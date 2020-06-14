@@ -90,11 +90,16 @@ QRectF getViewRect(QGraphicsView *view)
 CircuitView::CircuitView(QWidget *parent)
     : QGraphicsView(new CircuitViewScene(this), parent)
 {
-    setSceneRect(getViewRect(this));
     setCursor(Qt::BlankCursor);
     setDragMode(QGraphicsView::RubberBandDrag);
     setMouseTracking(true);
     setGridVisibility(true);
+}
+
+void CircuitView::initialize()
+{
+    setSceneRect(getViewRect(this));
+    setSceneRect(sceneRect());
 }
 
 void CircuitView::initiateInsertComponent(GraphicComponent *component, CircuitView::Mode insertMode)
@@ -128,6 +133,11 @@ void CircuitView::resetZoom()
     pen.setWidthF(0.5 / zoomLevel);
     hGuide->setPen(pen);
     vGuide->setPen(pen);
+}
+
+CircuitViewScene *CircuitView::scene()
+{
+    return (CircuitViewScene*) QGraphicsView::scene();
 }
 
 void CircuitView::setGridVisibility(bool visibility)
@@ -175,8 +185,6 @@ void CircuitView::mousePressEvent(QMouseEvent *event)
     if (event->button() != Qt::MiddleButton)
         QGraphicsView::mousePressEvent(event);
 
-    // _dragPos is used both when dragging the scene and when making a rubber band selection.
-    _dragPos = event->pos();
     if (event->button() == Qt::MiddleButton)
     {
         _dragging = true;
@@ -184,6 +192,9 @@ void CircuitView::mousePressEvent(QMouseEvent *event)
         hGuide->setVisible(false);
         vGuide->setVisible(false);
     }
+
+    // _dragPos is used both when dragging the scene and when making a rubber band selection.
+    _dragPos = event->pos();
 
 }
 
@@ -224,6 +235,12 @@ void CircuitView::mouseReleaseEvent(QMouseEvent *event)
 
 void CircuitView::mouseMoveEvent(QMouseEvent *event)
 {
+    // TODO: this is a filthy hack so that the view doesn't jump the first time the scene is dragged
+    setSceneRect(sceneRect());
+
+    if (!_dragging)
+        QGraphicsView::mouseMoveEvent(event);
+
     // Store the raw cursor position, useful for snapping to grid
     rawCursorPos = mapToScene(event->pos());
 
@@ -270,9 +287,6 @@ void CircuitView::mouseMoveEvent(QMouseEvent *event)
         event->setLocalPos(mapFromScene(cursorPos));
     }
     else cursorPos = rawCursorPos;
-
-    if (!_dragging)
-        QGraphicsView::mouseMoveEvent(event);
 }
 
 void CircuitView::resizeEvent(QResizeEvent *event)

@@ -10,6 +10,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     initializeComponentList();
 
+    ui->circuitView->initialize();
     ui->componentPreview->setCircuitView(ui->circuitView);
     ui->componentPreview->initialize();
     ui->componentPreview->setVisible(false);
@@ -28,6 +29,7 @@ CircuitView *MainWindow::getCircuitView()
 void MainWindow::on_listComponents_itemDoubleClicked(QListWidgetItem *item)
 {
     ui->dockInsert->setVisible(true);
+    ui->circuitView->scene()->clearSelection();
     ui->componentPreview->initializeNewComponent();
     ui->componentPreview->setVisible(true);
 }

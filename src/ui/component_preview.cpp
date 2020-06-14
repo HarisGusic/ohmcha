@@ -24,7 +24,7 @@ ComponentPreview::ComponentPreview(QWidget *parent)
     ui->preview->horizontalScrollBar()->blockSignals(true);
 
     // Setup anchor picker and enable callbacks
-    QButtonGroup *anchorGroup = new QButtonGroup;
+    anchorGroup = new QButtonGroup;
     anchorGroup->setExclusive(true);
     for (int i = 0; i < 3; ++i)
         for (int j = 0; j < 3; ++j)
@@ -57,6 +57,8 @@ void ComponentPreview::initialize()
     // Set callback for double clicking a component TODO: maybe move this somewhere else
     connect(circuitView, &CircuitView::componentSelected,
         this, &ComponentPreview::setEditExisting);
+    connect(circuitView->scene(), &CircuitViewScene::selectionChanged,
+            this, &ComponentPreview::on_selectionChanged);
 }
 
 void ComponentPreview::initializeNewComponent()
@@ -89,6 +91,7 @@ void ComponentPreview::synchronize()
     ui->editTextAngle->setText(QString::number(component->getTextRotation()));
     ui->btnDepend->setChecked(!component->isTextRotationIndependent());
     ui->btnIndependent->setChecked(component->isTextRotationIndependent());
+    anchors[component->getTextAnchor() / 3][component->getTextAnchor() % 3].setChecked(true);
 }
 
 void ComponentPreview::setCircuitView(CircuitView *cv)
@@ -108,6 +111,12 @@ void ComponentPreview::setEditExisting(GraphicComponent *component)
     synchronize();
     ui->btnAdd->setVisible(false);
     ui->preview->setVisible(false);
+}
+
+void ComponentPreview::on_selectionChanged()
+{
+    if (circuitView->scene()->selectedItems().empty())
+        initializeNewComponent();
 }
 
 void ComponentPreview::on_textAnchorPicked(int id)
