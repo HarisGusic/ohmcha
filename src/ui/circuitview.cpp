@@ -92,6 +92,7 @@ CircuitView::CircuitView(QWidget *parent)
 {
     setCursor(Qt::BlankCursor);
     setDragMode(QGraphicsView::RubberBandDrag);
+    setRenderHint(QPainter::Antialiasing);
     setMouseTracking(true);
     setGridVisibility(true);
 }

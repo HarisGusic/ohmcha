@@ -32,7 +32,7 @@ void GraphicBranch::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
             b = mapFromScene(pSecond);
         else
             b = mapFromItem(second, pSecond);
-        painter->drawLine(first->mapToItem(this, pFirst), b);
+        painter->drawLine(mapFromItem(first, pFirst), b);
     }
 }
 
