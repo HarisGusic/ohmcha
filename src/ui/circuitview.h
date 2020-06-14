@@ -3,6 +3,7 @@
 
 #include "graphic_component.h"
 #include "component_preview.h"
+#include "graphic_branch.h"
 
 #include <QWidget>
 #include <QGraphicsView>
@@ -12,7 +13,30 @@ namespace Ohmcha
 {
 
 class Component;
+class GraphicBranch;
 class ComponentPreview;
+class CircuitView;
+
+class CircuitViewScene : public QGraphicsScene
+{
+public:
+    // Constructors
+    CircuitViewScene(CircuitView *circuitView);
+
+    // Getters
+    bool isInsertingComponent() const;
+
+    // Event handling
+    void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
+    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
+
+    void terminalClickEvent(GraphicComponent *source, QPointF terminal);
+
+private:
+    GraphicBranch *_insertedBranch{};
+    CircuitView *circuitView;
+};
 
 class CircuitView : public QGraphicsView
 {
@@ -97,6 +121,8 @@ private:
     // Position where a drag has started, in original coordinates (provided by event)
     QPointF _dragPos;
     bool _dragging = false;
+
+    friend class CircuitViewScene;
 
 };
 

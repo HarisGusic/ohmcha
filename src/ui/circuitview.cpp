@@ -5,10 +5,80 @@
 #include <cmath>
 #include <QGraphicsItem>
 #include <QDebug>
+#include <QGraphicsSceneMouseEvent>
 #include "graphic_component.h"
 
 namespace Ohmcha
 {
+
+/*********
+ * Scene *
+ *********/
+
+CircuitViewScene::CircuitViewScene(CircuitView *circuitView)
+    : QGraphicsScene(), circuitView(circuitView)
+{
+
+}
+
+bool CircuitViewScene::isInsertingComponent() const
+{
+    return _insertedBranch != nullptr;
+}
+
+void CircuitViewScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+{
+    QGraphicsScene::mouseMoveEvent(event);
+    if (_insertedBranch != nullptr)
+    {
+        _insertedBranch->setSecondAnchor(nullptr, event->scenePos());
+        update();
+    }
+}
+
+void CircuitViewScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+    QGraphicsScene::mousePressEvent(event);
+}
+
+void CircuitViewScene::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key::Key_Escape && _insertedBranch != nullptr)
+    {
+        removeItem(_insertedBranch);
+        delete _insertedBranch;
+        _insertedBranch = nullptr;
+        update();
+    }
+}
+
+void CircuitViewScene::terminalClickEvent(GraphicComponent *source, QPointF terminal)
+{
+    if (_insertedBranch == nullptr)
+    { // The user has clicked on a terminal and begun a branch insertion
+        _insertedBranch = new GraphicBranch;
+        _insertedBranch->setFirstAnchor(source, terminal);
+        _insertedBranch->setSecondAnchor(nullptr, circuitView->getCursorPosition());
+        addItem(_insertedBranch);
+
+        // Disable rubber band selection
+        circuitView->setDragMode(QGraphicsView::NoDrag);
+    }
+    else if (_insertedBranch->getFirstAnchor() != source)
+    { // Terminal clicked during branch insertion
+        _insertedBranch->setSecondAnchor(source, terminal);
+        _insertedBranch = nullptr;
+        update();
+
+        // Disable rubber band selection
+        circuitView->setDragMode(QGraphicsView::RubberBandDrag);
+    }
+}
+
+/***************
+ * CircuitView *
+ ***************/
+
 // Helper function: get the extents of the scene
 QRectF getViewRect(QGraphicsView *view)
 {
@@ -18,7 +88,7 @@ QRectF getViewRect(QGraphicsView *view)
 }
 
 CircuitView::CircuitView(QWidget *parent)
-    : QGraphicsView(new QGraphicsScene, parent)
+    : QGraphicsView(new CircuitViewScene(this), parent)
 {
     setSceneRect(getViewRect(this));
     setCursor(Qt::BlankCursor);
@@ -102,7 +172,8 @@ void CircuitView::wheelEvent(QWheelEvent *event)
 void CircuitView::mousePressEvent(QMouseEvent *event)
 {
     // Parent method call should be first to prevent selection upon dropping the item in the view.
-    QGraphicsView::mousePressEvent(event);
+    if (event->button() != Qt::MiddleButton)
+        QGraphicsView::mousePressEvent(event);
 
     // _dragPos is used both when dragging the scene and when making a rubber band selection.
     _dragPos = event->pos();
@@ -118,7 +189,8 @@ void CircuitView::mousePressEvent(QMouseEvent *event)
 
 void CircuitView::mouseReleaseEvent(QMouseEvent *event)
 {
-    QGraphicsView::mouseReleaseEvent(event);
+    if (!_dragging)
+        QGraphicsView::mouseReleaseEvent(event);
 
     // If a single item is selected, the user wants to edit it in the component preview.
     if (mode == Idle && scene()->selectedItems().size() == 1)
@@ -152,7 +224,6 @@ void CircuitView::mouseReleaseEvent(QMouseEvent *event)
 
 void CircuitView::mouseMoveEvent(QMouseEvent *event)
 {
-
     // Store the raw cursor position, useful for snapping to grid
     rawCursorPos = mapToScene(event->pos());
 
@@ -200,7 +271,8 @@ void CircuitView::mouseMoveEvent(QMouseEvent *event)
     }
     else cursorPos = rawCursorPos;
 
-    QGraphicsView::mouseMoveEvent(event);
+    if (!_dragging)
+        QGraphicsView::mouseMoveEvent(event);
 }
 
 void CircuitView::resizeEvent(QResizeEvent *event)

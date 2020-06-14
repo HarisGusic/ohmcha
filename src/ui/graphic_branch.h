@@ -6,6 +6,8 @@
 namespace Ohmcha
 {
 
+class GraphicComponent;
+
 class GraphicBranch : public GraphicComponent
 {
 
@@ -19,7 +21,13 @@ public:
     QRectF boundingRect() const override;
 
     // Setters
+    /**
+     * Point is specified in item's coordinate system. If item is null, then
+     * the point is specified in scene coordinates. This is useful in the
+     * interim while connecting two components together.
+     */
     void setFirstAnchor(GraphicComponent *item, const QPointF &point);
+    /** See setFirstAnchor */
     void setSecondAnchor(GraphicComponent *item, const QPointF &point);
 
     // Getters

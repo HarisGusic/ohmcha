@@ -15,6 +15,7 @@ namespace Ohmcha
 {
 
 class CircuitView;
+class GraphicComponent;
 
 class ComponentPreview : public QWidget
 {

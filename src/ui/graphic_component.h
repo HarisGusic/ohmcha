@@ -10,6 +10,8 @@
 namespace Ohmcha
 {
 
+class CircuitViewScene;
+
 class GraphicComponent : public QGraphicsItem
 {
 public:
@@ -50,6 +52,7 @@ public:
     QPointF getTextPosition() const;
     float getTextRotation() const;
     bool isTextRotationIndependent() const;
+    CircuitViewScene *getScene() const;
 
     // Event handling
     void onTerminalClicked(QPointF position);
@@ -58,7 +61,7 @@ public:
     void hoverMoveEvent(QGraphicsSceneHoverEvent *event) override;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
 
-    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
+    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 
 protected:
 

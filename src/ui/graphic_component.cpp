@@ -2,6 +2,7 @@
 
 #include "graphic_resistor.h"
 #include "graphic_branch.h"
+#include "circuitview.h"
 
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
@@ -108,6 +109,11 @@ bool GraphicComponent::isTextRotationIndependent() const
     return textRotationIndependent;
 }
 
+CircuitViewScene *GraphicComponent::getScene() const
+{
+    return dynamic_cast<CircuitViewScene*>(scene());
+}
+
 void GraphicComponent::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
     QGraphicsItem::hoverEnterEvent(event);
@@ -116,7 +122,8 @@ void GraphicComponent::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 
 void GraphicComponent::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
 {
-    if (!scene()->selectedItems().empty() && *scene()->selectedItems().begin() == this)
+    if ((getScene() && getScene()->isInsertingComponent()) ||
+            (!scene()->selectedItems().empty() && *scene()->selectedItems().begin() == this))
     {
         auto nearestTerminal = findNearestTerminal(event->pos());
         if (nearestTerminal != _selectedTerminal)
@@ -135,14 +142,13 @@ void GraphicComponent::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
     scene()->update();
 }
 
-void GraphicComponent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
+void GraphicComponent::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (_selectedTerminal)
-    { // Create a new branch starting from the selected terminal
-        GraphicBranch *branch = new GraphicBranch();
-        // TODO
+    if (_selectedTerminal && getScene())
+    { // A terminal on this item was clicked
+        event->ignore();
+        getScene()->terminalClickEvent(this, *_selectedTerminal);
     }
-        ;
 }
 
 }
