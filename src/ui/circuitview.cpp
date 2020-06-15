@@ -50,6 +50,12 @@ void CircuitViewScene::keyPressEvent(QKeyEvent *event)
         _insertedBranch = nullptr;
         update();
     }
+    if (event->key() == Qt::Key::Key_Delete)
+        foreach(auto *item, selectedItems())
+        {
+            removeItem(item);
+            delete item;
+        }
 }
 
 void CircuitViewScene::terminalClickEvent(GraphicComponent *source, QPointF terminal)
