@@ -14,6 +14,7 @@ namespace Ohmcha
 GraphicComponent::GraphicComponent()
 {
     setAcceptHoverEvents(true);
+    setZValue(25);
     setFlag(ItemIsSelectable);
     setFlag(ItemIsMovable);
 }

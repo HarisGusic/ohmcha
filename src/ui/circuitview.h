@@ -19,6 +19,7 @@ class CircuitView;
 
 class CircuitViewScene : public QGraphicsScene
 {
+    Q_OBJECT
 public:
     // Constructors
     CircuitViewScene(CircuitView *circuitView);
@@ -32,6 +33,10 @@ public:
     void keyPressEvent(QKeyEvent *event) override;
 
     void terminalClickEvent(GraphicComponent *source, QPointF terminal);
+
+private slots:
+
+    void on_selectionChanged();
 
 private:
     GraphicBranch *_insertedBranch{};

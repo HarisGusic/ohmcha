@@ -18,7 +18,7 @@ namespace Ohmcha
 CircuitViewScene::CircuitViewScene(CircuitView *circuitView)
     : QGraphicsScene(), circuitView(circuitView)
 {
-
+    connect(this, &QGraphicsScene::selectionChanged, this, &CircuitViewScene::on_selectionChanged);
 }
 
 bool CircuitViewScene::isInsertingComponent() const
@@ -73,6 +73,11 @@ void CircuitViewScene::terminalClickEvent(GraphicComponent *source, QPointF term
         // Disable rubber band selection
         circuitView->setDragMode(QGraphicsView::RubberBandDrag);
     }
+}
+
+void CircuitViewScene::on_selectionChanged()
+{
+    update();
 }
 
 /***************
@@ -313,8 +318,7 @@ void CircuitView::updateCursorGuides()
         vGuide->setLine(cursorPos.x(), rect.top(), cursorPos.x(), rect.bottom());
     }
     // Update instantly to reduce input lag
-    hGuide->update();
-    vGuide->update();
+    scene()->update();
 }
 
 void CircuitView::snapToGrid()

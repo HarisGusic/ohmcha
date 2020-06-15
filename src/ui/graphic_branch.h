@@ -22,7 +22,11 @@ public:
     QRectF boundingRect() const override;
     QPainterPath shape() const override;
 
-    void split(const QPointF &point);
+    /**
+     * Create a node at point and split the branch into two branches connected
+     * to that node. Point is specified in local coordinates.
+     */
+    void split(QPointF point);
 
     // Setters
     /**

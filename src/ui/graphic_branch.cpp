@@ -17,10 +17,13 @@ GraphicBranch::GraphicBranch()
     : GraphicComponent()
 {
     component = new Branch;
-    setZValue(50);
+    setZValue(0);
+    setFlag(ItemIsMovable, false);
+    setFlag(ItemIsSelectable, false);
 }
 
 GraphicBranch::GraphicBranch(Branch *branch)
+    : GraphicBranch()
 {
     component = branch;
 }
@@ -75,14 +78,27 @@ QPainterPath GraphicBranch::shape() const
     return result;
 }
 
-void GraphicBranch::split(const QPointF &point)
+void GraphicBranch::split(QPointF point)
 {
+    // Calculate the projection of the point onto the branch to prevent it from bending
+    // Vector connecting the first anchor to 'point'
+    QPointF f = mapFromItem(first, pFirst), s = mapFromItem(second, pSecond);
+    QPointF fs = s - f, fp = point - f;
+
+    fp = QPointF::dotProduct(fp, fs) / QPointF::dotProduct(fs,fs) * fs;
+
+    point = f + fp;
+
+    // Create the new node and branch
+    // This branch connects first and point, the new branch connects point and second
+
     GraphicNode *node = new GraphicNode;
     node->setPos(mapToScene(point));
+
     GraphicBranch *newBranch = new GraphicBranch((Branch*) component);
 
     newBranch->setFirstAnchor(node, {});
-    newBranch->setSecondAnchor(getSecondAnchor(), getSecondAnchorPoint());
+    newBranch->setSecondAnchor(second, pSecond);
 
     setSecondAnchor(node, {});
 
@@ -100,6 +116,8 @@ void GraphicBranch::setSecondAnchor(GraphicComponent *item, const QPointF &point
 {
     second = item;
     pSecond = point;
+    if (item != nullptr)
+        setZValue(50);
 }
 
 GraphicComponent *GraphicBranch::getFirstAnchor() const
