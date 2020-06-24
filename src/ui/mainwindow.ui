@@ -37,6 +37,8 @@
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="actionOpen"/>
+    <addaction name="actionNew"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -117,6 +119,16 @@
     <layout class="QVBoxLayout" name="verticalLayout_2"/>
    </widget>
   </widget>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open...</string>
+   </property>
+  </action>
+  <action name="actionNew">
+   <property name="text">
+    <string>New</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

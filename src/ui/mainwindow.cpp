@@ -1,6 +1,12 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include "src/fileio/xml.h"
+
+#include <QFile>
+#include <QFileDialog>
+#include <QMessageBox>
+
 namespace Ohmcha
 {
 
@@ -42,4 +48,23 @@ void MainWindow::initializeComponentList()
     new QListWidgetItem("Current Source", ui->listComponents);
 }
 
+}
+
+void Ohmcha::MainWindow::on_actionOpen_triggered()
+{
+    QString fileName = QFileDialog::getOpenFileName(this, "Open File", QDir::homePath());
+    QFile file(fileName);
+
+    if (!file.open(QFile::ReadWrite))
+    {
+        QMessageBox mb;
+        mb.setText("Cannot open the selected file.");
+        mb.exec();
+        return;
+    }
+
+    delete ui->circuitView;
+    ui->circuitView = new CircuitView(this, xmlParseSchematic(fileName.toStdString()));
+    ui->circuitView->initialize();
+    ui->componentPreview->setCircuitView(ui->circuitView);
 }

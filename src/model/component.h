@@ -13,13 +13,14 @@ class Component
 {
 protected:
 
+    struct Pos { float x, y; };
     /**
      * Additional information that is not relevant for algorithms.
      */
     struct MetaInfo
     {
         std::string name;
-        std::vector<float> positions;
+        Pos *pos{};
     };
 
 public:
@@ -35,12 +36,19 @@ public:
 
     // Setters
     void setName(const std::string &name);
+    /**
+     * Set the position of this component in the schematic. If position
+     * is null, the position is considered arbitrary.
+     */
+    void setPosition(Pos *position);
 
     // Getters
     /**
      * @return Name given by the user.
      */
     std::string getName() const;
+    /** See setPosition */
+    Pos *getPosition() const;
     virtual int getTerminalCount() const = 0;
 
 protected:

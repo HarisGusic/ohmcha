@@ -4,6 +4,7 @@
 #include "graphic_component.h"
 #include "component_preview.h"
 #include "graphic_branch.h"
+#include "src/model/schematic.h"
 
 #include <QWidget>
 #include <QGraphicsView>
@@ -53,6 +54,7 @@ public:
 
     // Constructors
     CircuitView(QWidget *parent = nullptr);
+    CircuitView(QWidget *parent, Schematic *schematic);
 
     // Methods
     void initialize();

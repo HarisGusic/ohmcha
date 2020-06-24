@@ -23,9 +23,22 @@ void Component::setName(const std::string &name)
     metaInfo->name = name;
 }
 
+void Component::setPosition(Component::Pos *position)
+{
+    // Decide whether to make position belong to this object
+    if (metaInfo == nullptr)
+        metaInfo = new MetaInfo;
+    metaInfo->pos = position;
+}
+
 std::string Component::getName() const
 {
     return metaInfo ? metaInfo->name : "";
+}
+
+Component::Pos *Component::getPosition() const
+{
+    return metaInfo ? metaInfo->pos : nullptr;
 }
 
 /**********

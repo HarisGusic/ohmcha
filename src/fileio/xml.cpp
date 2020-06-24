@@ -7,7 +7,9 @@ namespace Ohmcha
 
 const std::map<std::string, Component *(*)(const QDomElement &)> functionMap =
 {
-    {"resistor", xmlParseResistor}
+    {"resistor", xmlParseResistor},
+    {"emf", xmlParseEmf},
+    {"currentsource", xmlParseCurrentSource}
 };
 
 Schematic *xmlParseSchematic(std::string filename)
@@ -131,6 +133,16 @@ float parseValue(const std::string &text)
             throw std::logic_error("Invalid value prefix");
         }
     return value;
+}
+
+Component *xmlParseEmf(const QDomElement &element)
+{
+    //TODO implement
+}
+
+Component *xmlParseCurrentSource(const QDomElement &element)
+{
+    //TODO implement
 }
 
 }

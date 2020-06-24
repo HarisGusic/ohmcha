@@ -32,6 +32,8 @@ public:
 private slots:
     void on_listComponents_itemDoubleClicked(QListWidgetItem *item);
 
+    void on_actionOpen_triggered();
+
 private:
 
     // Private methods
