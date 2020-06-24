@@ -89,6 +89,8 @@ void ComponentPreview::synchronize()
     ui->editAngle->setText(QString::number(component->rotation()));
     ui->editText->setText(component->getName());
     ui->editTextAngle->setText(QString::number(component->getTextRotation()));
+    ui->editTextX->setText(QString::number(component->getTextPosition().x()));
+    ui->editTextY->setText(QString::number(component->getTextPosition().y()));
     ui->btnDepend->setChecked(!component->isTextRotationIndependent());
     ui->btnIndependent->setChecked(component->isTextRotationIndependent());
     anchors[component->getTextAnchor() / 3][component->getTextAnchor() % 3].setChecked(true);
@@ -153,6 +155,18 @@ void ComponentPreview::on_editText_textEdited(const QString &s)
 void ComponentPreview::on_editTextAngle_textEdited(const QString &s)
 {
     component->setTextRotation(s.toFloat());
+    updatePreview();
+}
+
+void ComponentPreview::on_editTextX_textEdited(const QString &s)
+{
+    component->setTextPosition({s.toFloat(), component->getTextPosition().y()});
+    updatePreview();
+}
+
+void ComponentPreview::on_editTextY_textEdited(const QString &s)
+{
+    component->setTextPosition({component->getTextPosition().x(), s.toFloat()});
     updatePreview();
 }
 

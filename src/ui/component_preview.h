@@ -62,6 +62,8 @@ private slots:
     void on_editAngle_textEdited(const QString &s);
     void on_editText_textEdited(const QString &s);
     void on_editTextAngle_textEdited(const QString &s);
+    void on_editTextX_textEdited(const QString &arg1);
+    void on_editTextY_textEdited(const QString &arg1);
 
 private:
 
