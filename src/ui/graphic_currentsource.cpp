@@ -40,6 +40,15 @@ void GraphicCurrentSource::paint(QPainter *painter, const QStyleOptionGraphicsIt
 
     applyColors(painter, option);
 
+    // Draw circle when cursor is near terminal
+    if (_selectedTerminal)
+    {
+        painter->save();
+        painter->setBrush(QBrush(painter->pen().color()));
+        painter->drawEllipse(*_selectedTerminal, 4, 4);
+        painter->restore();
+    }
+
     painter->drawLine(0, -size.height()/2, 0, -15);
     painter->drawLine(0, 15, 0, size.height()/2);
     painter->drawEllipse({0, 0}, 15, 15);

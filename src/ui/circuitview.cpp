@@ -223,7 +223,7 @@ void CircuitView::mouseReleaseEvent(QMouseEvent *event)
     }
 
     // A component is being inserted into the CircuitView.
-    if (mode != Idle)
+    if (mode != Idle && event->button() != Qt::MiddleButton)
     {
         pendingInsert->setFlag(QGraphicsItem::ItemIsMovable);
         pendingInsert->setFlag(QGraphicsItem::ItemIsSelectable);

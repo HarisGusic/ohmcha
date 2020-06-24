@@ -1,5 +1,6 @@
 #include "graphic_branch.h"
 #include "graphic_node.h"
+#include "circuitview.h"
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
@@ -147,7 +148,9 @@ GraphicComponent *GraphicBranch::getSecondAnchor() const
 
 void GraphicBranch::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
-    split(event->pos());
+    auto _scene = dynamic_cast<CircuitViewScene*>(scene());
+    if (_scene != nullptr && !_scene->isInsertingComponent())
+        split(event->pos());
 }
 
 }
