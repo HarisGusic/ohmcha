@@ -48,7 +48,6 @@ void CircuitViewScene::keyPressEvent(QKeyEvent *event)
         removeItem(_insertedBranch);
         delete _insertedBranch;
         _insertedBranch = nullptr;
-        update();
     }
     if (event->key() == Qt::Key::Key_Delete)
         foreach(auto *item, selectedItems())

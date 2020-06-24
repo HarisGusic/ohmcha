@@ -29,6 +29,8 @@ public:
      * The point is specified in this item's coordinate system.
      */
     const QPointF *findNearestTerminal(QPointF point) const;
+    virtual GraphicComponent *copy() const = 0;
+
     /**
      * Dynamically allocate a GraphicComponent wrapper around
      * the specified Component. The type of the resulting object
@@ -64,6 +66,10 @@ public:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 
 protected:
+
+    // Methods
+    virtual void applyColors(QPainter *painter, const QStyleOptionGraphicsItem *option);
+    virtual void drawText(QPainter *painter);
 
     // Attributes
 

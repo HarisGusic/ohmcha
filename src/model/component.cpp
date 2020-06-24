@@ -9,8 +9,11 @@ Component *Component::newByName(std::string name)
 {
     if (name == "Resistor")
         return new Resistor;
-    else;
-        //TODO custom component type
+    else if (name == "Emf")
+        return new Emf;
+    else if (name == "Current Source")
+        return new CurrentSource;
+    //TODO custom component type
 }
 
 void Component::setName(const std::string &name)

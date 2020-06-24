@@ -13,23 +13,15 @@ GraphicNode::GraphicNode()
     component = new Node;
 }
 
+GraphicNode::GraphicNode(const GraphicNode &original)
+    : GraphicComponent(original)
+{
+
+}
+
 void GraphicNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    // Change color if item is hovered over
-    if (option->state & QStyle::State_MouseOver)
-    {
-        QPen pen = painter->pen();
-        pen.setColor({0x8c, 0x9e, 0xff});
-        painter->setPen(pen);
-    }
-
-    // Change color if item is selected
-    if (option->state & QStyle::State_Selected)
-    {
-        auto pen = painter->pen();
-        pen.setColor(QColor(0xff,0x8c,0x8c));
-        painter->setPen(pen);
-    }
+    applyColors(painter, option);
 
     painter->setBrush(QBrush(painter->pen().color()));
     painter->drawEllipse(-3, -3, 6, 6);
@@ -38,6 +30,11 @@ void GraphicNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 QRectF GraphicNode::boundingRect() const
 {
     return {-3, -3, 6, 6};
+}
+
+GraphicComponent *GraphicNode::copy() const
+{
+    return new GraphicNode(*this);
 }
 
 }

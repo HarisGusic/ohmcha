@@ -15,6 +15,12 @@ GraphicResistor::GraphicResistor()
     terminals = { {0, -size.height() / 2}, {0, size.height() / 2} };
 }
 
+GraphicResistor::GraphicResistor(Resistor *resistor)
+    : GraphicResistor()
+{
+    component = resistor;
+}
+
 GraphicResistor::GraphicResistor(QPointF node1, QPointF node2)
     : GraphicResistor()
 {
@@ -41,25 +47,7 @@ void GraphicResistor::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
 {
     if (!component) return;
 
-    // Change color if item is hovered over
-    if (option->state & QStyle::State_MouseOver)
-    {
-        auto pen = painter->pen();
-        pen.setColor(QColor(0x8c,0x9e,0xff));
-        painter->setPen(pen);
-    }
-
-    // Change color if item is selected
-    if (option->state & QStyle::State_Selected)
-    {
-        auto pen = painter->pen();
-        pen.setColor(QColor(0xff,0x8c,0x8c));
-        painter->setPen(pen);
-    }
-
-    // Draw terminals
-    painter->drawLine(0, -size.height()/2, 0, -size.height()/2 + terminalSize);
-    painter->drawLine(0, size.height()/2 - terminalSize, 0, size.height()/2);
+    applyColors(painter, option);
 
     // Draw circle when cursor is near terminal
     if (_selectedTerminal)
@@ -70,24 +58,20 @@ void GraphicResistor::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
         painter->restore();
     }
 
+    // Draw terminals
+    painter->drawLine(0, -size.height()/2, 0, -size.height()/2 + terminalSize);
+    painter->drawLine(0, size.height()/2 - terminalSize, 0, size.height()/2);
     // Draw main rect
     QRectF rect = {-size.width()/2, -size.height()/2 + terminalSize, size.width(), size.height() - 2*terminalSize};
     painter->drawRect(rect);
 
-    // Counter-rotate text to make it independent from the component's rotation.
-    if (textRotationIndependent)
-        painter->rotate(-rotation());
+    drawText(painter);
 
-    painter->rotate(textAngle);
+}
 
-    // Draw text
-    QFontMetricsF fm(painter->fontMetrics());
-    float width=fm.width(QString::fromStdString(component->getName())), height = fm.height();
-    // TODO right now I have to divide height by 2 for the text to display correctly.
-    // Find a fix. It is probably because I have to make a coordinate transformation somewhere.
-    QPointF _textPos = textPos - QPointF((textAnchor % 3) * width / 2, (textAnchor / 3 - 2) * height / 2 / 2);
-    painter->drawText(_textPos, QString::fromStdString(component->getName()));
-
+GraphicComponent *GraphicResistor::copy() const
+{
+    return new GraphicResistor(*this);
 }
 
 void GraphicResistor::setCenter(QPointF center)

@@ -37,7 +37,7 @@ public:
     /**
      * Create a new GraphicComponent, with the same properties as the previous component.
      */
-    void initializeNewComponent();
+    void initializeNewComponent(const QString &type);
     /**
      * Synchronize the contents of the text boxes and buttons
      * with the actual properties of component.
@@ -62,8 +62,8 @@ private slots:
     void on_editAngle_textEdited(const QString &s);
     void on_editText_textEdited(const QString &s);
     void on_editTextAngle_textEdited(const QString &s);
-    void on_editTextX_textEdited(const QString &arg1);
-    void on_editTextY_textEdited(const QString &arg1);
+    void on_editTextX_textEdited(const QString &s);
+    void on_editTextY_textEdited(const QString &s);
 
 private:
 
@@ -78,6 +78,7 @@ private:
     Ui::ComponentPreview *ui;
     /** component is guaranteed to be non-null whenever this widget is visible. */
     GraphicComponent *component = nullptr;
+    QString lastComponentType;
     /** The circuit view that is currently active in the window */
     CircuitView *circuitView = nullptr;
     /** A 3x3 grid of buttons used to choose the text anchor */

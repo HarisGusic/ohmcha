@@ -30,13 +30,15 @@ void MainWindow::on_listComponents_itemDoubleClicked(QListWidgetItem *item)
 {
     ui->dockInsert->setVisible(true);
     ui->circuitView->scene()->clearSelection();
-    ui->componentPreview->initializeNewComponent();
+    ui->componentPreview->initializeNewComponent(item->text());
     ui->componentPreview->setVisible(true);
 }
 
 void MainWindow::initializeComponentList()
 {
     new QListWidgetItem("Resistor", ui->listComponents);
+    new QListWidgetItem("Emf", ui->listComponents);
+    new QListWidgetItem("Current Source", ui->listComponents);
 }
 
 }

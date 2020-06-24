@@ -61,17 +61,18 @@ void ComponentPreview::initialize()
             this, &ComponentPreview::on_selectionChanged);
 }
 
-void ComponentPreview::initializeNewComponent()
+void ComponentPreview::initializeNewComponent(const QString &type)
 {
     // Remove the last item from the scene
     if (component != nullptr && component->scene() == ui->preview->scene())
         ui->preview->scene()->removeItem(component);
 
     // If no component was edited before, initialize with default properties
-    if (component == nullptr)
-        component = new GraphicResistor(); //TODO generalize
+    if (type != lastComponentType)
+        component = GraphicComponent::newFromComponent(Component::newByName(type.toStdString()));
     else
-        component = new GraphicResistor(*(GraphicResistor*)component);
+        component = component->copy();
+    lastComponentType = type;
 
     // The component is not selectable nor movable inside the preview
     component->setFlag(QGraphicsItem::ItemIsMovable, false);
@@ -118,7 +119,7 @@ void ComponentPreview::setEditExisting(GraphicComponent *component)
 void ComponentPreview::on_selectionChanged()
 {
     if (circuitView->scene()->selectedItems().empty())
-        initializeNewComponent();
+        initializeNewComponent(lastComponentType);
 }
 
 void ComponentPreview::on_textAnchorPicked(int id)
@@ -136,7 +137,7 @@ void ComponentPreview::on_textIndependencePicked(int id)
 void ComponentPreview::on_btnAdd_clicked()
 {
     circuitView->initiateInsertComponent(component, CircuitView::InsertPoints);
-    initializeNewComponent();
+    initializeNewComponent(lastComponentType);
 }
 
 void ComponentPreview::on_editAngle_textEdited(const QString &s)

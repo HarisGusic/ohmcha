@@ -28,16 +28,16 @@ GraphicBranch::GraphicBranch(Branch *branch)
     component = branch;
 }
 
-void GraphicBranch::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+GraphicBranch::GraphicBranch(const GraphicBranch &original)
+    : GraphicComponent(original)
 {
 
-    // Mouse is hovering over the item
-    if (option->state & QStyle::State_MouseOver && second != nullptr)
-    {
-        auto pen = painter->pen();
-        pen.setColor({0x8c, 0x9e, 0xff});
-        painter->setPen(pen);
-    }
+}
+
+void GraphicBranch::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+    applyColors(painter, option);
+
     if (first != nullptr)
     {
         QPointF b;
@@ -76,6 +76,11 @@ QPainterPath GraphicBranch::shape() const
     result.closeSubpath();
 
     return result;
+}
+
+GraphicComponent *GraphicBranch::copy() const
+{
+    return new GraphicBranch(*this);
 }
 
 void GraphicBranch::split(QPointF point)

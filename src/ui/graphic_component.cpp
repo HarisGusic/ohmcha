@@ -2,11 +2,14 @@
 
 #include "graphic_resistor.h"
 #include "graphic_branch.h"
+#include "graphic_emf.h"
 #include "circuitview.h"
 
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
 #include <QDebug>
+#include <QPainter>
+#include <QStyleOptionGraphicsItem>
 
 namespace Ohmcha
 {
@@ -46,7 +49,11 @@ const QPointF *GraphicComponent::findNearestTerminal(QPointF point) const
 GraphicComponent *GraphicComponent::newFromComponent(Component *component)
 {
     if (dynamic_cast<Resistor*>(component))
-        return new GraphicResistor();
+        return new GraphicResistor((Resistor*) component);
+    else if (dynamic_cast<Emf*>(component))
+        return new GraphicEmf((Emf*) component);
+    //else if (dynamic_cast<CurrentSource*>(component))
+    //    return new GraphicCurrentSource((CurrentSource*) component);
     //TODO add others
 }
 
@@ -150,6 +157,42 @@ void GraphicComponent::mousePressEvent(QGraphicsSceneMouseEvent *event)
         event->ignore();
         getScene()->terminalClickEvent(this, *_selectedTerminal);
     }
+}
+
+void GraphicComponent::applyColors(QPainter *painter, const QStyleOptionGraphicsItem *option)
+{
+    // Change color if item is hovered over
+    if (option->state & QStyle::State_MouseOver)
+    {
+        auto pen = painter->pen();
+        pen.setColor(QColor(0x8c,0x9e,0xff));
+        painter->setPen(pen);
+    }
+
+    // Change color if item is selected
+    if (option->state & QStyle::State_Selected)
+    {
+        auto pen = painter->pen();
+        pen.setColor(QColor(0xff,0x8c,0x8c));
+        painter->setPen(pen);
+    }
+}
+
+void GraphicComponent::drawText(QPainter *painter)
+{
+    // Counter-rotate text to make it independent from the component's rotation.
+    if (textRotationIndependent)
+        painter->rotate(-rotation());
+
+    painter->rotate(textAngle);
+
+    // Draw text
+    QFontMetricsF fm(painter->fontMetrics());
+    float width=fm.width(QString::fromStdString(component->getName())), height = fm.height();
+    // TODO right now I have to divide height by 2 for the text to display correctly.
+    // Find a fix. It is probably because I have to make a coordinate transformation somewhere.
+    QPointF _textPos = textPos - QPointF((textAnchor % 3) * width / 2, (textAnchor / 3 - 2) * height / 2 / 2);
+    painter->drawText(_textPos, QString::fromStdString(component->getName()));
 }
 
 }

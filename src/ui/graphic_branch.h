@@ -16,11 +16,14 @@ public:
     // Constructors
     GraphicBranch();
     GraphicBranch(Branch *branch);
+    GraphicBranch(const GraphicBranch &original);
 
     // Methods
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
     QRectF boundingRect() const override;
     QPainterPath shape() const override;
+
+    virtual GraphicComponent *copy() const override;
 
     /**
      * Create a node at point and split the branch into two branches connected
