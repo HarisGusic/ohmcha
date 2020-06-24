@@ -3,6 +3,7 @@
 #include "graphic_resistor.h"
 #include "graphic_branch.h"
 #include "graphic_emf.h"
+#include "graphic_currentsource.h"
 #include "circuitview.h"
 
 #include <QGraphicsScene>
@@ -52,8 +53,8 @@ GraphicComponent *GraphicComponent::newFromComponent(Component *component)
         return new GraphicResistor((Resistor*) component);
     else if (dynamic_cast<Emf*>(component))
         return new GraphicEmf((Emf*) component);
-    //else if (dynamic_cast<CurrentSource*>(component))
-    //    return new GraphicCurrentSource((CurrentSource*) component);
+    else if (dynamic_cast<CurrentSource*>(component))
+        return new GraphicCurrentSource((CurrentSource*) component);
     //TODO add others
 }
 

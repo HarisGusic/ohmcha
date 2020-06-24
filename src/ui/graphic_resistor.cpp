@@ -13,6 +13,7 @@ GraphicResistor::GraphicResistor()
 {
     component = new Resistor;
     terminals = { {0, -size.height() / 2}, {0, size.height() / 2} };
+    textPos = {15, 0};
 }
 
 GraphicResistor::GraphicResistor(Resistor *resistor)

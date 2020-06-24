@@ -27,6 +27,7 @@ SOURCES += \
     src/ui/component_preview.cpp \
     src/ui/graphic_branch.cpp \
     src/ui/graphic_component.cpp \
+    src/ui/graphic_currentsource.cpp \
     src/ui/graphic_emf.cpp \
     src/ui/graphic_node.cpp \
     src/ui/graphic_resistor.cpp \
@@ -44,6 +45,7 @@ HEADERS += \
     src/ui/component_preview.h \
     src/ui/graphic_branch.h \
     src/ui/graphic_component.h \
+    src/ui/graphic_currentsource.h \
     src/ui/graphic_emf.h \
     src/ui/graphic_node.h \
     src/ui/graphic_resistor.h \

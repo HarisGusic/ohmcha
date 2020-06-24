@@ -30,6 +30,7 @@ void MainWindow::on_listComponents_itemDoubleClicked(QListWidgetItem *item)
 {
     ui->dockInsert->setVisible(true);
     ui->circuitView->scene()->clearSelection();
+    ui->componentPreview->setComponentType(item->text());
     ui->componentPreview->initializeNewComponent(item->text());
     ui->componentPreview->setVisible(true);
 }

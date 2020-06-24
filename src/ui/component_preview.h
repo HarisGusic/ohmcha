@@ -46,6 +46,7 @@ public:
 
     // Setters
     void setCircuitView(CircuitView *cv);
+    void setComponentType(const QString &type);
 
 public slots:
     void setEditExisting(GraphicComponent *component);
@@ -78,7 +79,7 @@ private:
     Ui::ComponentPreview *ui;
     /** component is guaranteed to be non-null whenever this widget is visible. */
     GraphicComponent *component = nullptr;
-    QString lastComponentType;
+    QString lastComponentType, selectedComponentType;
     /** The circuit view that is currently active in the window */
     CircuitView *circuitView = nullptr;
     /** A 3x3 grid of buttons used to choose the text anchor */

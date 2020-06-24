@@ -22,6 +22,7 @@ ComponentPreview::ComponentPreview(QWidget *parent)
     ui->preview->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->preview->verticalScrollBar()->blockSignals(true);
     ui->preview->horizontalScrollBar()->blockSignals(true);
+    ui->preview->setRenderHint(QPainter::Antialiasing);
 
     // Setup anchor picker and enable callbacks
     anchorGroup = new QButtonGroup;
@@ -102,6 +103,11 @@ void ComponentPreview::setCircuitView(CircuitView *cv)
     circuitView = cv;
 }
 
+void ComponentPreview::setComponentType(const QString &type)
+{
+    selectedComponentType = type;
+}
+
 void ComponentPreview::setEditExisting(GraphicComponent *component)
 {
     // Remove the old component from the scene
@@ -119,7 +125,9 @@ void ComponentPreview::setEditExisting(GraphicComponent *component)
 void ComponentPreview::on_selectionChanged()
 {
     if (circuitView->scene()->selectedItems().empty())
-        initializeNewComponent(lastComponentType);
+        initializeNewComponent(selectedComponentType);
+    else if (circuitView->scene()->selectedItems().size() == 1)
+        lastComponentType = "";
 }
 
 void ComponentPreview::on_textAnchorPicked(int id)

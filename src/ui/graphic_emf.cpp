@@ -7,7 +7,9 @@ namespace Ohmcha {
 GraphicEmf::GraphicEmf()
     : GraphicComponent()
 {
+    component = new Emf;
     terminals = { {0, -size.height() / 2}, {0, size.height() / 2} };
+    textPos = {26, 0};
 }
 
 GraphicEmf::GraphicEmf(Emf *emf)
