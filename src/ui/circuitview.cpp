@@ -117,6 +117,12 @@ CircuitView::CircuitView(QWidget *parent, Schematic *schematic)
     }
 }
 
+CircuitView::~CircuitView()
+{
+    scene()->clear();
+    //TODO delete schematic
+}
+
 void CircuitView::initialize()
 {
     setSceneRect(getViewRect(this));

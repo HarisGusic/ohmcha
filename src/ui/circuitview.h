@@ -56,6 +56,8 @@ public:
     CircuitView(QWidget *parent = nullptr);
     CircuitView(QWidget *parent, Schematic *schematic);
 
+    ~CircuitView();
+
     // Methods
     void initialize();
     void initiateInsertComponent(GraphicComponent *component, Mode insertMode);
