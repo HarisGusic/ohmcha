@@ -50,7 +50,18 @@ void MainWindow::initializeComponentList()
 
 void MainWindow::on_actionOpen_triggered()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, "Open File", QDir::homePath());
+    // Determine the directory to open
+    QString defaultPath;
+
+    QSettings settings("ohmcha", "ohmcha");
+    QVariant value = settings.value("default_path");
+    if (value.isNull())
+        defaultPath = QDir::homePath();
+    else
+        defaultPath = value.toString();
+
+    // Display the dialog and get the user choice
+    QString fileName = QFileDialog::getOpenFileName(this, "Open File", defaultPath);
     QFile file(fileName);
 
     if (!file.open(QFile::ReadWrite))
@@ -61,6 +72,11 @@ void MainWindow::on_actionOpen_triggered()
         return;
     }
 
+    // Save the current directory as the default one
+    settings.setValue("default_path", QFileInfo(fileName).absolutePath());
+    settings.sync();
+
+    // Replace the old circuit view with a new one
     delete ui->circuitView;
     ui->circuitView = new CircuitView(this, xmlParseSchematic(fileName.toStdString()));
     ui->horizontalLayout->addWidget(ui->circuitView);

@@ -69,7 +69,7 @@ void ComponentPreview::initializeNewComponent(const QString &type)
         ui->preview->scene()->removeItem(component);
 
     // If no component was edited before, initialize with default properties
-    if (type != lastComponentType)
+    if (component == nullptr || type != lastComponentType)
         component = GraphicComponent::newFromComponent(Component::newByName(type.toStdString()));
     else
         component = component->copy();
