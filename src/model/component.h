@@ -145,6 +145,10 @@ protected:
      */
     RowVector3f A;
     float B;
+
+public:
+    //TODO remove this ASAP
+    std::vector<Component*> attached;
 };
 
 class Resistor : public Component

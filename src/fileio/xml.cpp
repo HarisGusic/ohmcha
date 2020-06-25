@@ -261,7 +261,10 @@ QString xmlConvertSchematic(Schematic *schematic)
     QString result("<schematic>");
     for (auto *component : schematic->getComponents())
         result += "\n" + xmlConvertComponent(component);
-    //TODO add branches
+    for (auto *node : schematic->getNodes())
+        result += "\n" + xmlConvertNode(node);
+    for (auto *branch : schematic->getBranches())
+        result += "\n" + xmlConvertBranch(schematic, branch);
     result += "\n</schematic>";
     return result;
 }
@@ -282,6 +285,28 @@ QString xmlConvertCurrentSource(CurrentSource *source)
     result += QString(" R=\"%1\"").arg(source->getCurrent());
     result += "/>";
     return result;
+}
+
+QString xmlConvertBranch(Schematic *schematic, Branch *branch)
+{
+    QString components;
+    for (int i = 0; i < branch->attached.size(); ++i)
+    {
+        if (i != 0)
+            components += ", ";
+        components += QString::number(schematic->getComponentId(branch->attached[i]));
+    }
+
+    return QString("<branch name=\"%1\" components=\"%2\" n1=\"%3\" n2=\"%4\"/>")
+            .arg(QString::fromStdString(branch->getName()))
+            .arg(components)
+            .arg(schematic->getNodeId(branch->getNode1()))
+            .arg(schematic->getNodeId(branch->getNode2()));
+}
+
+QString xmlConvertNode(Node *node)
+{
+    return QString("<node ") + convertCommonComponent(node) + QString("/>");
 }
 
 }

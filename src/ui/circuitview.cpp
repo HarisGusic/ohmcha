@@ -309,6 +309,7 @@ Schematic *CircuitView::getSchematic()
                     branch->setComponent(new Branch);
 
                 Branch *_branch = (Branch*) branch->getComponent();
+                _branch->setNode1(*(Node*) node->getComponent());
 
                 // Follow down the branch
                 GraphicComponent *next = node;
@@ -320,10 +321,14 @@ Schematic *CircuitView::getSchematic()
                     nextElement(br, next, &pNext);
 
                     if (dynamic_cast<GraphicNode*>(next))
+                    {
+                        _branch->setNode2(*(Node*) next->getComponent());
                         break;
+                    }
 
                     // Insert the next component into the model branch
                     insertToBranch(next, pNext, _branch); //TODO not properly implemented
+                    _branch->attached.push_back(next->getComponent());
                     br = getOtherBranch(next, br, scene());
                     if (br == nullptr) break;
                 }

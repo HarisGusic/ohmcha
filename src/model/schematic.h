@@ -26,6 +26,8 @@ public:
     std::vector<Component*> getComponents() const;
     std::vector<Branch*> getBranches() const;
     std::vector<Node*> getNodes() const;
+    int getComponentId(Component *component) const;
+    int getNodeId(Node *node) const;
 
 private:
 

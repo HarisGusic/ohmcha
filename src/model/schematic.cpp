@@ -42,6 +42,22 @@ std::vector<Node *> Schematic::getNodes() const
     return nodes;
 }
 
+int Schematic::getComponentId(Component *component) const
+{
+    for (int i = 0; i < components.size(); ++i)
+        if (components[i] == component)
+            return i;
+    return -1;
+}
+
+int Schematic::getNodeId(Node *node) const
+{
+    for (int i = 0; i < nodes.size(); ++i)
+        if (nodes[i] == node)
+            return i;
+    return -1;
+}
+
 std::vector<Component *> &Schematic::getComponents()
 {
     return components;

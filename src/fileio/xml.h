@@ -21,5 +21,7 @@ QString xmlConvertComponent(Component *component);
 QString xmlConvertResistor(Resistor *resistor);
 QString xmlConvertEmf(Emf *emf);
 QString xmlConvertCurrentSource(CurrentSource *source);
+QString xmlConvertBranch(Schematic *schematic, Branch *branch);
+QString xmlConvertNode(Node *node);
 
 }
