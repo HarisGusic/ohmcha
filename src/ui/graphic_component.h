@@ -60,6 +60,8 @@ public:
     bool isTextRotationIndependent() const;
     Component *getComponent() const;
     CircuitViewScene *getScene() const;
+    int getTerminalId(const QPointF &terminal) const;
+    QList<QPointF> getTerminals() const;
 
     // Event handling
     void onTerminalClicked(QPointF position);
@@ -80,6 +82,7 @@ protected:
 
     // List of terminals in scene coordinates
     QList<QPointF> terminals;
+    bool branch1 = false, branch2 = false;
     QSizeF size;
     Component *component = nullptr;
     Anchor textAnchor = W;
@@ -87,6 +90,9 @@ protected:
     float textAngle = 0;
     bool textRotationIndependent = false;
     const QPointF *_selectedTerminal = nullptr;
+
+    //TODO remove some time
+    friend class GraphicBranch;
 };
 
 }

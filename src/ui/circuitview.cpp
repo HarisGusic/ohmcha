@@ -212,7 +212,6 @@ Schematic *CircuitView::getSchematic()
         if (dynamic_cast<GraphicComponent*>(c) != nullptr)
             schematic->add(((GraphicComponent*) c)->getComponent());
     }
-    //TODO implement
     return schematic;
 }
 

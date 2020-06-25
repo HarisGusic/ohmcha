@@ -17,10 +17,8 @@ namespace Ohmcha
 GraphicBranch::GraphicBranch()
     : GraphicComponent()
 {
-    component = new Branch;
     setZValue(0);
     setFlag(ItemIsMovable, false);
-    setFlag(ItemIsSelectable, false);
 }
 
 GraphicBranch::GraphicBranch(Branch *branch)
@@ -34,6 +32,18 @@ GraphicBranch::GraphicBranch(const GraphicBranch &original)
     : GraphicComponent(original)
 {
 
+}
+
+GraphicBranch::~GraphicBranch()
+{
+    if (first->getTerminalId(pFirst) == 0)
+        first->branch1 = false;
+    if (second->getTerminalId(pSecond) == 0)
+        second->branch1 = false;
+    if (first->getTerminalId(pFirst) == 1)
+        first->branch2 = false;
+    if (second->getTerminalId(pSecond) == 1)
+        second->branch2 = false;
 }
 
 void GraphicBranch::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -102,7 +112,8 @@ void GraphicBranch::split(QPointF point)
     GraphicNode *node = new GraphicNode;
     node->setPos(mapToScene(point));
 
-    GraphicBranch *newBranch = new GraphicBranch((Branch*) component);
+    //TODO temporarily replaced: GraphicBranch *newBranch = new GraphicBranch((Branch*) component);
+    GraphicBranch *newBranch = new GraphicBranch();
 
     newBranch->setFirstAnchor(node, {});
     newBranch->setSecondAnchor(second, pSecond);
@@ -117,14 +128,33 @@ void GraphicBranch::setFirstAnchor(GraphicComponent *item, const QPointF &point)
 {
     first = item;
     pFirst = point;
+
+    int terminalId = item->getTerminalId(point);
+    // TODO this does not work for elements with more terminals
+    // Flag terminals 1/2 as connected to a branch
+    if (terminalId == 0)
+        item->branch1 = true;
+    else
+        item->branch2 = true;
 }
 
 void GraphicBranch::setSecondAnchor(GraphicComponent *item, const QPointF &point)
 {
     second = item;
     pSecond = point;
+
+    if (item == nullptr)
+        return;
+
+    // TODO this does not work for elements with more terminals
+    // Flag terminals 1/2 as connected to a branch
+    int terminalId = item->getTerminalId(point);
     if (item != nullptr)
         setZValue(50);
+    if (terminalId == 0)
+        item->branch1 = true;
+    else
+        item->branch2 = true;
 }
 
 GraphicComponent *GraphicBranch::getFirstAnchor() const

@@ -113,6 +113,9 @@ void ComponentPreview::setComponentType(const QString &type)
 
 void ComponentPreview::setEditExisting(GraphicComponent *component)
 {
+    //TODO probably very inelegant
+    if (component != nullptr && dynamic_cast<GraphicBranch*>(component))
+        return;
     // Remove the old component from the scene
     if (this->component != nullptr && this->component->scene() == ui->preview->scene())
         ui->preview->scene()->removeItem(this->component);
@@ -129,7 +132,8 @@ void ComponentPreview::on_selectionChanged()
 {
     if (circuitView->scene()->selectedItems().empty())
         initializeNewComponent(selectedComponentType);
-    else if (circuitView->scene()->selectedItems().size() == 1)
+    else if (circuitView->scene()->selectedItems().size() == 1
+         && !dynamic_cast<GraphicBranch*>(circuitView->scene()->selectedItems()[0]))
     {
         lastComponentType = "";
         setVisible(true);

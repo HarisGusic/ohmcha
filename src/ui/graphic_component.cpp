@@ -164,6 +164,22 @@ CircuitViewScene *GraphicComponent::getScene() const
     return dynamic_cast<CircuitViewScene*>(scene());
 }
 
+int GraphicComponent::getTerminalId(const QPointF &terminal) const
+{
+    int i = 0;
+    for(auto it = terminals.begin(); it != terminals.end(); ++it, ++i)
+    {
+        if (*it == terminal)
+            return i;
+    }
+    return -1;
+}
+
+QList<QPointF> GraphicComponent::getTerminals() const
+{
+    return terminals;
+}
+
 void GraphicComponent::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
     QGraphicsItem::hoverEnterEvent(event);
@@ -194,10 +210,15 @@ void GraphicComponent::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 
 void GraphicComponent::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (_selectedTerminal && getScene())
-    { // A terminal on this item was clicked
-        event->ignore();
-        getScene()->terminalClickEvent(this, *_selectedTerminal);
+    //TODO very inelegant -- change
+    if (_selectedTerminal)
+    {
+        bool terminalAvailable = getTerminalId(*_selectedTerminal) == 0 ? !branch1 : !branch2;
+        if (terminalAvailable && getScene())
+        { // A terminal on this item was clicked
+            event->ignore();
+            getScene()->terminalClickEvent(this, *_selectedTerminal);
+        }
     }
 }
 
