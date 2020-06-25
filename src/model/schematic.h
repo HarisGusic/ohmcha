@@ -14,11 +14,18 @@ public:
 
     // Methods
     void add(Component *component);
+    void clearBranches();
+    void clearNodes();
 
     // Setters
 
     // Getters
-    std::vector<Component*> getComponents();
+    std::vector<Component*> &getComponents();
+    std::vector<Branch*> &getBranches();
+    std::vector<Node*> &getNodes();
+    std::vector<Component*> getComponents() const;
+    std::vector<Branch*> getBranches() const;
+    std::vector<Node*> getNodes() const;
 
 private:
 

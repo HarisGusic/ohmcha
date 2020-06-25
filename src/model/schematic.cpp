@@ -17,10 +17,44 @@ void Schematic::add(Component *component)
         components.push_back(component);
 }
 
-std::vector<Component*> Schematic::getComponents()
+void Schematic::clearBranches()
+{
+    branches.clear();
+}
+
+void Schematic::clearNodes()
+{
+    nodes.clear();
+}
+
+std::vector<Component*> Schematic::getComponents() const
 {
     return components;
 }
 
+std::vector<Branch *> Schematic::getBranches() const
+{
+    return branches;
+}
+
+std::vector<Node *> Schematic::getNodes() const
+{
+    return nodes;
+}
+
+std::vector<Component *> &Schematic::getComponents()
+{
+    return components;
+}
+
+std::vector<Branch *> &Schematic::getBranches()
+{
+    return branches;
+}
+
+std::vector<Node *> &Schematic::getNodes()
+{
+    return nodes;
+}
 
 } // namespace Ohmcha

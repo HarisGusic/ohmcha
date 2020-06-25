@@ -7,6 +7,7 @@
 #include <QDebug>
 #include <QGraphicsSceneMouseEvent>
 #include "graphic_component.h"
+#include "graphic_node.h"
 
 namespace Ohmcha
 {
@@ -225,15 +226,111 @@ ComponentPreview *CircuitView::getComponentPreview()
     return componentPreview;
 }
 
+GraphicBranch *findBranch(GraphicNode *node, Schematic *schematic, QGraphicsScene *scene)
+{
+    for (auto *b : scene->items())
+    {
+        if (!dynamic_cast<GraphicBranch*>(b))
+            continue;
+        if (!((GraphicBranch*) b)->isConnectedTo(node))
+            continue;
+        auto y = 3;
+        auto x = 1;
+        if (std::find(schematic->getBranches().begin(), schematic->getBranches().end(), (Branch*) ((GraphicBranch*) b)->getComponent()) != schematic->getBranches().end())
+            continue;
+        //if (dynamic_cast<GraphicBranch*>(b) && ((GraphicBranch*) b)->isConnectedTo(node) &&
+        //    std::find(schematic->getBranches().begin(), schematic->getBranches().end(), (Branch*) ((GraphicBranch*) b)->getComponent()) == schematic->getBranches().end())
+            return (GraphicBranch*) b;
+    }
+    return nullptr;
+}
+
+void nextElement(GraphicBranch *br, GraphicComponent *&next, QPointF *pNext)
+{
+    if (br->getFirstAnchor() != next)
+    {
+        next = br->getFirstAnchor();
+        *pNext = br->getFirstAnchorPoint();
+    }
+    else if (br->getSecondAnchor() != next)
+    {
+        next = br->getSecondAnchor();
+        *pNext = br->getSecondAnchorPoint();
+    }
+    else
+        next = nullptr;
+}
+
+void insertToBranch(GraphicComponent *next, const QPointF &pNext, Branch *_branch)
+{
+    int terminalId = next->getTerminalId(pNext);
+    if (terminalId == 0)
+        _branch->addComponent(next->getComponent());
+    else
+        _branch->addComponent(next->getComponent()); //TODO not properly implemented
+}
+
+QPointF getOtherTerminal(GraphicComponent *next, const QPointF &pNext)
+{
+    return next->getTerminals()[1 - next->getTerminalId(pNext)];
+}
+
+GraphicBranch *getOtherBranch(GraphicComponent *next, GraphicComponent *thisBranch, QGraphicsScene *scene)
+{
+    for (auto *c : scene->items())
+        if (dynamic_cast<GraphicBranch*>(c) && ((GraphicBranch*) c)->isConnectedTo(next) && c != thisBranch)
+            return (GraphicBranch*) c;
+    return nullptr;
+}
+
 Schematic *CircuitView::getSchematic()
 {
-    if (schematic != nullptr)
-        return schematic;
-    schematic = new Schematic;
+    //TODO implement this part
+    //if (schematic != nullptr)
+    //   return schematic;
+    if (schematic == nullptr)
+        schematic = new Schematic;
+    schematic->clearBranches(); //TODO delete?
+    schematic->clearNodes();
+
     for (auto *c : scene()->items())
     {
-        if (dynamic_cast<GraphicComponent*>(c) != nullptr)
-            schematic->add(((GraphicComponent*) c)->getComponent());
+        if (dynamic_cast<GraphicNode*>(c)) // Found a node
+        {
+            auto node = (GraphicNode*) c;
+            while (true)
+            {
+                // Find a branch that is connected to this node
+                GraphicBranch *branch = findBranch(node, schematic, scene());
+                if (branch == nullptr)
+                    break;
+
+                if (branch->getComponent() == nullptr)
+                    branch->setComponent(new Branch);
+
+                Branch *_branch = (Branch*) branch->getComponent();
+
+                // Follow down the branch
+                GraphicComponent *next = node;
+                QPointF pNext;
+                for (GraphicBranch *br = branch; ;)
+                {
+                    br->setComponent(_branch);
+                    // Find the next element this branch is connected to, store it into next
+                    nextElement(br, next, &pNext);
+
+                    if (dynamic_cast<GraphicNode*>(next))
+                        break;
+
+                    // Insert the next component into the model branch
+                    insertToBranch(next, pNext, _branch); //TODO not properly implemented
+                    br = getOtherBranch(next, br, scene());
+                    if (br == nullptr) break;
+                }
+                schematic->add(_branch);
+            }
+            schematic->add(node->getComponent());
+        }
     }
     return schematic;
 }
