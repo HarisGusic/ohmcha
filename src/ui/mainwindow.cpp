@@ -48,9 +48,7 @@ void MainWindow::initializeComponentList()
     new QListWidgetItem("Current Source", ui->listComponents);
 }
 
-}
-
-void Ohmcha::MainWindow::on_actionOpen_triggered()
+void MainWindow::on_actionOpen_triggered()
 {
     QString fileName = QFileDialog::getOpenFileName(this, "Open File", QDir::homePath());
     QFile file(fileName);
@@ -68,4 +66,7 @@ void Ohmcha::MainWindow::on_actionOpen_triggered()
     ui->horizontalLayout->addWidget(ui->circuitView);
     ui->circuitView->initialize();
     ui->componentPreview->setCircuitView(ui->circuitView);
+    ui->componentPreview->initialize();
+}
+
 }

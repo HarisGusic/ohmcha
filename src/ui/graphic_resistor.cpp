@@ -20,6 +20,7 @@ GraphicResistor::GraphicResistor(Resistor *resistor)
     : GraphicResistor()
 {
     component = resistor;
+    synchronize();
 }
 
 GraphicResistor::GraphicResistor(QPointF node1, QPointF node2)

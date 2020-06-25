@@ -27,6 +27,7 @@ GraphicBranch::GraphicBranch(Branch *branch)
     : GraphicBranch()
 {
     component = branch;
+    synchronize();
 }
 
 GraphicBranch::GraphicBranch(const GraphicBranch &original)

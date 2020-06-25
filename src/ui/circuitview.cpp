@@ -113,9 +113,6 @@ CircuitView::CircuitView(QWidget *parent, Schematic *schematic)
     for (Component *c : schematic->getComponents())
     {
         auto *item = GraphicComponent::newFromComponent(c);
-        auto pos = c->getPosition();
-        if (pos != nullptr)
-            item->setCenter({pos->x, pos->y});
         scene()->addItem(item);
     }
 }

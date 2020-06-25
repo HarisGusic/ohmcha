@@ -13,7 +13,7 @@ class Component
 {
 public:
 
-    struct Pos { float x, y; };
+    struct Pos { float x = 0, y = 0; };
 
 protected:
 
@@ -24,6 +24,12 @@ protected:
     {
         std::string name;
         Pos *pos{};
+        Pos textPos;
+        int textAnchor = 3;
+        float angle{}, textAngle{};
+        bool textOrientationIndependent = false;
+
+    public:
     };
 
 public:
@@ -44,6 +50,11 @@ public:
      * is null, the position is considered arbitrary.
      */
     void setPosition(Pos *position);
+    void setAngle(float angle);
+    void setTextPos(const Pos &pos);
+    void setTextAngle(float angle);
+    void setTextOrientationIndependent(bool flag);
+    void setTextAnchor(int anchor);
 
     // Getters
     /**
@@ -52,6 +63,11 @@ public:
     std::string getName() const;
     /** See setPosition */
     Pos *getPosition() const;
+    float getAngle() const;
+    Pos getTextPos() const;
+    float getTextAngle() const;
+    bool isTextOrientationIndependent() const;
+    int getTextAnchor() const;
     virtual int getTerminalCount() const = 0;
 
 protected:

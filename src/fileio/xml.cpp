@@ -70,24 +70,60 @@ Component *xmlParseComponentRecursively(const QDomElement &element, Schematic &s
     return parsedComponent;
 }
 
+void parseCommonComponent(const QDomElement &element, Component &c)
+{
+    QString str, str2;
+
+    // Name
+    str = element.attribute("name", "");
+    if (str != "")
+        c.setName(str.toStdString());
+
+    // X and Y coordinates
+    str = element.attribute("x", "");
+    str2 = element.attribute("y", "");
+    if (str != "" && str2 != "")
+        c.setPosition(new Component::Pos{str.toFloat(), str2.toFloat()});
+
+    // Angle
+    str = element.attribute("angle", "0");
+    c.setAngle(str.toFloat());
+
+    // Text position
+    str = element.attribute("tx", "0");
+    str2 = element.attribute("ty", "0");
+    c.setTextPos({str.toFloat(), str2.toFloat()});
+
+    // Text angle
+    str = element.attribute("textAngle", "0");
+    c.setTextAngle(str.toFloat());
+
+    // Text independent
+    str = element.attribute("textIndependent", "false");
+    c.setTextOrientationIndependent(str == "true");
+
+    // Text anchor
+    str = element.attribute("textAnchor", "3");
+    c.setTextAnchor(str.toInt());
+}
+
 Component *xmlParseResistor(const QDomElement &element)
 {
     Resistor &r = *new Resistor;
     // If no value is given, the value of the last parsed resistor will be used
     static float lastValue = 1000;
+    QString str;
+
+    parseCommonComponent(element, r);
 
     // Resistance value
-    auto str = element.attribute("R", "");
+    str = element.attribute("R", "");
     if (str == "")
         r.setResistance(lastValue);
     else
         r.setResistance(parseValue(str.toStdString()));
 
-    // X and Y coordinates
-    str = element.attribute("x", "");
-    auto str2 = element.attribute("y", "");
-    if (str != "" && str2 != "")
-        r.setPosition(new Component::Pos{str.toFloat(), str2.toFloat()});
+    lastValue = r.getResistance();
 
     return &r;
 }
@@ -144,12 +180,44 @@ float parseValue(const std::string &text)
 
 Component *xmlParseEmf(const QDomElement &element)
 {
-    //TODO implement
+    Emf &e = *new Emf;
+    // If no value is given, the value of the last parsed emf will be used
+    static float lastValue = 1;
+    QString str;
+
+    parseCommonComponent(element, e);
+
+    // Emf value
+    str = element.attribute("E", "");
+    if (str == "")
+        e.setEmf(lastValue);
+    else
+        e.setEmf(parseValue(str.toStdString()));
+
+    lastValue = e.getEmf();
+
+    return &e;
 }
 
 Component *xmlParseCurrentSource(const QDomElement &element)
 {
-    //TODO implement
+    CurrentSource &i = *new CurrentSource;
+    // If no value is given, the value of the last parsed emf will be used
+    static float lastValue = 0.001;
+    QString str;
+
+    parseCommonComponent(element, i);
+
+    // Emf value
+    str = element.attribute("I", "");
+    if (str == "")
+        i.setCurrent(lastValue);
+    else
+        i.setCurrent(parseValue(str.toStdString()));
+
+    lastValue = i.getCurrent();
+
+    return &i;
 }
 
 }

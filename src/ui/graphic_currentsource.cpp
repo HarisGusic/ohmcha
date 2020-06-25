@@ -16,6 +16,7 @@ GraphicCurrentSource::GraphicCurrentSource(CurrentSource *source)
     : GraphicCurrentSource()
 {
     component = source;
+    synchronize();
 }
 
 GraphicCurrentSource::GraphicCurrentSource(const GraphicCurrentSource &original)

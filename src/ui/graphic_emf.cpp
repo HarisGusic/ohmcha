@@ -16,6 +16,7 @@ GraphicEmf::GraphicEmf(Emf *emf)
     : GraphicEmf()
 {
     component = emf;
+    synchronize();
 }
 
 GraphicEmf::GraphicEmf(const GraphicEmf &original)

@@ -47,6 +47,20 @@ const QPointF *GraphicComponent::findNearestTerminal(QPointF point) const
     return nullptr;
 }
 
+void GraphicComponent::synchronize()
+{
+    auto *pos = component->getPosition();
+    if (pos != nullptr)
+        setCenter({pos->x, pos->y});
+    setRotation(component->getAngle());
+    setName(QString::fromStdString(component->getName()));
+    auto tpos = component->getTextPos();
+    setTextPosition({tpos.x, tpos.y});
+    setTextRotation(component->getTextAngle());
+    setTextRotationIndependent(component->isTextOrientationIndependent());
+    setTextAnchor((Anchor) component->getTextAnchor());
+}
+
 GraphicComponent *GraphicComponent::newFromComponent(Component *component)
 {
     if (dynamic_cast<Resistor*>(component))

@@ -31,6 +31,41 @@ void Component::setPosition(Component::Pos *position)
     metaInfo->pos = position;
 }
 
+void Component::setAngle(float angle)
+{
+    if (metaInfo == nullptr)
+        metaInfo = new MetaInfo;
+    metaInfo->angle = angle;
+}
+
+void Component::setTextPos(const Component::Pos &pos)
+{
+    if (metaInfo == nullptr)
+        metaInfo = new MetaInfo;
+    metaInfo->textPos = pos;
+}
+
+void Component::setTextAngle(float angle)
+{
+    if (metaInfo == nullptr)
+        metaInfo = new MetaInfo;
+    metaInfo->textAngle = angle;
+}
+
+void Component::setTextOrientationIndependent(bool flag)
+{
+    if (metaInfo == nullptr)
+        metaInfo = new MetaInfo;
+    metaInfo->textOrientationIndependent = flag;
+}
+
+void Component::setTextAnchor(int anchor)
+{
+    if (metaInfo == nullptr)
+        metaInfo = new MetaInfo;
+    metaInfo->textAnchor = anchor;
+}
+
 std::string Component::getName() const
 {
     return metaInfo ? metaInfo->name : "";
@@ -39,6 +74,31 @@ std::string Component::getName() const
 Component::Pos *Component::getPosition() const
 {
     return metaInfo ? metaInfo->pos : nullptr;
+}
+
+float Component::getAngle() const
+{
+    return metaInfo ? metaInfo->angle : 0;
+}
+
+Component::Pos Component::getTextPos() const
+{
+    return metaInfo ? metaInfo->textPos : Pos{0, 0};
+}
+
+float Component::getTextAngle() const
+{
+    return metaInfo ? metaInfo->textAngle : 0;
+}
+
+bool Component::isTextOrientationIndependent() const
+{
+    return metaInfo ? metaInfo->textOrientationIndependent : false;
+}
+
+int Component::getTextAnchor() const
+{
+    return metaInfo ? metaInfo->textAnchor : 3;
 }
 
 /**********

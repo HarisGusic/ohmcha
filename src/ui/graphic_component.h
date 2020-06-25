@@ -30,6 +30,7 @@ public:
      */
     const QPointF *findNearestTerminal(QPointF point) const;
     virtual GraphicComponent *copy() const = 0;
+    virtual void synchronize();
 
     /**
      * Dynamically allocate a GraphicComponent wrapper around

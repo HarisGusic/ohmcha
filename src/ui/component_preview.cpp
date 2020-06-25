@@ -111,7 +111,7 @@ void ComponentPreview::setComponentType(const QString &type)
 void ComponentPreview::setEditExisting(GraphicComponent *component)
 {
     // Remove the old component from the scene
-    if (this->component->scene() == ui->preview->scene())
+    if (this->component != nullptr && this->component->scene() == ui->preview->scene())
         ui->preview->scene()->removeItem(this->component);
 
     this->component = component;
@@ -127,7 +127,10 @@ void ComponentPreview::on_selectionChanged()
     if (circuitView->scene()->selectedItems().empty())
         initializeNewComponent(selectedComponentType);
     else if (circuitView->scene()->selectedItems().size() == 1)
+    {
         lastComponentType = "";
+        setVisible(true);
+    }
 }
 
 void ComponentPreview::on_textAnchorPicked(int id)
