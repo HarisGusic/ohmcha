@@ -51,6 +51,7 @@ public:
     void setComponent(Component *component);
 
     // Getters
+    virtual QSizeF getSize() const;
     QString getName() const;
     QPointF getCenter() const;
     Anchor getTextAnchor() const;

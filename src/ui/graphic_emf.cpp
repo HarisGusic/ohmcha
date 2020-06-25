@@ -8,6 +8,7 @@ GraphicEmf::GraphicEmf()
     : GraphicComponent()
 {
     component = new Emf;
+    size = {45, 70};
     terminals = { {0, -size.height() / 2}, {0, size.height() / 2} };
     textPos = {26, 0};
 }

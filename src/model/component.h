@@ -28,8 +28,6 @@ protected:
         int textAnchor = 3;
         float angle{}, textAngle{};
         bool textOrientationIndependent = false;
-
-    public:
     };
 
 public:
@@ -64,7 +62,7 @@ public:
     /** See setPosition */
     Pos *getPosition() const;
     float getAngle() const;
-    Pos getTextPos() const;
+    virtual Pos getTextPos() const;
     float getTextAngle() const;
     bool isTextOrientationIndependent() const;
     int getTextAnchor() const;
@@ -167,6 +165,7 @@ public:
     // Getters
     int getTerminalCount() const;
     float getResistance() const;
+    Pos getTextPos() const override;
 
 private:
 
@@ -192,6 +191,7 @@ public:
     // Getters
     int getTerminalCount() const override;
     float getEmf() const;
+    Pos getTextPos() const override;
 
 private:
 
@@ -217,6 +217,7 @@ public:
     // Getters
     int getTerminalCount() const override;
     float getCurrent() const;
+    Pos getTextPos() const override;
 
 private:
 

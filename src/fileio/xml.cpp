@@ -240,7 +240,11 @@ QString xmlConvertComponent(Component *component)
 {
     if (dynamic_cast<Resistor*>(component) != nullptr)
         return xmlConvertResistor(dynamic_cast<Resistor*>(component));
-    else ; //TODO
+    else if (dynamic_cast<Emf*>(component) != nullptr)
+        return xmlConvertEmf(dynamic_cast<Emf*>(component));
+    else if (dynamic_cast<Emf*>(component) != nullptr)
+        return xmlConvertCurrentSource(dynamic_cast<CurrentSource*>(component));
+    //TODO else
 }
 
 QString xmlConvertResistor(Resistor *resistor)
@@ -259,6 +263,24 @@ QString xmlConvertSchematic(Schematic *schematic)
         result += "\n" + xmlConvertComponent(component);
     //TODO add branches
     result += "\n</schematic>";
+    return result;
+}
+
+QString xmlConvertEmf(Emf *emf)
+{
+    QString result("<emf ");
+    result += convertCommonComponent(emf);
+    result += QString(" R=\"%1\"").arg(emf->getEmf());
+    result += "/>";
+    return result;
+}
+
+QString xmlConvertCurrentSource(CurrentSource *source)
+{
+    QString result("<emf ");
+    result += convertCommonComponent(source);
+    result += QString(" R=\"%1\"").arg(source->getCurrent());
+    result += "/>";
     return result;
 }
 

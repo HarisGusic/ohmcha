@@ -227,6 +227,11 @@ float Resistor::getResistance() const
     return resistance;
 }
 
+Component::Pos Resistor::getTextPos() const
+{
+    return metaInfo ? metaInfo->textPos : Pos{15, 0};
+}
+
 Emf::Emf()
 {
 
@@ -258,6 +263,11 @@ float Emf::getEmf() const
     return emf;
 }
 
+Component::Pos Emf::getTextPos() const
+{
+    return metaInfo ? metaInfo->textPos : Pos{26, 0};
+}
+
 CurrentSource::CurrentSource()
 {
 
@@ -287,6 +297,11 @@ int CurrentSource::getTerminalCount() const
 float CurrentSource::getCurrent() const
 {
     return current;
+}
+
+Component::Pos CurrentSource::getTextPos() const
+{
+    return metaInfo ? metaInfo->textPos : Pos{20, 0};
 }
 
 Node::Node()

@@ -102,9 +102,14 @@ void GraphicComponent::setComponent(Component *component)
     this->component = component;
 }
 
+QSizeF GraphicComponent::getSize() const
+{
+    return size;
+}
+
 void GraphicComponent::setCenter(QPointF center)
 {
-    this->setPos(center - QPointF(size.width(), size.height()));
+    this->setPos(center);
     component->setPosition(new Component::Pos{(float) center.x(), (float) center.y()});
 }
 

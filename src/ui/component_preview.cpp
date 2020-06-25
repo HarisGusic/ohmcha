@@ -70,7 +70,10 @@ void ComponentPreview::initializeNewComponent(const QString &type)
 
     // If no component was edited before, initialize with default properties
     if (component == nullptr || type != lastComponentType)
+    {
         component = GraphicComponent::newFromComponent(Component::newByName(type.toStdString()));
+        component->setTextPosition({component->getSize().width() / 2 + 5, 0});
+    }
     else
         component = component->copy();
     lastComponentType = type;

@@ -23,7 +23,6 @@ public:
 private:
 
     // Attributes
-    QSizeF size{30, 70};
     QPen pen;
 
 };

@@ -19,5 +19,7 @@ Schematic *xmlParseSchematic(std::string filename);
 QString xmlConvertSchematic(Schematic *schematic);
 QString xmlConvertComponent(Component *component);
 QString xmlConvertResistor(Resistor *resistor);
+QString xmlConvertEmf(Emf *emf);
+QString xmlConvertCurrentSource(CurrentSource *source);
 
 }

@@ -21,7 +21,6 @@ public:
     virtual GraphicComponent *copy() const override;
 
 private:
-    QSizeF size{45, 70};
     QPen pen;
 
 };

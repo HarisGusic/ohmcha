@@ -8,6 +8,7 @@ GraphicCurrentSource::GraphicCurrentSource()
     : GraphicComponent()
 {
     component = new CurrentSource;
+    size = {30, 70};
     terminals = { {0, -size.height() / 2}, {0, size.height() / 2} };
     textPos = {20, 0};
 }

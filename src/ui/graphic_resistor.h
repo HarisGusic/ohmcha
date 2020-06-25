@@ -33,7 +33,6 @@ private:
 
     // Attributes
 
-    QSizeF size = {20, 70};
     float terminalSize = 10;
     QPen pen;
 };
