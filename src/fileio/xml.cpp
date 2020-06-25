@@ -242,7 +242,7 @@ QString xmlConvertComponent(Component *component)
         return xmlConvertResistor(dynamic_cast<Resistor*>(component));
     else if (dynamic_cast<Emf*>(component) != nullptr)
         return xmlConvertEmf(dynamic_cast<Emf*>(component));
-    else if (dynamic_cast<Emf*>(component) != nullptr)
+    else if (dynamic_cast<CurrentSource*>(component) != nullptr)
         return xmlConvertCurrentSource(dynamic_cast<CurrentSource*>(component));
     //TODO else
 }
@@ -277,7 +277,7 @@ QString xmlConvertEmf(Emf *emf)
 
 QString xmlConvertCurrentSource(CurrentSource *source)
 {
-    QString result("<emf ");
+    QString result("<currentsource ");
     result += convertCommonComponent(source);
     result += QString(" R=\"%1\"").arg(source->getCurrent());
     result += "/>";
