@@ -76,11 +76,18 @@ Component *xmlParseResistor(const QDomElement &element)
     // If no value is given, the value of the last parsed resistor will be used
     static float lastValue = 1000;
 
-    auto strValue = element.attribute("R", "");
-    if (strValue == "")
+    // Resistance value
+    auto str = element.attribute("R", "");
+    if (str == "")
         r.setResistance(lastValue);
     else
-        r.setResistance(parseValue(strValue.toStdString()));
+        r.setResistance(parseValue(str.toStdString()));
+
+    // X and Y coordinates
+    str = element.attribute("x", "");
+    auto str2 = element.attribute("y", "");
+    if (str != "" && str2 != "")
+        r.setPosition(new Component::Pos{str.toFloat(), str2.toFloat()});
 
     return &r;
 }

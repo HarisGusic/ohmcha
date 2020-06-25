@@ -108,13 +108,14 @@ CircuitView::CircuitView(QWidget *parent)
 }
 
 CircuitView::CircuitView(QWidget *parent, Schematic *schematic)
+    : CircuitView(parent)
 {
     for (Component *c : schematic->getComponents())
     {
         auto *item = GraphicComponent::newFromComponent(c);
         auto pos = c->getPosition();
         if (pos != nullptr)
-            item->setPos(pos->x, pos->y);
+            item->setCenter({pos->x, pos->y});
         scene()->addItem(item);
     }
 }
@@ -122,7 +123,6 @@ CircuitView::CircuitView(QWidget *parent, Schematic *schematic)
 void CircuitView::initialize()
 {
     setSceneRect(getViewRect(this));
-    setSceneRect(sceneRect());
 }
 
 void CircuitView::initiateInsertComponent(GraphicComponent *component, CircuitView::Mode insertMode)
@@ -317,6 +317,7 @@ void CircuitView::resizeEvent(QResizeEvent *event)
     //TODO: disabled this, because it caused the window to freeze. Find a fix.
     //setSceneRect(getViewRect(this));
     updateCursorGuides();
+    scene()->update();
 }
 
 void CircuitView::updateCursorGuides()

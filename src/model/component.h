@@ -11,9 +11,12 @@ using namespace Eigen;
 
 class Component
 {
-protected:
+public:
 
     struct Pos { float x, y; };
+
+protected:
+
     /**
      * Additional information that is not relevant for algorithms.
      */

@@ -65,6 +65,7 @@ void Ohmcha::MainWindow::on_actionOpen_triggered()
 
     delete ui->circuitView;
     ui->circuitView = new CircuitView(this, xmlParseSchematic(fileName.toStdString()));
+    ui->horizontalLayout->addWidget(ui->circuitView);
     ui->circuitView->initialize();
     ui->componentPreview->setCircuitView(ui->circuitView);
 }
