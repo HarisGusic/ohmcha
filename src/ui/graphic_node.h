@@ -13,6 +13,8 @@ public:
     GraphicNode();
     GraphicNode(const GraphicNode &original);
 
+    ~GraphicNode();
+
     // Methods
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
     QRectF boundingRect() const override;

@@ -48,13 +48,36 @@ void CircuitViewScene::keyPressEvent(QKeyEvent *event)
         removeItem(_insertedBranch);
         delete _insertedBranch;
         _insertedBranch = nullptr;
+        circuitView->setDragMode(QGraphicsView::RubberBandDrag);
     }
     if (event->key() == Qt::Key::Key_Delete)
+    {
+        // First delete all branches
         foreach(auto *item, selectedItems())
         {
+            if (dynamic_cast<GraphicBranch*>(item))
+            {
+                removeItem(item);
+                delete item;
+            }
+        }
+
+        // Delete the rest
+        foreach(auto *item, selectedItems())
+        {
+            // Delete all branches connected to this node
+            for (auto *branch : items())
+            {
+                if (dynamic_cast<GraphicBranch*>(branch) && ((GraphicBranch*) branch)->isConnectedTo((GraphicComponent*) item))
+                {
+                    removeItem(branch);
+                    delete branch;
+                }
+            }
             removeItem(item);
             delete item;
         }
+    }
 }
 
 void CircuitViewScene::terminalClickEvent(GraphicComponent *source, QPointF terminal)

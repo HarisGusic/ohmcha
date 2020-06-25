@@ -5,6 +5,7 @@
 #include "graphic_emf.h"
 #include "graphic_currentsource.h"
 #include "circuitview.h"
+#include "graphic_node.h"
 
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
@@ -214,7 +215,7 @@ void GraphicComponent::mousePressEvent(QGraphicsSceneMouseEvent *event)
     if (_selectedTerminal)
     {
         bool terminalAvailable = getTerminalId(*_selectedTerminal) == 0 ? !branch1 : !branch2;
-        if (terminalAvailable && getScene())
+        if ((terminalAvailable || dynamic_cast<GraphicNode*>(this)) && getScene())
         { // A terminal on this item was clicked
             event->ignore();
             getScene()->terminalClickEvent(this, *_selectedTerminal);

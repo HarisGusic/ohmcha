@@ -36,13 +36,13 @@ GraphicBranch::GraphicBranch(const GraphicBranch &original)
 
 GraphicBranch::~GraphicBranch()
 {
-    if (first->getTerminalId(pFirst) == 0)
+    if (first && first->getTerminalId(pFirst) == 0)
         first->branch1 = false;
-    if (second->getTerminalId(pSecond) == 0)
+    if (second && second->getTerminalId(pSecond) == 0)
         second->branch1 = false;
-    if (first->getTerminalId(pFirst) == 1)
+    if (first && first->getTerminalId(pFirst) == 1)
         first->branch2 = false;
-    if (second->getTerminalId(pSecond) == 1)
+    if (second && second->getTerminalId(pSecond) == 1)
         second->branch2 = false;
 }
 
@@ -175,6 +175,11 @@ QPointF GraphicBranch::getSecondAnchorPoint() const
 GraphicComponent *GraphicBranch::getSecondAnchor() const
 {
     return second;
+}
+
+bool GraphicBranch::isConnectedTo(GraphicComponent *item) const
+{
+    return item == first || item == second;
 }
 
 void GraphicBranch::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)

@@ -48,6 +48,7 @@ public:
     QPointF getFirstAnchorPoint() const;
     QPointF getSecondAnchorPoint() const;
     GraphicComponent *getSecondAnchor() const;
+    bool isConnectedTo(GraphicComponent *item) const;
 
     // Event handling
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
