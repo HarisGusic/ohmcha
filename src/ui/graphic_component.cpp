@@ -75,26 +75,43 @@ GraphicComponent *GraphicComponent::newFromComponent(Component *component)
 void GraphicComponent::setTextAnchor(GraphicComponent::Anchor anchor)
 {
     textAnchor = anchor;
+    //TODO Change the way this is done
+    component->setTextAnchor(anchor);
 }
 
 void GraphicComponent::setTextPosition(QPointF pos)
 {
     textPos = pos;
+    component->setTextPos({(float) pos.x(), (float) pos.y()});
 }
 
 void GraphicComponent::setTextRotation(float angle)
 {
     textAngle = angle;
+    component->setTextAngle(angle);
 }
 
 void GraphicComponent::setTextRotationIndependent(bool independent)
 {
     textRotationIndependent = independent;
+    component->setTextOrientationIndependent(independent);
+}
+
+void GraphicComponent::setComponent(Component *component)
+{
+    this->component = component;
 }
 
 void GraphicComponent::setCenter(QPointF center)
 {
     this->setPos(center - QPointF(size.width(), size.height()));
+    component->setPosition(new Component::Pos{(float) center.x(), (float) center.y()});
+}
+
+void GraphicComponent::setRotation(float angle)
+{
+    QGraphicsItem::setRotation(angle);
+    component->setAngle(angle);
 }
 
 void GraphicComponent::setName(QString name)
@@ -130,6 +147,11 @@ float GraphicComponent::getTextRotation() const
 bool GraphicComponent::isTextRotationIndependent() const
 {
     return textRotationIndependent;
+}
+
+Component *GraphicComponent::getComponent() const
+{
+    return component;
 }
 
 CircuitViewScene *GraphicComponent::getScene() const

@@ -48,7 +48,7 @@ void MainWindow::initializeComponentList()
     new QListWidgetItem("Current Source", ui->listComponents);
 }
 
-void MainWindow::on_actionOpen_triggered()
+QString getDefaultPath()
 {
     // Determine the directory to open
     QString defaultPath;
@@ -60,6 +60,12 @@ void MainWindow::on_actionOpen_triggered()
     else
         defaultPath = value.toString();
 
+    return defaultPath;
+}
+
+void MainWindow::on_actionOpen_triggered()
+{
+    auto defaultPath = getDefaultPath();
     // Display the dialog and get the user choice
     QString fileName = QFileDialog::getOpenFileName(this, "Open File", defaultPath);
     QFile file(fileName);
@@ -72,7 +78,10 @@ void MainWindow::on_actionOpen_triggered()
         return;
     }
 
+    this->fileName = fileName;
+
     // Save the current directory as the default one
+    QSettings settings("ohmcha", "ohmcha");
     settings.setValue("default_path", QFileInfo(fileName).absolutePath());
     settings.sync();
 
@@ -83,6 +92,56 @@ void MainWindow::on_actionOpen_triggered()
     ui->circuitView->initialize();
     ui->componentPreview->setCircuitView(ui->circuitView);
     ui->componentPreview->initialize();
+
+    file.close();
+}
+
+void MainWindow::on_actionNew_triggered()
+{
+    delete ui->circuitView;
+    ui->circuitView = new CircuitView(this);
+    ui->horizontalLayout->addWidget(ui->circuitView);
+    ui->circuitView->initialize();
+    ui->componentPreview->setCircuitView(ui->circuitView);
+    ui->componentPreview->initialize();
+    fileName = "";
+}
+
+void saveToFile(Ui::MainWindow *ui, QString fileName)
+{
+    QFile file(fileName);
+    if (!file.open(QFile::WriteOnly))
+    {
+        QMessageBox mb;
+        mb.setText("Unable to save changes.");
+        mb.exec();
+        return;
+    }
+    auto *schematic = ui->circuitView->getSchematic();
+    file.write(xmlConvertSchematic(schematic).toUtf8());
+    file.close();
+}
+
+void MainWindow::on_actionSave_triggered()
+{
+    if (fileName == "")
+        return on_actionSaveAs_triggered();
+    saveToFile(ui, fileName);
+}
+
+void MainWindow::on_actionSaveAs_triggered()
+{
+    QString defaultPath;
+    if (fileName == "")
+        defaultPath = getDefaultPath();
+    else
+        defaultPath = QFileInfo(this->fileName).absolutePath();
+
+    QString fileName = QFileDialog::getSaveFileName(this, "Save to", defaultPath);
+
+    saveToFile(ui, fileName);
+
+    this->fileName = fileName;
 }
 
 }

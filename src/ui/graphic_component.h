@@ -43,10 +43,12 @@ public:
     // Setters
     void setName(QString name);
     virtual void setCenter(QPointF center);
+    void setRotation(float angle);
     void setTextAnchor(Anchor anchor);
     void setTextPosition(QPointF pos);
     void setTextRotation(float angle);
     void setTextRotationIndependent(bool independent);
+    void setComponent(Component *component);
 
     // Getters
     QString getName() const;
@@ -55,6 +57,7 @@ public:
     QPointF getTextPosition() const;
     float getTextRotation() const;
     bool isTextRotationIndependent() const;
+    Component *getComponent() const;
     CircuitViewScene *getScene() const;
 
     // Event handling

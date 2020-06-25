@@ -84,6 +84,11 @@ public:
      */
     QPointF getCursorPosition();
     ComponentPreview *getComponentPreview();
+    /**
+     * Return the Schematic representation of this circuit. The result
+     * is guaranteed to be non-null.
+     */
+    Schematic *getSchematic();
 
 
 signals:
@@ -119,6 +124,7 @@ private:
     QGraphicsLineItem *hGuide{}, *vGuide{};
     GraphicComponent *pendingInsert{};
     ComponentPreview *componentPreview{};
+    Schematic *schematic{};
 
     Mode mode = Idle;
 

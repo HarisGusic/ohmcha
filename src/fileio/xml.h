@@ -16,4 +16,8 @@ Component *xmlParseEmf(const QDomElement &element);
 Component *xmlParseCurrentSource(const QDomElement &element);
 Schematic *xmlParseSchematic(std::string filename);
 
+QString xmlConvertSchematic(Schematic *schematic);
+QString xmlConvertComponent(Component *component);
+QString xmlConvertResistor(Resistor *resistor);
+
 }

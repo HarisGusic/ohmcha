@@ -110,6 +110,7 @@ CircuitView::CircuitView(QWidget *parent)
 CircuitView::CircuitView(QWidget *parent, Schematic *schematic)
     : CircuitView(parent)
 {
+    this->schematic = schematic;
     for (Component *c : schematic->getComponents())
     {
         auto *item = GraphicComponent::newFromComponent(c);
@@ -120,12 +121,14 @@ CircuitView::CircuitView(QWidget *parent, Schematic *schematic)
 CircuitView::~CircuitView()
 {
     scene()->clear();
+    delete schematic;
     //TODO delete schematic
 }
 
 void CircuitView::initialize()
 {
     setSceneRect(getViewRect(this));
+    updateCursorGuides();
 }
 
 void CircuitView::initiateInsertComponent(GraphicComponent *component, CircuitView::Mode insertMode)
@@ -199,6 +202,20 @@ ComponentPreview *CircuitView::getComponentPreview()
     return componentPreview;
 }
 
+Schematic *CircuitView::getSchematic()
+{
+    if (schematic != nullptr)
+        return schematic;
+    schematic = new Schematic;
+    for (auto *c : scene()->items())
+    {
+        if (dynamic_cast<GraphicComponent*>(c) != nullptr)
+            schematic->add(((GraphicComponent*) c)->getComponent());
+    }
+    //TODO implement
+    return schematic;
+}
+
 void CircuitView::wheelEvent(QWheelEvent *event)
 {
     float scale = std::min(std::max(event->angleDelta().y() / 60.f, 1 / 1.2f), 1.2f);
@@ -243,6 +260,8 @@ void CircuitView::mouseReleaseEvent(QMouseEvent *event)
         pendingInsert->setFlag(QGraphicsItem::ItemIsMovable);
         pendingInsert->setFlag(QGraphicsItem::ItemIsSelectable);
         mode = Idle;
+        if (schematic)
+            schematic->add(pendingInsert->getComponent());
         pendingInsert = nullptr;
     }
 

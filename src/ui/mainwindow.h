@@ -30,9 +30,12 @@ public:
     CircuitView *getCircuitView();
 
 private slots:
-    void on_listComponents_itemDoubleClicked(QListWidgetItem *item);
 
+    void on_listComponents_itemDoubleClicked(QListWidgetItem *item);
     void on_actionOpen_triggered();
+    void on_actionNew_triggered();
+    void on_actionSave_triggered();
+    void on_actionSaveAs_triggered();
 
 private:
 
@@ -43,6 +46,7 @@ private:
     // Attributes
 
     Ui::MainWindow *ui;
+    QString fileName;
 
 };
 

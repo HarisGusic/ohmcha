@@ -5,7 +5,7 @@
 namespace Ohmcha
 {
 
-const std::map<std::string, Component *(*)(const QDomElement &)> functionMap =
+const std::map<std::string, Component *(*)(const QDomElement &)> parseMap =
 {
     {"resistor", xmlParseResistor},
     {"emf", xmlParseEmf},
@@ -51,7 +51,7 @@ Component *xmlParseComponent(const QDomElement &element)
 {
     try
     {
-        auto function = functionMap.at(element.tagName().toStdString());
+        auto function = parseMap.at(element.tagName().toStdString());
         return function(element);
     }
     catch (std::out_of_range&)
@@ -218,6 +218,48 @@ Component *xmlParseCurrentSource(const QDomElement &element)
     lastValue = i.getCurrent();
 
     return &i;
+}
+
+QString convertCommonComponent(Component *component)
+{
+    auto *pos = component->getPosition();
+    QString x = pos != nullptr ? QString::number(pos->x) : "",
+            y = pos != nullptr ? QString::number(pos->y) : "";
+    return QString("x=\"%1\" y=\"%2\" name=\"%3\" angle=\"%4\" textIndependent=\"%5\" "
+                   "tx=\"%6\" ty=\"%7\" textAngle=\"%8\" textAnchor=\"%9\"")
+            .arg(x).arg(y)
+            .arg(QString::fromStdString(component->getName()))
+            .arg(component->getAngle())
+            .arg(component->isTextOrientationIndependent() ? "true" : "false")
+            .arg(component->getTextPos().x).arg(component->getTextPos().y)
+            .arg(component->getTextAngle())
+            .arg(component->getTextAnchor());
+}
+
+QString xmlConvertComponent(Component *component)
+{
+    if (dynamic_cast<Resistor*>(component) != nullptr)
+        return xmlConvertResistor(dynamic_cast<Resistor*>(component));
+    else ; //TODO
+}
+
+QString xmlConvertResistor(Resistor *resistor)
+{
+    QString result("<resistor ");
+    result += convertCommonComponent(resistor);
+    result += QString(" R=\"%1\"").arg(resistor->getResistance());
+    result += "/>";
+    return result;
+}
+
+QString xmlConvertSchematic(Schematic *schematic)
+{
+    QString result("<schematic>");
+    for (auto *component : schematic->getComponents())
+        result += "\n" + xmlConvertComponent(component);
+    //TODO add branches
+    result += "\n</schematic>";
+    return result;
 }
 
 }
