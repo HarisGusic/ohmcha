@@ -134,6 +134,9 @@ Component *xmlParseResistor(const QDomElement &element)
 
 float parseValue(const std::string &text)
 {
+    if (text == "")
+        return 0;
+
     float value;
     std::istringstream stream(text);
 

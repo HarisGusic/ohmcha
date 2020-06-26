@@ -84,6 +84,9 @@ void CircuitViewScene::keyPressEvent(QKeyEvent *event)
         {
             if (dynamic_cast<GraphicBranch*>(item))
             {
+                for (auto x : circuitView->results)
+                    if (item == x->parentItem())
+                        x->setParentItem(nullptr);
                 emit circuitView->itemDeleted((GraphicComponent*) item);
                 removeItem(item);
                 delete item;
@@ -221,8 +224,7 @@ GraphicBranch *findBranch(Component *component, QGraphicsScene *scene)
     return nullptr;
 }
 
-CircuitView::CircuitView(QWidget *parent, Schematic *schematic)
-    : CircuitView(parent)
+void CircuitView::load(Schematic *schematic)
 {
     this->schematic = schematic;
     for (Component *c : schematic->getComponents())
@@ -279,6 +281,12 @@ CircuitView::CircuitView(QWidget *parent, Schematic *schematic)
     }
 }
 
+CircuitView::CircuitView(QWidget *parent, Schematic *schematic)
+    : CircuitView(parent)
+{
+    load(schematic);
+}
+
 CircuitView::~CircuitView()
 {
     scene()->clear();
@@ -320,6 +328,8 @@ void CircuitView::solve()
         float value = 0;
         if (node != schematic->getNodes()[schematic->getNodes().size() - 1]) // Not last node
             value = sol(i);
+        if (qAbs(value) < 1e-5)
+            value = 0;
 
         QGraphicsTextItem *text = new QGraphicsTextItem(QString::number(value));
         text->setPos(QPointF{0, -10});
@@ -346,6 +356,8 @@ void CircuitView::solve()
         auto gc = findBranch(branch, scene());
 
         float value = sol(i + schematic->getNodes().size() - 1);
+        if (qAbs(value) < 1e-5)
+            value = 0;
 
         QPainterPath path;
         path.moveTo(0, 0);
@@ -354,7 +366,7 @@ void CircuitView::solve()
         path.lineTo(value > 0 ? -6 : 6, 4);
         auto pathItem = scene()->addPath(path);
 
-        value = qAbs(value);
+        //value = qAbs(value);
 
         pathItem->setZValue(199);
         QGraphicsTextItem *text = new QGraphicsTextItem(QString::number(value));
@@ -407,10 +419,10 @@ void CircuitView::showValues(bool show)
 {
     if (show)
         for (auto item : results)
-            item->show();
+                item->show();
     else
         for (auto item : results)
-            item->hide();
+                item->hide();
 }
 
 void CircuitView::zoomIn(float scale)
@@ -463,6 +475,12 @@ void CircuitView::setSnap(bool state)
 void CircuitView::setComponentPreview(ComponentPreview *componentPreview)
 {
     this->componentPreview = componentPreview;
+}
+
+void CircuitView::setZoomLevel(float zoom)
+{
+    zoomLevel = zoom;
+    scale(zoom, zoom);
 }
 
 QPointF CircuitView::getCursorPosition()
@@ -583,6 +601,11 @@ Schematic *CircuitView::getSchematic()
         }
     }
     return schematic;
+}
+
+float CircuitView::getZoomLevel() const
+{
+    return zoomLevel;
 }
 
 void CircuitView::wheelEvent(QWheelEvent *event)

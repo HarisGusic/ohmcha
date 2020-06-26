@@ -66,6 +66,7 @@ public:
     void initiateInsertComponent(GraphicComponent *component, Mode insertMode);
     void solve();
     void showValues(bool show = true);
+    void load(Schematic *schematic);
 
     void zoomIn(float scale = 1.2);
     void resetZoom();
@@ -82,6 +83,7 @@ public:
      */
     void setSnap(bool state);
     void setComponentPreview(ComponentPreview *componentPreview);
+    void setZoomLevel(float zoom);
 
     // Getters
     /**
@@ -94,6 +96,7 @@ public:
      * is guaranteed to be non-null.
      */
     Schematic *getSchematic();
+    float getZoomLevel() const;
 
 
 signals:

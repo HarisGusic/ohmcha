@@ -159,7 +159,21 @@ void MainWindow::on_actionSaveAs_triggered()
 void MainWindow::on_actionSolve_triggered()
 {
     if (ui->circuitView)
+    {
+        Schematic *schematic = new Schematic(*ui->circuitView->getSchematic());
+        auto rect = ui->circuitView->sceneRect();
+        auto zoom = ui->circuitView->getZoomLevel();
+        delete ui->circuitView;
+        ui->circuitView = new CircuitView(this, schematic);
+        ui->horizontalLayout->addWidget(ui->circuitView);
+        ui->circuitView->initialize();
+        ui->componentPreview->setCircuitView(ui->circuitView);
+        ui->componentPreview->initialize();
+        ui->circuitView->setSceneRect(rect);
+        ui->circuitView->setZoomLevel(zoom);
+
         ui->circuitView->solve();
+    }
 }
 
 }
