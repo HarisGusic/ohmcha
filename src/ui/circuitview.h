@@ -96,6 +96,7 @@ signals:
      * Emitted when a component is selected individually.
      */
     void componentSelected(GraphicComponent *);
+    void itemDeleted(GraphicComponent *);
 
 private:
 

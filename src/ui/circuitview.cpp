@@ -58,6 +58,7 @@ void CircuitViewScene::keyPressEvent(QKeyEvent *event)
         {
             if (dynamic_cast<GraphicBranch*>(item))
             {
+                emit circuitView->itemDeleted((GraphicComponent*) item);
                 removeItem(item);
                 delete item;
             }
@@ -71,10 +72,12 @@ void CircuitViewScene::keyPressEvent(QKeyEvent *event)
             {
                 if (dynamic_cast<GraphicBranch*>(branch) && ((GraphicBranch*) branch)->isConnectedTo((GraphicComponent*) item))
                 {
+                    emit circuitView->itemDeleted((GraphicComponent*) branch);
                     removeItem(branch);
                     delete branch;
                 }
             }
+            emit circuitView->itemDeleted((GraphicComponent*) item);
             removeItem(item);
             delete item;
         }
@@ -131,6 +134,28 @@ CircuitView::CircuitView(QWidget *parent)
     setGridVisibility(true);
 }
 
+QPointF nearest(GraphicComponent *c, QPointF point)
+{
+    auto terminals = c->getTerminals();
+    float sqDist = 1e20;
+    QPointF result;
+    for (auto term : terminals)
+    {
+        float tmp = QPointF::dotProduct(term - point, term - point);
+        if (tmp < sqDist)
+        {
+            result = term;
+            sqDist = tmp;
+        }
+    }
+    return result;
+}
+
+QPointF getOtherTerminal(GraphicComponent *next, const QPointF &pNext)
+{
+    return next->getTerminals()[1 - next->getTerminalId(pNext)];
+}
+
 CircuitView::CircuitView(QWidget *parent, Schematic *schematic)
     : CircuitView(parent)
 {
@@ -139,6 +164,56 @@ CircuitView::CircuitView(QWidget *parent, Schematic *schematic)
     {
         auto *item = GraphicComponent::newFromComponent(c);
         scene()->addItem(item);
+    }
+    for (Node *n : schematic->getNodes())
+        scene()->addItem(new GraphicNode(n));
+    for (Branch *b : schematic->getBranches())
+    {
+        // If branch is empty or is hanging, skip it
+        if (b->attached.empty() || !b->getNode1() || !b->getNode2())
+            continue;
+
+        QList<GraphicComponent*> connectees;
+        QList<GraphicNode*> nodes;
+        // Find graphic components and nodes connected to this branch
+        for (auto *c : scene()->items())
+        {
+            // Ignore branches and non-components
+            if (!dynamic_cast<GraphicComponent*>(c) || dynamic_cast<GraphicBranch*>(c))
+                continue;
+
+            auto component = (GraphicComponent*) c;
+            if (std::find(b->attached.begin(), b->attached.end(), component->getComponent()) != b->attached.end())
+                connectees.push_back(component);
+            else if (dynamic_cast<GraphicNode*>(c))
+                nodes.push_back((GraphicNode*) component);
+
+        }
+        connectees.push_front(nodes[0]);
+        connectees.push_back(nodes[1]);
+
+        GraphicBranch *branch = nullptr;
+        QPointF lastTerm;
+        for (int i = 0; i < connectees.size() - 1; ++i)
+        {
+            GraphicBranch *branch = new GraphicBranch;
+            auto *conn = connectees[i];
+
+            if (dynamic_cast<GraphicNode*>(conn))
+            {
+                branch->setFirstAnchor(conn, conn->getTerminals()[0]);
+                auto conn2 = connectees[i+1];
+                branch->setSecondAnchor(conn2, nearest(conn2, conn2->mapFromItem(conn, conn->getTerminals()[0])));
+            }
+            else
+            {
+                branch->setFirstAnchor(conn, getOtherTerminal(conn, lastTerm));
+                auto conn2 = connectees[i+1];
+                branch->setSecondAnchor(conn2, nearest(conn2, conn2->mapFromItem(conn, branch->getFirstAnchorPoint())));
+            }
+            lastTerm = branch->getSecondAnchorPoint();
+            scene()->addItem(branch);
+        }
     }
 }
 
@@ -270,11 +345,6 @@ void insertToBranch(GraphicComponent *next, const QPointF &pNext, Branch *_branc
         _branch->addComponent(next->getComponent()); //TODO not properly implemented
 }
 
-QPointF getOtherTerminal(GraphicComponent *next, const QPointF &pNext)
-{
-    return next->getTerminals()[1 - next->getTerminalId(pNext)];
-}
-
 GraphicBranch *getOtherBranch(GraphicComponent *next, GraphicComponent *thisBranch, QGraphicsScene *scene)
 {
     for (auto *c : scene->items())
@@ -285,9 +355,6 @@ GraphicBranch *getOtherBranch(GraphicComponent *next, GraphicComponent *thisBran
 
 Schematic *CircuitView::getSchematic()
 {
-    //TODO implement this part
-    //if (schematic != nullptr)
-    //   return schematic;
     if (schematic == nullptr)
         schematic = new Schematic;
     schematic->clearBranches(); //TODO delete?
@@ -334,6 +401,7 @@ Schematic *CircuitView::getSchematic()
                 }
                 schematic->add(_branch);
             }
+            node->getComponent()->setPosition(new Component::Pos{(float) node->pos().x(), (float) node->pos().y()});
             schematic->add(node->getComponent());
         }
     }

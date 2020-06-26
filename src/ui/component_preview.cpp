@@ -60,6 +60,8 @@ void ComponentPreview::initialize()
         this, &ComponentPreview::setEditExisting);
     connect(circuitView->scene(), &CircuitViewScene::selectionChanged,
             this, &ComponentPreview::on_selectionChanged);
+    connect(circuitView, &CircuitView::itemDeleted,
+            this, &ComponentPreview::on_itemDeleted);
 }
 
 void ComponentPreview::initializeNewComponent(const QString &type)
@@ -67,9 +69,11 @@ void ComponentPreview::initializeNewComponent(const QString &type)
     // Remove the last item from the scene
     if (component != nullptr && component->scene() == ui->preview->scene())
         ui->preview->scene()->removeItem(component);
+    if (type == "")
+        return;
 
     // If no component was edited before, initialize with default properties
-    if (component == nullptr || type != lastComponentType)
+    if ((component == nullptr || type != lastComponentType))
     {
         component = GraphicComponent::newFromComponent(Component::newByName(type.toStdString()));
         component->setTextPosition({component->getSize().width() / 2 + 5, 0});
@@ -138,6 +142,12 @@ void ComponentPreview::on_selectionChanged()
         lastComponentType = "";
         setVisible(true);
     }
+}
+
+void ComponentPreview::on_itemDeleted(GraphicComponent *component)
+{
+    if (this->component == component)
+        this->component = nullptr;
 }
 
 void ComponentPreview::on_textAnchorPicked(int id)

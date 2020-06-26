@@ -177,6 +177,16 @@ void Branch::setNode1(Node &n)
 void Branch::setNode2(Node &n)
 { node2 = &n; }
 
+void Branch::setNode1(Node *n)
+{
+    node1 = n;
+}
+
+void Branch::setNode2(Node *n)
+{
+    node2 = n;
+}
+
 RowVector3f Branch::getA() const
 { return A; }
 

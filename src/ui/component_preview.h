@@ -55,6 +55,7 @@ private slots:
 
     /** Called when the selection in the circuit view changes */
     void on_selectionChanged();
+    void on_itemDeleted(GraphicComponent *component);
 
     void on_textAnchorPicked(int id);
     void on_textIndependencePicked(int id);

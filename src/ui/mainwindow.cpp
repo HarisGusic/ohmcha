@@ -70,6 +70,9 @@ void MainWindow::on_actionOpen_triggered()
     QString fileName = QFileDialog::getOpenFileName(this, "Open File", defaultPath);
     QFile file(fileName);
 
+    if (fileName == "")
+        return;
+
     if (!file.open(QFile::ReadWrite))
     {
         QMessageBox mb;
@@ -87,7 +90,14 @@ void MainWindow::on_actionOpen_triggered()
 
     // Replace the old circuit view with a new one
     delete ui->circuitView;
-    ui->circuitView = new CircuitView(this, xmlParseSchematic(fileName.toStdString()));
+    try {
+        ui->circuitView = new CircuitView(this, xmlParseSchematic(fileName.toStdString()));
+    } catch (std::exception &e) {
+        QMessageBox mb;
+        mb.setText("Selected file is invalid");
+        mb.exec();
+        return;
+    }
     ui->horizontalLayout->addWidget(ui->circuitView);
     ui->circuitView->initialize();
     ui->componentPreview->setCircuitView(ui->circuitView);
@@ -138,6 +148,8 @@ void MainWindow::on_actionSaveAs_triggered()
         defaultPath = QFileInfo(this->fileName).absolutePath();
 
     QString fileName = QFileDialog::getSaveFileName(this, "Save to", defaultPath);
+    if (fileName == "")
+        return;
 
     saveToFile(ui, fileName);
 

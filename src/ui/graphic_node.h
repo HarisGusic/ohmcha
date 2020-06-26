@@ -11,6 +11,7 @@ class GraphicNode : public GraphicComponent
 public:
     // Constructors
     GraphicNode();
+    GraphicNode(Node *node);
     GraphicNode(const GraphicNode &original);
 
     ~GraphicNode();

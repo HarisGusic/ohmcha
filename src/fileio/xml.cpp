@@ -9,7 +9,8 @@ const std::map<std::string, Component *(*)(const QDomElement &)> parseMap =
 {
     {"resistor", xmlParseResistor},
     {"emf", xmlParseEmf},
-    {"currentsource", xmlParseCurrentSource}
+    {"currentsource", xmlParseCurrentSource},
+    {"node", xmlParseNode},
 };
 
 Schematic *xmlParseSchematic(std::string filename)
@@ -42,13 +43,16 @@ Schematic *xmlParseSchematic(std::string filename)
         linear = true;
 
     for (auto child = root.firstChildElement(); !child.isNull(); child = child.nextSiblingElement())
-        xmlParseComponentRecursively(child, *schematic);
+        xmlParseComponentRecursively(child, schematic);
 
     return schematic;
 }
 
-Component *xmlParseComponent(const QDomElement &element)
+Component *xmlParseComponent(const QDomElement &element, Schematic *schematic)
 {
+    if (element.tagName() == "branch")
+        return xmlParseBranch(element, schematic);
+
     try
     {
         auto function = parseMap.at(element.tagName().toStdString());
@@ -60,10 +64,10 @@ Component *xmlParseComponent(const QDomElement &element)
     }
 }
 
-Component *xmlParseComponentRecursively(const QDomElement &element, Schematic &schematic)
+Component *xmlParseComponentRecursively(const QDomElement &element, Schematic *schematic)
 {
-    Component *parsedComponent = xmlParseComponent(element);
-    schematic.add(parsedComponent);
+    Component *parsedComponent = xmlParseComponent(element, schematic);
+    schematic->add(parsedComponent);
     // Recursively parse any children of this element
     for (auto child = element.firstChildElement(); !child.isNull(); child = child.nextSiblingElement())
         xmlParseComponentRecursively(child, schematic);
@@ -220,6 +224,41 @@ Component *xmlParseCurrentSource(const QDomElement &element)
     return &i;
 }
 
+Component *xmlParseNode(const QDomElement &element)
+{
+    Node &n = *new Node();
+
+    parseCommonComponent(element, n);
+
+    return &n;
+}
+
+Component *xmlParseBranch(const QDomElement &element, Schematic *schematic)
+{
+    Branch &branch = *new Branch;
+    QString str;
+
+    str = element.attribute("name", "");
+    branch.setName(str.toStdString());
+
+    // Parse attached components
+    str = element.attribute("components", "");
+    QStringList list = str.split(" ", QString::SkipEmptyParts);
+    for (auto &s : list)
+    {
+        branch.addComponent(schematic->getComponents()[s.toInt()]);
+        branch.attached.push_back(schematic->getComponents()[s.toInt()]);
+    }
+
+    // Parse nodes
+    str = element.attribute("n1", "");
+    branch.setNode1(str == "-1" ? nullptr : schematic->getNodes()[str.toInt()]);
+    str = element.attribute(str == "-1" ? nullptr : "n2", "");
+    branch.setNode2(schematic->getNodes()[str.toInt()]);
+
+    return &branch;
+}
+
 QString convertCommonComponent(Component *component)
 {
     auto *pos = component->getPosition();
@@ -293,7 +332,7 @@ QString xmlConvertBranch(Schematic *schematic, Branch *branch)
     for (int i = 0; i < branch->attached.size(); ++i)
     {
         if (i != 0)
-            components += ", ";
+            components += " ";
         components += QString::number(schematic->getComponentId(branch->attached[i]));
     }
 

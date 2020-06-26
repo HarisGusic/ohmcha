@@ -16,6 +16,13 @@ GraphicNode::GraphicNode()
     terminals = {{0, 0}};
 }
 
+GraphicNode::GraphicNode(Node *node)
+    : GraphicNode()
+{
+    component = node;
+    synchronize();
+}
+
 GraphicNode::GraphicNode(const GraphicNode &original)
     : GraphicComponent(original)
 {

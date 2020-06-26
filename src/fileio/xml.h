@@ -9,11 +9,13 @@ namespace Ohmcha
 
 float parseValue(const std::string &text);
 
-Component *xmlParseComponent(const QDomElement &element);
-Component *xmlParseComponentRecursively(const QDomElement &element, Schematic &schematic);
+Component *xmlParseComponent(Schematic *schematic, const QDomElement &element);
+Component *xmlParseComponentRecursively(const QDomElement &element, Schematic *schematic);
 Component *xmlParseResistor(const QDomElement &element);
 Component *xmlParseEmf(const QDomElement &element);
 Component *xmlParseCurrentSource(const QDomElement &element);
+Component *xmlParseNode(const QDomElement &element);
+Component *xmlParseBranch(const QDomElement &element, Schematic *schematic);
 Schematic *xmlParseSchematic(std::string filename);
 
 QString xmlConvertSchematic(Schematic *schematic);

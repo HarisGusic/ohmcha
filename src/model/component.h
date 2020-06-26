@@ -119,6 +119,8 @@ public:
     void setB(float x);
     void setNode1(Node &n);
     void setNode2(Node &n);
+    void setNode1(Node *n);
+    void setNode2(Node *n);
 
     // Getters
     RowVector3f getA() const;
