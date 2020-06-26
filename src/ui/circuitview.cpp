@@ -22,6 +22,23 @@ CircuitViewScene::CircuitViewScene(CircuitView *circuitView)
     connect(this, &QGraphicsScene::selectionChanged, this, &CircuitViewScene::on_selectionChanged);
 }
 
+void CircuitViewScene::clear()
+{
+    for (auto *c : items())
+    {
+        if (dynamic_cast<GraphicBranch*>(c))
+        {
+            removeItem(c);
+            delete c;
+        }
+    }
+    for (auto *c : items())
+    {
+        removeItem(c);
+        delete c;
+    }
+}
+
 bool CircuitViewScene::isInsertingComponent() const
 {
     return _insertedBranch != nullptr;

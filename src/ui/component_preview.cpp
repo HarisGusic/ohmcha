@@ -3,6 +3,7 @@
 #include "graphic_resistor.h"
 #include "ui_component_preview.h"
 #include "mainwindow.h"
+#include "src/fileio/xml.h"
 
 #include <QButtonGroup>
 #include <QGridLayout>
@@ -55,6 +56,7 @@ ComponentPreview::~ComponentPreview()
 
 void ComponentPreview::initialize()
 {
+    component = nullptr;
     // Set callback for double clicking a component TODO: maybe move this somewhere else
     connect(circuitView, &CircuitView::componentSelected,
         this, &ComponentPreview::setEditExisting);
@@ -95,6 +97,15 @@ void ComponentPreview::initializeNewComponent(const QString &type)
 
 void ComponentPreview::synchronize()
 {
+    float value = 0;
+    if (dynamic_cast<Resistor*>(component->getComponent()))
+        value = dynamic_cast<Resistor*>(component->getComponent())->getResistance();
+    else if (dynamic_cast<Emf*>(component->getComponent()))
+        dynamic_cast<Emf*>(component->getComponent())->getEmf();
+    else if (dynamic_cast<CurrentSource*>(component->getComponent()))
+        dynamic_cast<CurrentSource*>(component->getComponent())->getCurrent();
+
+    ui->editValue->setText(QString::number(value));
     ui->editAngle->setText(QString::number(component->rotation()));
     ui->editText->setText(component->getName());
     ui->editTextAngle->setText(QString::number(component->getTextRotation()));
@@ -203,6 +214,17 @@ void ComponentPreview::updatePreview()
 {
     if (!component || !component->scene()) return;
     component->scene()->update();
+}
+
+void Ohmcha::ComponentPreview::on_editValue_textEdited(const QString &s)
+{
+    float value = parseValue(s.toStdString());
+    if (dynamic_cast<Resistor*>(component->getComponent()))
+        dynamic_cast<Resistor*>(component->getComponent())->setResistance(value);
+    else if (dynamic_cast<Emf*>(component->getComponent()))
+        dynamic_cast<Emf*>(component->getComponent())->setEmf(value);
+    else if (dynamic_cast<CurrentSource*>(component->getComponent()))
+        dynamic_cast<CurrentSource*>(component->getComponent())->setCurrent(value);
 }
 
 }

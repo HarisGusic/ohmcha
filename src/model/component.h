@@ -177,7 +177,7 @@ private:
 
     // Attributes
 
-    float resistance;
+    float resistance = 1000;
 };
 
 class Emf : public Component
@@ -203,7 +203,7 @@ private:
 
     // Attributes
 
-    float emf;
+    float emf = 1;
 };
 
 class CurrentSource : public Component
@@ -229,7 +229,7 @@ private:
 
     // Attributes
 
-    float current;
+    float current = 0.001;
 };
 
 }

@@ -22,6 +22,7 @@ GraphicComponent::GraphicComponent()
     setZValue(25);
     setFlag(ItemIsSelectable);
     setFlag(ItemIsMovable);
+    setFlag(ItemSendsGeometryChanges);
 }
 
 GraphicComponent::GraphicComponent(const GraphicComponent &original)
@@ -60,6 +61,13 @@ void GraphicComponent::synchronize()
     setTextRotation(component->getTextAngle());
     setTextRotationIndependent(component->isTextOrientationIndependent());
     setTextAnchor((Anchor) component->getTextAnchor());
+}
+
+QVariant GraphicComponent::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)
+{
+    if (change == ItemPositionChange && scene())
+        component->setPosition(new Component::Pos{(float) value.toPointF().x(), (float) value.toPointF().y()});
+    return QGraphicsItem::itemChange(change, value);
 }
 
 GraphicComponent *GraphicComponent::newFromComponent(Component *component)
@@ -209,8 +217,9 @@ void GraphicComponent::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
     scene()->update();
 }
 
-void GraphicComponent::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void GraphicComponent::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
+    QGraphicsItem::mouseReleaseEvent(event);
     //TODO very inelegant -- change
     if (_selectedTerminal)
     {

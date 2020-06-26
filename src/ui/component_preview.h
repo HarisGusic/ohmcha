@@ -67,6 +67,8 @@ private slots:
     void on_editTextX_textEdited(const QString &s);
     void on_editTextY_textEdited(const QString &s);
 
+    void on_editValue_textEdited(const QString &s);
+
 private:
 
     // Private methods

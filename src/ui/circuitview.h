@@ -25,6 +25,9 @@ public:
     // Constructors
     CircuitViewScene(CircuitView *circuitView);
 
+    // Methods
+    void clear();
+
     // Getters
     bool isInsertingComponent() const;
 

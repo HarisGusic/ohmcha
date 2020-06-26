@@ -31,6 +31,7 @@ public:
     const QPointF *findNearestTerminal(QPointF point) const;
     virtual GraphicComponent *copy() const = 0;
     virtual void synchronize();
+    QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
 
     /**
      * Dynamically allocate a GraphicComponent wrapper around
@@ -70,7 +71,7 @@ public:
     void hoverMoveEvent(QGraphicsSceneHoverEvent *event) override;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
 
-    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
 protected:
 
