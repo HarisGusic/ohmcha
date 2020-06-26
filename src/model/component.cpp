@@ -145,8 +145,8 @@ void Branch::addComponent(Component *component, bool inverted)
     // TODO find a more general way to do this
     if (dynamic_cast<CurrentSource*>(component))
     {
-        A = {0, 0, inverted ? -1 :1};
-        B = dynamic_cast<CurrentSource*>(component)->getCurrent();
+        A = {0, 0, 1};
+        B = (inverted ? 1 : -1) * dynamic_cast<CurrentSource*>(component)->getCurrent();
         return;
     }
     if (dynamic_cast<Resistor*>(component))

@@ -101,9 +101,9 @@ void ComponentPreview::synchronize()
     if (dynamic_cast<Resistor*>(component->getComponent()))
         value = dynamic_cast<Resistor*>(component->getComponent())->getResistance();
     else if (dynamic_cast<Emf*>(component->getComponent()))
-        dynamic_cast<Emf*>(component->getComponent())->getEmf();
+        value = dynamic_cast<Emf*>(component->getComponent())->getEmf();
     else if (dynamic_cast<CurrentSource*>(component->getComponent()))
-        dynamic_cast<CurrentSource*>(component->getComponent())->getCurrent();
+        value = dynamic_cast<CurrentSource*>(component->getComponent())->getCurrent();
 
     ui->editValue->setText(QString::number(value));
     ui->editAngle->setText(QString::number(component->rotation()));

@@ -355,10 +355,14 @@ void CircuitView::solve()
         auto branch = schematic->getBranches()[i];
         auto gc = findBranch(branch, scene());
 
+        // Determine the current value associated with this branch
         float value = sol(i + schematic->getNodes().size() - 1);
         if (qAbs(value) < 1e-5)
             value = 0;
+        value = qAbs(value);
 
+        /*
+        // Form an arrow path
         QPainterPath path;
         path.moveTo(0, 0);
         path.lineTo(value > 0 ? -6 : 6, -4);
@@ -366,52 +370,72 @@ void CircuitView::solve()
         path.lineTo(value > 0 ? -6 : 6, 4);
         auto pathItem = scene()->addPath(path);
 
-        //value = qAbs(value);
+        // Position of branch middle point in branch coordinates
+        auto pos = (
+                 gc->getFirstAnchor()->mapToItem(gc, gc->getFirstAnchorPoint())
+                 + gc->getSecondAnchor()->mapToItem(gc, gc->getSecondAnchorPoint())) / 2;
+        // Same, but in scene coordinates
+        auto scenePos = gc->mapToScene(pos);
 
-        pathItem->setZValue(199);
+        GraphicNode *first;
+        GraphicComponent *second;
+        // Points are in the branch's coordinates
+        QPointF pFirst, pSecond;
+
+        if (dynamic_cast<GraphicNode*>(gc->getFirstAnchor()))
+        {
+            first = (GraphicNode*) gc->getFirstAnchor();
+            pFirst = first->mapToItem(gc, first->getTerminals()[0]);
+            second = gc->getSecondAnchor();
+            pSecond = second->mapToItem(gc, gc->getSecondAnchorPoint());
+        }
+        else
+        {
+            first = (GraphicNode*) gc->getSecondAnchor();
+            pFirst = first->mapToItem(gc, first->getTerminals()[0]);
+            second = gc->getFirstAnchor();
+            pSecond = second->mapToItem(gc, gc->getFirstAnchorPoint());
+        }
+
+        Node *node = (Node*) first->getComponent();
+        float multiplier = 0;
+        if (node == ((Branch*)gc->getComponent())->getNode2())
+            multiplier = 1;
+
+        // Determine preliminary angle for arrow
+        QPointF deltaPos = pSecond - pFirst;
+        float angle = qAtan2(deltaPos.y(), deltaPos.x()) + multiplier * 3.141592654;
+        */
+        auto pos = (
+                 gc->getFirstAnchor()->mapToItem(gc, gc->getFirstAnchorPoint())
+                 + gc->getSecondAnchor()->mapToItem(gc, gc->getSecondAnchorPoint())) / 2;
+
+        // Foreground text
         QGraphicsTextItem *text = new QGraphicsTextItem(QString::number(value));
+        text->setPos(pos + QPointF(0, -10));
         text->setDefaultTextColor(QColor(30, 240, 56));
         text->setZValue(200);
+
+        // Background rectangle
         QGraphicsRectItem *rect = new QGraphicsRectItem(QRectF(0, 0, 50, 15));
+        rect->setPos(text->pos() + QPointF(0, 5));
         rect->setBrush(QBrush(QColor(255, 255, 255)));
         rect->setPen(QPen(QColor(255, 255, 255)));
         rect->setZValue(198);
 
+        // Arrow
+        /*pathItem->setPos(pos);
+        pathItem->setRotation(angle * 180 / 3.1415926);
+        pathItem->setZValue(199);*/
+
         results.push_back(rect);
         results.push_back(text);
+        //results.push_back(pathItem);
+
         rect->setParentItem(gc);
         text->setParentItem(gc);
-        auto pos = (
-                 gc->getFirstAnchor()->mapToItem(gc, gc->getFirstAnchorPoint())
-                 + gc->getSecondAnchor()->mapToItem(gc, gc->getSecondAnchorPoint())) / 2;
-        auto scenePos = gc->mapToScene(pos);
-        text->setPos(pos + QPointF(0, -10));
-        rect->setPos(text->pos() + QPointF(0, 5));
+        //pathItem->setParentItem(gc);
 
-        auto deltaPos =
-                 gc->getFirstAnchor()->mapToScene(gc->getFirstAnchorPoint()) -
-                 gc->getSecondAnchor()->mapToScene(gc->getSecondAnchorPoint());
-        float angle = qAtan2(deltaPos.y(), deltaPos.x());
-        GraphicNode *node;
-        bool mult = false;
-        if (dynamic_cast<GraphicNode*>(gc->getFirstAnchor()))
-            node = (GraphicNode*) gc->getFirstAnchor();
-        else if (dynamic_cast<GraphicNode*>(gc->getSecondAnchor()))
-        {
-            node = (GraphicNode*) gc->getSecondAnchor();
-            mult = true;
-        }
-        Branch *br = (Branch*) gc->getComponent();
-        if (node->getComponent() == br->getNode2())
-            mult = !mult;
-        if (mult)
-            angle += 3.1415926;
-
-        pathItem->setPos(pos);
-        pathItem->setRotation(angle * 180 / 3.1415926);
-
-        results.push_back(pathItem);
-        pathItem->setParentItem(gc);
     }
 }
 

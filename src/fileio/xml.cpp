@@ -332,7 +332,7 @@ QString xmlConvertCurrentSource(CurrentSource *source)
 {
     QString result("<currentsource ");
     result += convertCommonComponent(source);
-    result += QString(" R=\"%1\"").arg(source->getCurrent());
+    result += QString(" I=\"%1\"").arg(source->getCurrent());
     result += "/>";
     return result;
 }
