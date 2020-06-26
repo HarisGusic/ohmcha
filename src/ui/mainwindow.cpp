@@ -156,10 +156,13 @@ void MainWindow::on_actionSaveAs_triggered()
     this->fileName = fileName;
 }
 
+int __counter = 0;
+
 void MainWindow::on_actionSolve_triggered()
 {
     if (ui->circuitView)
     {
+        __counter++;
         Schematic *schematic = new Schematic(*ui->circuitView->getSchematic());
         auto rect = ui->circuitView->sceneRect();
         auto zoom = ui->circuitView->getZoomLevel();
@@ -173,6 +176,9 @@ void MainWindow::on_actionSolve_triggered()
         ui->circuitView->setZoomLevel(zoom);
 
         ui->circuitView->solve();
+
+        if (__counter % 2 == 1)
+            on_actionSolve_triggered();
     }
 }
 
