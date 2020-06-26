@@ -39,6 +39,8 @@ private slots:
 
     void on_actionSolve_triggered();
 
+    void on_actionHideSolution_triggered();
+
 private:
 
     // Private methods

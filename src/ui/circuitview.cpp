@@ -9,6 +9,7 @@
 #include "graphic_component.h"
 #include "graphic_node.h"
 #include "src/model/kirchhoff.h"
+#include <QtMath>
 
 namespace Ohmcha
 {
@@ -72,6 +73,12 @@ void CircuitViewScene::keyPressEvent(QKeyEvent *event)
     }
     if (event->key() == Qt::Key::Key_Delete)
     {
+        for (auto x : circuitView->results)
+        {
+            for (auto item : selectedItems())
+                if (item == x->parentItem())
+                    x->setParentItem(nullptr);
+        }
         // First delete all branches
         foreach(auto *item, selectedItems())
         {
@@ -199,6 +206,21 @@ GraphicComponent *findComponent(Component *component, QGraphicsScene *scene)
     return nullptr;
 }
 
+GraphicBranch *findBranch(Component *component, QGraphicsScene *scene)
+{
+    for (auto *item : scene->items())
+    {
+        if (!dynamic_cast<GraphicBranch*>(item))
+            continue;
+        auto gc = (GraphicBranch*) item;
+
+            if (gc->getComponent() == component && (dynamic_cast<GraphicNode*>(gc->getFirstAnchor())
+                    || dynamic_cast<GraphicNode*>(gc->getSecondAnchor())))
+                return gc;
+    }
+    return nullptr;
+}
+
 CircuitView::CircuitView(QWidget *parent, Schematic *schematic)
     : CircuitView(parent)
 {
@@ -283,8 +305,112 @@ void CircuitView::solve()
 {
     getSchematic();
     auto sol = khoffSolve(schematic);
-    for (int i = 0; i < sol.size(); ++i)
-        qInfo() << sol(i);
+    for (auto item : results)
+    {
+        scene()->removeItem(item);
+        delete item;
+    }
+    results.clear();
+    // Displays for nodes
+    for (int i = 0; i < schematic->getNodes().size(); ++i)
+    {
+        auto node = schematic->getNodes()[i];
+        auto gc = findComponent(node, scene());
+
+        float value = 0;
+        if (node != schematic->getNodes()[schematic->getNodes().size() - 1]) // Not last node
+            value = sol(i);
+
+        QGraphicsTextItem *text = new QGraphicsTextItem(QString::number(value));
+        text->setPos(QPointF{0, -10});
+        text->setDefaultTextColor(QColor(30, 240, 56));
+        text->setZValue(200);
+        QGraphicsRectItem *rect = new QGraphicsRectItem(QRectF(0, 0, 50, 15));
+        rect->setPos({0, -5});
+        rect->setBrush(QBrush(QColor(255, 255, 255)));
+        rect->setPen(QPen(QColor(255, 255, 255)));
+        rect->setZValue(199);
+
+        results.push_back(rect);
+        results.push_back(text);
+        scene()->addItem(rect);
+        scene()->addItem(text);
+        rect->setParentItem(gc);
+        text->setParentItem(gc);
+    }
+
+    // Displays for branches
+    for (int i = 0; i < schematic->getBranches().size(); ++i)
+    {
+        auto branch = schematic->getBranches()[i];
+        auto gc = findBranch(branch, scene());
+
+        float value = sol(i + schematic->getNodes().size() - 1);
+
+        QPainterPath path;
+        path.moveTo(0, 0);
+        path.lineTo(value > 0 ? -6 : 6, -4);
+        path.moveTo(0, 0);
+        path.lineTo(value > 0 ? -6 : 6, 4);
+        auto pathItem = scene()->addPath(path);
+
+        value = qAbs(value);
+
+        pathItem->setZValue(199);
+        QGraphicsTextItem *text = new QGraphicsTextItem(QString::number(value));
+        text->setDefaultTextColor(QColor(30, 240, 56));
+        text->setZValue(200);
+        QGraphicsRectItem *rect = new QGraphicsRectItem(QRectF(0, 0, 50, 15));
+        rect->setBrush(QBrush(QColor(255, 255, 255)));
+        rect->setPen(QPen(QColor(255, 255, 255)));
+        rect->setZValue(198);
+
+        results.push_back(rect);
+        results.push_back(text);
+        rect->setParentItem(gc);
+        text->setParentItem(gc);
+        auto pos = (
+                 gc->getFirstAnchor()->mapToItem(gc, gc->getFirstAnchorPoint())
+                 + gc->getSecondAnchor()->mapToItem(gc, gc->getSecondAnchorPoint())) / 2;
+        auto scenePos = gc->mapToScene(pos);
+        text->setPos(pos + QPointF(0, -10));
+        rect->setPos(text->pos() + QPointF(0, 5));
+
+        auto deltaPos =
+                 gc->getFirstAnchor()->mapToScene(gc->getFirstAnchorPoint()) -
+                 gc->getSecondAnchor()->mapToScene(gc->getSecondAnchorPoint());
+        float angle = qAtan2(deltaPos.y(), deltaPos.x());
+        GraphicNode *node;
+        bool mult = false;
+        if (dynamic_cast<GraphicNode*>(gc->getFirstAnchor()))
+            node = (GraphicNode*) gc->getFirstAnchor();
+        else if (dynamic_cast<GraphicNode*>(gc->getSecondAnchor()))
+        {
+            node = (GraphicNode*) gc->getSecondAnchor();
+            mult = true;
+        }
+        Branch *br = (Branch*) gc->getComponent();
+        if (node->getComponent() == br->getNode2())
+            mult = !mult;
+        if (mult)
+            angle += 3.1415926;
+
+        pathItem->setPos(pos);
+        pathItem->setRotation(angle * 180 / 3.1415926);
+
+        results.push_back(pathItem);
+        pathItem->setParentItem(gc);
+    }
+}
+
+void CircuitView::showValues(bool show)
+{
+    if (show)
+        for (auto item : results)
+            item->show();
+    else
+        for (auto item : results)
+            item->hide();
 }
 
 void CircuitView::zoomIn(float scale)
@@ -357,8 +483,6 @@ GraphicBranch *findBranch(GraphicNode *node, Schematic *schematic, QGraphicsScen
             continue;
         if (!((GraphicBranch*) b)->isConnectedTo(node))
             continue;
-        auto y = 3;
-        auto x = 1;
         if (std::find(schematic->getBranches().begin(), schematic->getBranches().end(), (Branch*) ((GraphicBranch*) b)->getComponent()) != schematic->getBranches().end())
             continue;
         //if (dynamic_cast<GraphicBranch*>(b) && ((GraphicBranch*) b)->isConnectedTo(node) &&
@@ -469,6 +593,7 @@ void CircuitView::wheelEvent(QWheelEvent *event)
 
 void CircuitView::mousePressEvent(QMouseEvent *event)
 {
+    showValues(false);
     // Parent method call should be first to prevent selection upon dropping the item in the view.
     if (event->button() != Qt::MiddleButton)
         QGraphicsView::mousePressEvent(event);

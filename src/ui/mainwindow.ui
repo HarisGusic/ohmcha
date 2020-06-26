@@ -68,6 +68,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionSolve"/>
+   <addaction name="actionHideSolution"/>
   </widget>
   <widget class="QDockWidget" name="dockComponents">
    <property name="enabled">
@@ -157,6 +158,11 @@
   <action name="actionSolve">
    <property name="text">
     <string>Solve</string>
+   </property>
+  </action>
+  <action name="actionHideSolution">
+   <property name="text">
+    <string>Hide Solution</string>
    </property>
   </action>
  </widget>

@@ -163,3 +163,8 @@ void MainWindow::on_actionSolve_triggered()
 }
 
 }
+
+void Ohmcha::MainWindow::on_actionHideSolution_triggered()
+{
+    ui->circuitView->showValues(false);
+}

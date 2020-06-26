@@ -65,6 +65,7 @@ public:
     void initialize();
     void initiateInsertComponent(GraphicComponent *component, Mode insertMode);
     void solve();
+    void showValues(bool show = true);
 
     void zoomIn(float scale = 1.2);
     void resetZoom();
@@ -131,6 +132,7 @@ private:
     GraphicComponent *pendingInsert{};
     ComponentPreview *componentPreview{};
     Schematic *schematic{};
+    QList<QGraphicsItem*> results;
 
     Mode mode = Idle;
 
