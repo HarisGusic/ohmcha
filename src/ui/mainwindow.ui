@@ -67,6 +67,7 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionSolve"/>
   </widget>
   <widget class="QDockWidget" name="dockComponents">
    <property name="enabled">
@@ -151,6 +152,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+S</string>
+   </property>
+  </action>
+  <action name="actionSolve">
+   <property name="text">
+    <string>Solve</string>
    </property>
   </action>
  </widget>

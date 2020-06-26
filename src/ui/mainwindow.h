@@ -37,6 +37,8 @@ private slots:
     void on_actionSave_triggered();
     void on_actionSaveAs_triggered();
 
+    void on_actionSolve_triggered();
+
 private:
 
     // Private methods

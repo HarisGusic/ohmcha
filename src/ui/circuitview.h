@@ -64,6 +64,7 @@ public:
     // Methods
     void initialize();
     void initiateInsertComponent(GraphicComponent *component, Mode insertMode);
+    void solve();
 
     void zoomIn(float scale = 1.2);
     void resetZoom();

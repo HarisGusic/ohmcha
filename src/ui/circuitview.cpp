@@ -8,6 +8,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include "graphic_component.h"
 #include "graphic_node.h"
+#include "src/model/kirchhoff.h"
 
 namespace Ohmcha
 {
@@ -257,6 +258,14 @@ void CircuitView::initiateInsertComponent(GraphicComponent *component, CircuitVi
     scene()->addItem(component);
 }
 
+void CircuitView::solve()
+{
+    getSchematic();
+    auto sol = khoffSolve(schematic);
+    for (int i = 0; i < sol.size(); ++i)
+        qInfo() << sol(i);
+}
+
 void CircuitView::zoomIn(float scale)
 {
     this->zoomLevel *= scale;
@@ -374,7 +383,15 @@ GraphicBranch *getOtherBranch(GraphicComponent *next, GraphicComponent *thisBran
 Schematic *CircuitView::getSchematic()
 {
     if (schematic == nullptr)
+    {
         schematic = new Schematic;
+        for (auto *c : scene()->items())
+        {
+            if (!dynamic_cast<GraphicComponent*>(c) || dynamic_cast<GraphicNode*>(c) || dynamic_cast<GraphicBranch*>(c))
+                continue;
+            schematic->add(((GraphicComponent*) c)->getComponent());
+        }
+    }
     schematic->clearBranches(); //TODO delete?
     schematic->clearNodes();
 
@@ -390,8 +407,7 @@ Schematic *CircuitView::getSchematic()
                 if (branch == nullptr)
                     break;
 
-                if (branch->getComponent() == nullptr)
-                    branch->setComponent(new Branch);
+                branch->setComponent(new Branch);
 
                 Branch *_branch = (Branch*) branch->getComponent();
                 _branch->setNode1(*(Node*) node->getComponent());

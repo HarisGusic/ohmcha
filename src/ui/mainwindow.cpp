@@ -156,4 +156,10 @@ void MainWindow::on_actionSaveAs_triggered()
     this->fileName = fileName;
 }
 
+void MainWindow::on_actionSolve_triggered()
+{
+    if (ui->circuitView)
+        ui->circuitView->solve();
+}
+
 }

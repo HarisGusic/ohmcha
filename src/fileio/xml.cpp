@@ -246,6 +246,8 @@ Component *xmlParseBranch(const QDomElement &element, Schematic *schematic)
     QStringList list = str.split(" ", QString::SkipEmptyParts);
     for (auto &s : list)
     {
+        if (s.toInt() < 0)
+            continue;
         branch.addComponent(schematic->getComponents()[s.toInt()]);
         branch.attached.push_back(schematic->getComponents()[s.toInt()]);
     }
@@ -312,7 +314,7 @@ QString xmlConvertEmf(Emf *emf)
 {
     QString result("<emf ");
     result += convertCommonComponent(emf);
-    result += QString(" R=\"%1\"").arg(emf->getEmf());
+    result += QString(" E=\"%1\"").arg(emf->getEmf());
     result += "/>";
     return result;
 }
