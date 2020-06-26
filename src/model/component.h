@@ -112,7 +112,7 @@ public:
 
     // Methods
     Component *copy() const override;
-    void addComponent(Component *component);
+    void addComponent(Component *component, bool inverted = false);
 
     // Setters
     void setA(const RowVector3f &matrix);
@@ -151,6 +151,7 @@ protected:
 public:
     //TODO remove this ASAP
     std::vector<Component*> attached;
+    std::vector<bool> inversions;
 };
 
 class Resistor : public Component

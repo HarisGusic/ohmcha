@@ -244,12 +244,18 @@ Component *xmlParseBranch(const QDomElement &element, Schematic *schematic)
     // Parse attached components
     str = element.attribute("components", "");
     QStringList list = str.split(" ", QString::SkipEmptyParts);
-    for (auto &s : list)
+    str = element.attribute("inv", "");
+    QStringList invList = str.split(" ", QString::SkipEmptyParts);
+    for (int i = 0; i < list.size(); ++i)
     {
-        if (s.toInt() < 0)
+        bool inverted = false;
+        if (invList.size() == list.size())
+            inverted = invList[i].toInt();
+        if (list[i].toInt() < 0)
             continue;
-        branch.addComponent(schematic->getComponents()[s.toInt()]);
-        branch.attached.push_back(schematic->getComponents()[s.toInt()]);
+        branch.addComponent(schematic->getComponents()[list[i].toInt()], inverted);
+        branch.attached.push_back(schematic->getComponents()[list[i].toInt()]);
+        branch.inversions.push_back(inverted);
     }
 
     // Parse nodes
@@ -330,7 +336,7 @@ QString xmlConvertCurrentSource(CurrentSource *source)
 
 QString xmlConvertBranch(Schematic *schematic, Branch *branch)
 {
-    QString components;
+    QString components, inversions;
     for (int i = 0; i < branch->attached.size(); ++i)
     {
         if (i != 0)
@@ -338,11 +344,19 @@ QString xmlConvertBranch(Schematic *schematic, Branch *branch)
         components += QString::number(schematic->getComponentId(branch->attached[i]));
     }
 
-    return QString("<branch name=\"%1\" components=\"%2\" n1=\"%3\" n2=\"%4\"/>")
+    for (int i = 0; i < branch->inversions.size(); ++i)
+    {
+        if (i != 0)
+            inversions += " ";
+        inversions += QString::number(branch->inversions[i]);
+    }
+
+    return QString("<branch name=\"%1\" components=\"%2\" n1=\"%3\" n2=\"%4\" inv=\"%5\"/>")
             .arg(QString::fromStdString(branch->getName()))
             .arg(components)
             .arg(schematic->getNodeId(branch->getNode1()))
-            .arg(schematic->getNodeId(branch->getNode2()));
+            .arg(schematic->getNodeId(branch->getNode2()))
+            .arg(inversions);
 }
 
 QString xmlConvertNode(Node *node)
