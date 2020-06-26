@@ -61,6 +61,7 @@ void CircuitViewScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void CircuitViewScene::keyPressEvent(QKeyEvent *event)
 {
+    QGraphicsScene::keyPressEvent(event);
     if (event->key() == Qt::Key::Key_Escape && _insertedBranch != nullptr)
     {
         removeItem(_insertedBranch);
@@ -492,6 +493,9 @@ void CircuitView::mouseMoveEvent(QMouseEvent *event)
     // TODO: this is a filthy hack so that the view doesn't jump the first time the scene is dragged
     setSceneRect(sceneRect());
 
+    if (pendingInsert)
+        setFocus();
+
     if (!_dragging)
         QGraphicsView::mouseMoveEvent(event);
 
@@ -541,6 +545,18 @@ void CircuitView::mouseMoveEvent(QMouseEvent *event)
         event->setLocalPos(mapFromScene(cursorPos));
     }
     else cursorPos = rawCursorPos;
+}
+
+void CircuitView::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Escape && pendingInsert)
+    {
+        scene()->removeItem(pendingInsert);
+        delete pendingInsert;
+        pendingInsert = nullptr;
+        mode = Idle;
+    }
+    QGraphicsView::keyPressEvent(event);
 }
 
 void CircuitView::resizeEvent(QResizeEvent *event)
