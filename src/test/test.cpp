@@ -75,16 +75,5 @@ void daisy_chain_example()
 
 int test()
 {
-    daisy_chain_example();
-    return 0;
-    //Schematic *schem = xmlParseSchematic("../../staging/test.xml");
-    //auto v = schem->getComponents();
-    //auto resistor = *((Resistor*)v[0]);
-    //delete schem;
-    Resistor r(50);
-    Emf emf(10);
-    Branch b;
-    b.addComponent(&r);
-    b.addComponent(&emf);
     return 0;
 }

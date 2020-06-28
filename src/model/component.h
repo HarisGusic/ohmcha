@@ -128,6 +128,8 @@ public:
     Node *getNode1() const;
     Node *getNode2() const;
     int getTerminalCount() const override;
+    bool hasNode(Node *node) const;
+    Node *getOtherNode(Node *node) const;
 
 protected:
 

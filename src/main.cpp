@@ -61,8 +61,8 @@ int start_gui(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
+    // return test();
 	return start_gui(0, nullptr);
-    //return test();
     arglist args = arglist(argv + 1, argv + argc);
     auto it_gui = std::find(args.begin(), args.end(), "--gui");
 

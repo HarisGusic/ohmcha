@@ -206,6 +206,16 @@ int Branch::getTerminalCount() const
     return 2;
 }
 
+bool Branch::hasNode(Node *node) const
+{
+    return node == getNode1() || node == getNode2();
+}
+
+Node *Branch::getOtherNode(Node *node) const
+{
+    return node == node1 ? node2 : node1;
+}
+
 /************
  * Resistor *
  ************/
