@@ -11,6 +11,7 @@ namespace Ohmcha
 {
 
 class CircuitViewScene;
+class CircuitView;
 
 class GraphicComponent : public QGraphicsItem
 {
@@ -94,6 +95,7 @@ protected:
 
     //TODO remove some time
     friend class GraphicBranch;
+    friend class CircuitView;
 };
 
 }

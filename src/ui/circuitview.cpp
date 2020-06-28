@@ -11,6 +11,7 @@
 #include "graphic_node.h"
 #include "src/model/kirchhoff.h"
 #include <QtMath>
+#include <qmessagebox.h>
 
 #define try_cast(item, type, new_name) if (!dynamic_cast<type*>(item)) continue; auto new_name = (type*) item
 #define fail_cast(item, type) if (dynamic_cast<type*>(item)) continue
@@ -304,6 +305,38 @@ void CircuitView::initiateInsertComponent(GraphicComponent *component, CircuitVi
 void CircuitView::solve()
 {
     getSchematic();
+    int n_nodes = 0;
+    // Node check
+    for (auto item : scene()->items())
+    {
+        try_cast(item, GraphicNode, node);
+        n_nodes++;
+        if (n_nodes == 2)
+            break;
+    }
+    QMessageBox mb;
+    mb.setWindowTitle("Error");
+    if (n_nodes < 2)
+    {
+        mb.setText("Please make sure the schematic has at least two nodes.");
+        mb.exec();
+        return;
+    }
+
+    // Hanging in air check
+    for (auto item : scene()->items())
+    {
+        try_cast(item, GraphicComponent, c);
+        fail_cast(item, GraphicNode);
+        fail_cast(item, GraphicBranch);
+        if (!c->branch1 || !c->branch2)
+        {
+            mb.setText("Please make sure there are no unconnected components.");
+            mb.exec();
+            return;
+        }
+    }
+
     auto sol = khoffSolve(schematic);
     for (auto item : results)
     {
