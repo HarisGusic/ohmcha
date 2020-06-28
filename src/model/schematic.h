@@ -16,6 +16,7 @@ public:
     void add(Component *component);
     void clearBranches();
     void clearNodes();
+    void print();
 
     // Setters
 

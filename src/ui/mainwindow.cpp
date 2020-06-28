@@ -91,13 +91,15 @@ void MainWindow::on_actionOpen_triggered()
     // Replace the old circuit view with a new one
     delete ui->circuitView;
     try {
-        ui->circuitView = new CircuitView(this, xmlParseSchematic(fileName.toStdString()));
+        Schematic *schematic = xmlParseSchematic(fileName.toStdString());
+        ui->circuitView = new CircuitView(this, schematic);
     } catch (std::exception &e) {
         QMessageBox mb;
         mb.setText("Selected file is invalid");
         mb.exec();
         return;
     }
+    setWindowTitle(fileName + QString(" - Ohmcha"));
     ui->horizontalLayout->addWidget(ui->circuitView);
     ui->circuitView->initialize();
     ui->componentPreview->setCircuitView(ui->circuitView);
@@ -156,29 +158,11 @@ void MainWindow::on_actionSaveAs_triggered()
     this->fileName = fileName;
 }
 
-int __counter = 0;
-
 void MainWindow::on_actionSolve_triggered()
 {
     if (ui->circuitView)
     {
-        __counter++;
-        Schematic *schematic = new Schematic(*ui->circuitView->getSchematic());
-        auto rect = ui->circuitView->sceneRect();
-        auto zoom = ui->circuitView->getZoomLevel();
-        delete ui->circuitView;
-        ui->circuitView = new CircuitView(this, schematic);
-        ui->horizontalLayout->addWidget(ui->circuitView);
-        ui->circuitView->initialize();
-        ui->componentPreview->setCircuitView(ui->circuitView);
-        ui->componentPreview->initialize();
-        ui->circuitView->setSceneRect(rect);
-        ui->circuitView->setZoomLevel(zoom);
-
         ui->circuitView->solve();
-
-        if (__counter % 2 == 1)
-            on_actionSolve_triggered();
     }
 }
 

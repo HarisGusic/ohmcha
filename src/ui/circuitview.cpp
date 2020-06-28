@@ -11,6 +11,10 @@
 #include "src/model/kirchhoff.h"
 #include <QtMath>
 
+#define try_cast(item, type, new_name) if (!dynamic_cast<type*>(item)) continue; auto new_name = (type*) item
+#define fail_cast(item, type) if (dynamic_cast<type*>(item)) continue
+#define if_cast(item, type) if (dynamic_cast<type*>(item))
+
 namespace Ohmcha
 {
 
@@ -199,9 +203,7 @@ GraphicComponent *findComponent(Component *component, QGraphicsScene *scene)
 {
     for (auto *item : scene->items())
     {
-        if (!dynamic_cast<GraphicComponent*>(item))
-            continue;
-        auto gc = (GraphicComponent*) item;
+        try_cast(item, GraphicComponent, gc);
 
         if (gc->getComponent() == component)
             return gc;
@@ -244,19 +246,7 @@ void CircuitView::load(Schematic *schematic)
         // Find graphic components and nodes connected to this branch
         for (auto *c : b->attached)
             connectees.push_back(findComponent(c, scene()));
-        /*for (auto *c : scene()->items())
-        {
-            // Ignore branches and non-components
-            if (!dynamic_cast<GraphicComponent*>(c) || dynamic_cast<GraphicBranch*>(c))
-                continue;
 
-            auto component = (GraphicComponent*) c;
-            if (std::find(b->attached.begin(), b->attached.end(), component->getComponent()) != b->attached.end())
-                connectees.push_back(component);
-            else if (dynamic_cast<GraphicNode*>(c))
-                nodes.push_back((GraphicNode*) component);
-
-        }*/
         connectees.push_front(findComponent(b->getNode1(), scene()));
         connectees.push_back(findComponent(b->getNode2(), scene()));
 
@@ -521,19 +511,23 @@ GraphicBranch *findBranch(GraphicNode *node, Schematic *schematic, QGraphicsScen
 {
     for (auto *b : scene->items())
     {
-        if (!dynamic_cast<GraphicBranch*>(b))
+        try_cast(b, GraphicBranch, branch);
+        if (!branch->isConnectedTo(node))
             continue;
-        if (!((GraphicBranch*) b)->isConnectedTo(node))
+        // Has this branch already been added to the schematic?
+        if (std::find(schematic->getBranches().begin(), schematic->getBranches().end(), (Branch*) branch->getComponent()) != schematic->getBranches().end())
+            // Yes: find another branch
             continue;
-        if (std::find(schematic->getBranches().begin(), schematic->getBranches().end(), (Branch*) ((GraphicBranch*) b)->getComponent()) != schematic->getBranches().end())
-            continue;
-        //if (dynamic_cast<GraphicBranch*>(b) && ((GraphicBranch*) b)->isConnectedTo(node) &&
-        //    std::find(schematic->getBranches().begin(), schematic->getBranches().end(), (Branch*) ((GraphicBranch*) b)->getComponent()) == schematic->getBranches().end())
-            return (GraphicBranch*) b;
+        // No: Return this branch
+        return branch;
     }
     return nullptr;
 }
 
+/**
+ * Return the component connected to br, that is different from *next.
+ * Also, make sure that the branch is oriented from last to next.
+ */
 void nextElement(GraphicBranch *br, GraphicComponent *&next, QPointF *pNext)
 {
     if (br->getFirstAnchor() != next)
@@ -558,11 +552,17 @@ void insertToBranch(GraphicComponent *next, const QPointF &pNext, Branch *_branc
     _branch->inversions.push_back(terminalId != 0);
 }
 
+/**
+ * Return the branch connected to *next, that is different from *thisBranch.
+ */
 GraphicBranch *getOtherBranch(GraphicComponent *next, GraphicComponent *thisBranch, QGraphicsScene *scene)
 {
     for (auto *c : scene->items())
-        if (dynamic_cast<GraphicBranch*>(c) && ((GraphicBranch*) c)->isConnectedTo(next) && c != thisBranch)
-            return (GraphicBranch*) c;
+    {
+        try_cast(c, GraphicBranch, branch);
+        if (branch->isConnectedTo(next) && c != thisBranch)
+            return branch;
+    }
     return nullptr;
 }
 
@@ -573,56 +573,57 @@ Schematic *CircuitView::getSchematic()
         schematic = new Schematic;
         for (auto *c : scene()->items())
         {
-            if (!dynamic_cast<GraphicComponent*>(c) || dynamic_cast<GraphicNode*>(c) || dynamic_cast<GraphicBranch*>(c))
-                continue;
-            schematic->add(((GraphicComponent*) c)->getComponent());
+            try_cast(c, GraphicComponent, comp);
+            fail_cast(c, GraphicNode);
+            fail_cast(c, GraphicBranch);
+            schematic->add(comp->getComponent());
         }
     }
     schematic->clearBranches(); //TODO delete?
     schematic->clearNodes();
 
+    // We go through all components in the scene, looking for nodes
     for (auto *c : scene()->items())
     {
-        if (dynamic_cast<GraphicNode*>(c)) // Found a node
+        // Is it a node?
+        try_cast(c, GraphicNode, node);
+        // Found a node
+        while (true)
         {
-            auto node = (GraphicNode*) c;
-            while (true)
+            // Find a branch that is connected to this node
+            GraphicBranch *branch = findBranch(node, schematic, scene());
+            if (branch == nullptr)
+                // There are no more branches connected to this node
+                break;
+
+            // Create a model branch associated with this graphic branch
+            Branch *_branch = new Branch;
+            _branch->setNode1(*(Node*) node->getComponent());
+
+            // Follow down the branch
+            GraphicComponent *next = node;
+            QPointF pNext;
+            for (GraphicBranch *br = branch; ;)
             {
-                // Find a branch that is connected to this node
-                GraphicBranch *branch = findBranch(node, schematic, scene());
-                if (branch == nullptr)
+                br->setComponent(_branch);
+                // Find the next element this branch is connected to, store it into next
+                nextElement(br, next, &pNext);
+
+                if_cast (next, GraphicNode)
+                { // We have found the second node, this branch is complete
+                    _branch->setNode2(*(Node*) next->getComponent());
                     break;
-
-                branch->setComponent(new Branch);
-
-                Branch *_branch = (Branch*) branch->getComponent();
-                _branch->setNode1(*(Node*) node->getComponent());
-
-                // Follow down the branch
-                GraphicComponent *next = node;
-                QPointF pNext;
-                for (GraphicBranch *br = branch; ;)
-                {
-                    br->setComponent(_branch);
-                    // Find the next element this branch is connected to, store it into next
-                    nextElement(br, next, &pNext);
-
-                    if (dynamic_cast<GraphicNode*>(next))
-                    {
-                        _branch->setNode2(*(Node*) next->getComponent());
-                        break;
-                    }
-
-                    // Insert the next component into the model branch
-                    insertToBranch(next, pNext, _branch); //TODO not properly implemented
-                    br = getOtherBranch(next, br, scene());
-                    if (br == nullptr) break;
                 }
-                schematic->add(_branch);
+
+                // Insert the next component into the model branch
+                insertToBranch(next, pNext, _branch);
+                br = getOtherBranch(next, br, scene());
+                if (br == nullptr) break;
             }
-            node->getComponent()->setPosition(new Component::Pos{(float) node->pos().x(), (float) node->pos().y()});
-            schematic->add(node->getComponent());
+            schematic->add(_branch);
         }
+        node->getComponent()->setPosition(new Component::Pos{(float) node->pos().x(), (float) node->pos().y()});
+        schematic->add(node->getComponent());
     }
     return schematic;
 }

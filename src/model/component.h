@@ -138,7 +138,7 @@ protected:
      * Consequently, the reference voltage is positive if
      * node 1 is at a higher potential than node 2.
      */
-    Node *node1, *node2;
+    Node *node1{}, *node2{};
     /**
      * A branch has three quantities: V1 (potential at node1),
      * V2 (potential at node2), I (current from node1 to node2).

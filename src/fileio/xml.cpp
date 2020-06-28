@@ -264,8 +264,8 @@ Component *xmlParseBranch(const QDomElement &element, Schematic *schematic)
     // Parse nodes
     str = element.attribute("n1", "");
     branch.setNode1(str == "-1" ? nullptr : schematic->getNodes()[str.toInt()]);
-    str = element.attribute(str == "-1" ? nullptr : "n2", "");
-    branch.setNode2(schematic->getNodes()[str.toInt()]);
+    str = element.attribute("n2", "");
+    branch.setNode2(str == "-1" ? nullptr : schematic->getNodes()[str.toInt()]);
 
     return &branch;
 }

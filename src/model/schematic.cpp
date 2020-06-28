@@ -1,4 +1,5 @@
 #include "schematic.h"
+#include <QDebug>
 
 namespace Ohmcha {
 
@@ -25,6 +26,34 @@ void Schematic::clearBranches()
 void Schematic::clearNodes()
 {
     nodes.clear();
+}
+
+void Schematic::print()
+{
+    goto DEBUG;
+    qInfo() << "\n--- Schematic ---";
+    for (auto *br : getBranches())
+    {
+        std::ostringstream str;
+        str << br->getA();
+        auto info = qInfo();
+        info << "Branch: " << getNodeId(br->getNode1()) << "->" << getNodeId(br->getNode2());
+        for (auto *comp : br->attached)
+            info << comp->getName().c_str() << " ";
+        info << str.str().c_str() << " = " << br->getB();
+    }
+    DEBUG:
+    qDebug() << "\n--- Schematic ---";
+    for (auto *br : getBranches())
+    {
+        std::ostringstream str;
+        str << br->getA();
+        auto info = qDebug();
+        info << "Branch: " << getNodeId(br->getNode1()) << "->" << getNodeId(br->getNode2());
+        for (auto *comp : br->attached)
+            info << comp->getName().c_str() << " ";
+        info << str.str().c_str() << " = " << br->getB();
+    }
 }
 
 std::vector<Component*> Schematic::getComponents() const

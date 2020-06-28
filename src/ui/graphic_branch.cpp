@@ -90,6 +90,17 @@ QPainterPath GraphicBranch::shape() const
     return result;
 }
 
+void GraphicBranch::swapTerminals()
+{
+    auto tmp = first;
+    auto pTmp = pFirst;
+
+    first = second;
+    pFirst = pSecond;
+    second = tmp;
+    pSecond = pTmp;
+}
+
 GraphicComponent *GraphicBranch::copy() const
 {
     return new GraphicBranch(*this);

@@ -11,5 +11,6 @@ using namespace Eigen;
 
 VectorXf khoffSolve(const std::vector<Branch> &branches, const std::vector<Node> &nodes);
 VectorXf khoffSolve(Schematic *schematic);
+VectorXf loopCurrentSolve(Schematic *schematic);
 
 }

@@ -127,8 +127,8 @@ Branch::Branch(Component *component, Node *node1, Node *node2)
     : Branch()
 {
     addComponent(component);
-    node1 = node1;
-    node2 = node2;
+    this->node1 = node1;
+    this->node2 = node2;
 }
 
 Component *Branch::copy() const
@@ -138,6 +138,8 @@ Component *Branch::copy() const
 
 void Branch::addComponent(Component *component, bool inverted)
 {
+    if (std::abs(A(0)) < 1e-9)
+        return;
     if (component->getTerminalCount() != 2)
         return;//TODO this case must be treated separately
     RowVector3f A1 = A, A2;
@@ -145,13 +147,13 @@ void Branch::addComponent(Component *component, bool inverted)
     // TODO find a more general way to do this
     if (dynamic_cast<CurrentSource*>(component))
     {
-        A = {0, 0, 1};
-        B = (inverted ? 1 : -1) * dynamic_cast<CurrentSource*>(component)->getCurrent();
+        A = {0, 0, inverted ? -1 : 1};
+        B = dynamic_cast<CurrentSource*>(component)->getCurrent();
         return;
     }
     if (dynamic_cast<Resistor*>(component))
     {
-        A2 = {1, -1, dynamic_cast<Resistor*>(component)->getResistance()};
+        A2 = {1, -1, -dynamic_cast<Resistor*>(component)->getResistance()};
         B2 = 0;
     }
     if (dynamic_cast<Emf*>(component))
@@ -162,7 +164,7 @@ void Branch::addComponent(Component *component, bool inverted)
     A(0) = -A1(0) * A2(0) / A1(1);
     A(1) = A2(1);
     A(2) = A2(2) - A2(0) / A1(1) * A1(2);
-    B = B2 - A2(0) / A1(0) * B1;
+    B = B2 - A2(0) / A1(1) * B1;
 }
 
 void Branch::setA(const RowVector3f &matrix)

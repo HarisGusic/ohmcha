@@ -5,6 +5,7 @@
 #include <QStyleOptionGraphicsItem>
 #include <QPainter>
 #include <QGraphicsScene>
+#include <QDebug>
 
 namespace Ohmcha
 {
@@ -50,6 +51,12 @@ QRectF GraphicNode::boundingRect() const
 GraphicComponent *GraphicNode::copy() const
 {
     return new GraphicNode(*this);
+}
+
+void GraphicNode::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+    GraphicComponent::mousePressEvent(event);
+    qInfo() << QString::fromStdString(getComponent()->getName());
 }
 
 }

@@ -1,4 +1,7 @@
 #include "kirchhoff.h"
+//TODO temporary tests
+#include <QDebug>
+#include <sstream>
 
 namespace Ohmcha
 {
@@ -47,6 +50,7 @@ VectorXf khoffSolve(const std::vector<Branch> &branches, const std::vector<Node>
 
 VectorXf khoffSolve(Schematic *schematic)
 {
+
     auto branches = schematic->getBranches();
     auto nodes = schematic->getNodes();
 

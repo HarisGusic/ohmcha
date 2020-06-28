@@ -22,6 +22,9 @@ public:
 
     virtual GraphicComponent *copy() const override;
 
+    //TODO just a test
+    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+
 };
 
 }
