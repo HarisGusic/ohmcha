@@ -93,7 +93,7 @@ VectorXf khoffSolve(Schematic *schematic)
     return A.colPivHouseholderQr().solve(B);
 }
 
-bool find(const std::vector<int> vec, int x)
+bool find(const std::vector<int> &vec, int x)
 {
     return std::find(vec.begin(), vec.end(), x) != vec.end();
 }
@@ -124,6 +124,7 @@ int findStartBranch(const std::vector<int> &tree, int nth, int nTotal)
                 return i;
             --nth;
         }
+    return -1;
 }
 
 int findBranchOtherThan(int node, int branch, const std::vector<int> &branches, int nth, Schematic *schematic)
@@ -200,12 +201,13 @@ VectorXf loopCurrentSolve(Schematic *schematic, std::vector<int> &tree)
             tree[i] = branch;
     }
 
-    // Find a branch that is not in the tree
-    int startBranch = findStartBranch(tree, 0,  branches.size()); //TODO index
-
     // Populate the loop matrix
     for (int i = 0; i < branches.size() - tree.size(); ++i)
+    {
+        // Find a branch that is not in the tree
+        int startBranch = findStartBranch(tree, i,  branches.size());
         nextLoop(startBranch, i, B, tree, schematic);
+    }
 
     // Populate the resistance and emf matrices
 
@@ -215,7 +217,7 @@ VectorXf loopCurrentSolve(Schematic *schematic, std::vector<int> &tree)
     for (int i = 0; i < branches.size(); ++i)
     {
         R(i) = -branches[i]->getA()(2);
-        E(i) = branches[i]->getB();
+        E(i) = -branches[i]->getB();
     }
 
     MatrixXf _R = R.asDiagonal();

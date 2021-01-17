@@ -151,7 +151,6 @@ protected:
     float B;
 
 public:
-    //TODO remove this ASAP
     std::vector<Component*> attached;
     std::vector<bool> inversions;
 };
@@ -172,7 +171,7 @@ public:
     void setResistance(float r);
 
     // Getters
-    int getTerminalCount() const;
+    int getTerminalCount() const override;
     float getResistance() const;
     Pos getTextPos() const override;
 

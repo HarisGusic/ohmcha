@@ -140,8 +140,6 @@ void Branch::addComponent(Component *component, bool inverted)
 {
     if (std::abs(A(0)) < 1e-9)
         return;
-    if (component->getTerminalCount() != 2)
-        return;//TODO this case must be treated separately
     RowVector3f A1 = A, A2;
     float B1 = B, B2 = 0;
     // TODO find a more general way to do this
@@ -336,7 +334,7 @@ Component *Node::copy() const
     Node *node = new Node;
     if (metaInfo != nullptr)
         node->metaInfo = new MetaInfo(*metaInfo);
-    return new Node();
+    return node;
 }
 
 int Node::getTerminalCount() const
