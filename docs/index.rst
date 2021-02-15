@@ -28,16 +28,6 @@ Ohmcha is completely open source.
 It is written in C++.
 Some parts (mostly related to GUI) are written using Qt.
 
-Features
---------
-
-* GUI and CLI interface
-* Many customization options
-* Support for various file formats
-* Conversion to CircuiTikZ
-* Option for vim-like keybindings **(Planned)**
-* Fully transparent and open source
-
 Indices and tables
 ==================
 

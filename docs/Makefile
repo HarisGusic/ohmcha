@@ -25,3 +25,5 @@ examples/example_1/example_1.svg: examples/example_1/example_1.tex
 	pdflatex example_1.tex; \
 	pdftocairo -svg example_1.pdf; \
 	cd ../..;
+
+resources: examples/example_1/example_1.svg
